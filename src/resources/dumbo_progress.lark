@@ -1,0 +1,31 @@
+?programme: TXT
+          | TXT programme
+          | dumbo_bloc
+          | dumbo_bloc programme
+
+?dumbo_bloc: "{{" expression_list "}}"
+
+?expression_list: expression ";" expression_list
+                | expression ";"
+
+?expression: "print" string_expression
+           | "for" VARIABLE "in" string_list "do" expression_list "endfor" -> for_string
+
+?string_expression: STRING -> print_string
+                  | VARIABLE -> print_variable
+                  | string_expression "." string_expression -> concat
+
+?string_list: "(" string_list_interior ")"
+
+?string_list_interior: STRING
+                     | STRING "," string_list_interior
+
+TXT : /(?!.*\{\{).+/
+VARIABLE : /[a-zA-Z_]\w*/  // lettre ou underscore + (lettre ou nombre ou underscore)*
+STRING : "'" /[^']*?/ "'"  // ' + ((tout sauf single quote)*)? + '
+
+%import common.NUMBER
+%import common.WS_INLINE
+%import common.WS
+%ignore WS_INLINE
+%ignore WS
