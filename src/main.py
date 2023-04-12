@@ -7,7 +7,7 @@ dumbo_grammar = r"""
                 | dumbo_bloc 
                 | dumbo_bloc programme
                 
-    txt : /(?!.*\{\{).*/  // contient pas {{
+    TXT : /(?!.*\{\{).*/  // contient pas {{
     
     ?dumbo_bloc: "{{" expression_list "}}"
     
