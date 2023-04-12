@@ -19,22 +19,25 @@ class DumboTransformer(Transformer):
         return args[0].value
 
     def for_string(self, args):
-        strings = ""
-        for arg in args[1].children:
-            while type(arg) == Tree:
-                arg = arg.children
+        def extract_strings(arg: Tree or Token):
             if type(arg) == Token:
-                strings += arg.value[1:-1]
-                strings += ", "
-            elif type(arg) == list:
-                for token in arg:
-                    strings += token.value[1:-1]
-                    strings += ", "
-            else:
-                strings += str(arg)[1:-1]
-                strings += ", "
-        strings = strings[:-2]
-        return f"for {args[0].value} in {strings} do"
+                return arg.value
+            elif type(arg) == Tree:
+                l1 = extract_strings(arg.children[0])
+                l2 = extract_strings(arg.children[1])
+                strings = []
+                strings.extend(l1)
+                strings.extend(l2)
+                # we get many "'" in the strings but idk why so this is the easiest method to remove them
+                while "'" in strings:
+                    strings.remove("'")
+                return strings
+
+        values = ""
+        for s in extract_strings(args[1]):
+            values += f"{s}, "
+        values = values[:-2]
+        return f"for {args[0].value} in ({values}) do"
 
     def for_variable(self, args):
         pass
@@ -65,9 +68,9 @@ if __name__ == '__main__':
 
 
     if len(sys.argv) == 1:
-        texts = ["i 4m s0m€ b4s!¢ ŧ€xŧ w!ŧħ CAPS 4nd $ymb0l$",
-                 "{{ print abc; }}",
-                 "{{ for var in ('a', 'b', 'c') do print var; endfor; }}"]
+        texts = [#"i 4m s0m€ b4s!¢ ŧ€xŧ w!ŧħ CAPS 4nd $ymb0l$",
+                 #"{{ print abc; }}",
+                 "{{ for var in ('a', 'b', 'c', 'd') do print var; endfor; }}"]
         parser = Lark(open(Path(__file__).parent.absolute() / "resources" / "dumbo_progress.lark"), start="programme", parser="lalr", transformer=DumboTransformer())
         for text in texts:
             parsed = parser.parse(text)
