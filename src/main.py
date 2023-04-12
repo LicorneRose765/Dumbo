@@ -7,7 +7,7 @@ dumbo_grammar = r"""
                 | dumbo_bloc 
                 | dumbo_bloc programme
                 
-    txt : // TODO : Ajouter txt
+    txt : /(?!.*\{\{).*/  // contient pas {{
     
     ?dumbo_bloc: "{{" expression_list "}}"
     
@@ -31,8 +31,8 @@ dumbo_grammar = r"""
     ?string_list_interior: string 
                             | string "," string_list_interior
     
-    ?variable : // TODO : Ajouter variable
-    ?string : // TODO : Ajouter string
+    ?VARIABLE : /[a-zA-Z_]\w*/  // lettre ou underscore + (lettre ou nombre ou underscore)*
+    ?STRING : "'" /[^']*?/ "'"  // ' + ((tout sauf single quote)*)? + '
 """
 # TODO : vérifier que la grammaire fonctionne comme ça, faudra peut-être ajouter des noms aux règles
 # TODO : compléter la grammaire
