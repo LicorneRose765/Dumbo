@@ -1,7 +1,17 @@
 import ply.lex as lex
+import os
+from lark import Lark, Transformer, Token, Tree
+import sys
+from pathlib import Path
 
 tokens = (
-    "PROGRAMME",
+    "PROGRAM",
+    "DUMBO_BLOCK",
+    "EXPRESSION_LIST",
+    "EXPRESSION",
+    "STRING_EXPRESSION",
+    "STRING_LIST",
+    "STRING_LIST_INTERIOR",
     "TXT",
     "STRING",
     "VARIABLE"
@@ -24,6 +34,14 @@ def t_error(t):
 
 
 if __name__ == "__main__":
+    """
+    if len(sys.argv) != 3:
+        print('Usage: python3 dumbo.py <data> <template>')
+        exit(1)
+    data_content = open(Path(os.getcwd()) / sys.argv[1], "r").readlines()
+    template_content = open(Path(os.getcwd()) / sys.argv[2], "r").readlines()
+    """
+
     import sys
 
     lexer = lex.lex()
