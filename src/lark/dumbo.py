@@ -84,7 +84,7 @@ if __name__ == '__main__':
 
 
     elif len(sys.argv) != 3:
-        print('Usage: python3 main.py <data> <template>')
+        print('Usage: python3 dumbo.py <data> <template>')
         exit(1)
 
     data_content = open(Path(os.getcwd()) / sys.argv[1], "r").readlines()
