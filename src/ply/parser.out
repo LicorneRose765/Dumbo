@@ -1,0 +1,124 @@
+Created by PLY version 3.11 (http://www.dabeaz.com/ply)
+
+Unused terminals:
+
+    DO
+    ENDFOR
+    EXPRESSION
+    EXPRESSION_LIST
+    FOR
+    IN
+    PRINT
+    STRING_EXPRESSION
+    STRING_LIST
+    STRING_LIST_INTERIOR
+    VARIABLE
+
+Grammar
+
+Rule 0     S' -> PROGRAM
+Rule 1     PROGRAM -> TXT
+Rule 2     PROGRAM -> DUMBO_BLOCK
+Rule 3     PROGRAM -> TXT PROGRAM
+Rule 4     PROGRAM -> DUMBO_BLOCK PROGRAM
+Rule 5     PROGRAM -> STRING
+
+Terminals, with rules where they appear
+
+DO                   : 
+DUMBO_BLOCK          : 2 4
+ENDFOR               : 
+EXPRESSION           : 
+EXPRESSION_LIST      : 
+FOR                  : 
+IN                   : 
+PRINT                : 
+STRING               : 5
+STRING_EXPRESSION    : 
+STRING_LIST          : 
+STRING_LIST_INTERIOR : 
+TXT                  : 1 3
+VARIABLE             : 
+error                : 
+
+Nonterminals, with rules where they appear
+
+PROGRAM              : 3 4 0
+
+Parsing method: LALR
+
+state 0
+
+    (0) S' -> . PROGRAM
+    (1) PROGRAM -> . TXT
+    (2) PROGRAM -> . DUMBO_BLOCK
+    (3) PROGRAM -> . TXT PROGRAM
+    (4) PROGRAM -> . DUMBO_BLOCK PROGRAM
+    (5) PROGRAM -> . STRING
+
+    TXT             shift and go to state 2
+    DUMBO_BLOCK     shift and go to state 3
+    STRING          shift and go to state 4
+
+    PROGRAM                        shift and go to state 1
+
+state 1
+
+    (0) S' -> PROGRAM .
+
+
+
+state 2
+
+    (1) PROGRAM -> TXT .
+    (3) PROGRAM -> TXT . PROGRAM
+    (1) PROGRAM -> . TXT
+    (2) PROGRAM -> . DUMBO_BLOCK
+    (3) PROGRAM -> . TXT PROGRAM
+    (4) PROGRAM -> . DUMBO_BLOCK PROGRAM
+    (5) PROGRAM -> . STRING
+
+    $end            reduce using rule 1 (PROGRAM -> TXT .)
+    TXT             shift and go to state 2
+    DUMBO_BLOCK     shift and go to state 3
+    STRING          shift and go to state 4
+
+    PROGRAM                        shift and go to state 5
+
+state 3
+
+    (2) PROGRAM -> DUMBO_BLOCK .
+    (4) PROGRAM -> DUMBO_BLOCK . PROGRAM
+    (1) PROGRAM -> . TXT
+    (2) PROGRAM -> . DUMBO_BLOCK
+    (3) PROGRAM -> . TXT PROGRAM
+    (4) PROGRAM -> . DUMBO_BLOCK PROGRAM
+    (5) PROGRAM -> . STRING
+
+    $end            reduce using rule 2 (PROGRAM -> DUMBO_BLOCK .)
+    TXT             shift and go to state 2
+    DUMBO_BLOCK     shift and go to state 3
+    STRING          shift and go to state 4
+
+    PROGRAM                        shift and go to state 6
+
+state 4
+
+    (5) PROGRAM -> STRING .
+
+    $end            reduce using rule 5 (PROGRAM -> STRING .)
+
+
+state 5
+
+    (3) PROGRAM -> TXT PROGRAM .
+
+    $end            reduce using rule 3 (PROGRAM -> TXT PROGRAM .)
+
+
+state 6
+
+    (4) PROGRAM -> DUMBO_BLOCK PROGRAM .
+
+    $end            reduce using rule 4 (PROGRAM -> DUMBO_BLOCK PROGRAM .)
+
