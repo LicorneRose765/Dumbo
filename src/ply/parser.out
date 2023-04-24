@@ -5,7 +5,6 @@ Unused terminals:
     DO
     ENDFOR
     EXPRESSION
-    EXPRESSION_LIST
     FOR
     IN
     PRINT
@@ -17,32 +16,35 @@ Unused terminals:
 Grammar
 
 Rule 0     S' -> PROGRAM
-Rule 1     PROGRAM -> TXT
-Rule 2     PROGRAM -> DUMBO_BLOCK
+Rule 1     DUMBO_BLOCK -> OPENING STRING CLOSING
+Rule 2     EXPRESSION_LIST -> STRING STRING STRING
 Rule 3     PROGRAM -> TXT PROGRAM
 Rule 4     PROGRAM -> DUMBO_BLOCK PROGRAM
-Rule 5     PROGRAM -> STRING
+Rule 5     PROGRAM -> TXT
+Rule 6     PROGRAM -> DUMBO_BLOCK
 
 Terminals, with rules where they appear
 
+CLOSING              : 1
 DO                   : 
-DUMBO_BLOCK          : 2 4
 ENDFOR               : 
 EXPRESSION           : 
-EXPRESSION_LIST      : 
 FOR                  : 
 IN                   : 
+OPENING              : 1
 PRINT                : 
-STRING               : 5
+STRING               : 1 2 2 2
 STRING_EXPRESSION    : 
 STRING_LIST          : 
 STRING_LIST_INTERIOR : 
-TXT                  : 1 3
+TXT                  : 3 5
 VARIABLE             : 
 error                : 
 
 Nonterminals, with rules where they appear
 
+DUMBO_BLOCK          : 4 6
+EXPRESSION_LIST      : 
 PROGRAM              : 3 4 0
 
 Parsing method: LALR
@@ -50,17 +52,17 @@ Parsing method: LALR
 state 0
 
     (0) S' -> . PROGRAM
-    (1) PROGRAM -> . TXT
-    (2) PROGRAM -> . DUMBO_BLOCK
     (3) PROGRAM -> . TXT PROGRAM
     (4) PROGRAM -> . DUMBO_BLOCK PROGRAM
-    (5) PROGRAM -> . STRING
+    (5) PROGRAM -> . TXT
+    (6) PROGRAM -> . DUMBO_BLOCK
+    (1) DUMBO_BLOCK -> . OPENING STRING CLOSING
 
     TXT             shift and go to state 2
-    DUMBO_BLOCK     shift and go to state 3
-    STRING          shift and go to state 4
+    OPENING         shift and go to state 4
 
     PROGRAM                        shift and go to state 1
+    DUMBO_BLOCK                    shift and go to state 3
 
 state 1
 
@@ -70,43 +72,43 @@ state 1
 
 state 2
 
-    (1) PROGRAM -> TXT .
     (3) PROGRAM -> TXT . PROGRAM
-    (1) PROGRAM -> . TXT
-    (2) PROGRAM -> . DUMBO_BLOCK
+    (5) PROGRAM -> TXT .
     (3) PROGRAM -> . TXT PROGRAM
     (4) PROGRAM -> . DUMBO_BLOCK PROGRAM
-    (5) PROGRAM -> . STRING
+    (5) PROGRAM -> . TXT
+    (6) PROGRAM -> . DUMBO_BLOCK
+    (1) DUMBO_BLOCK -> . OPENING STRING CLOSING
 
-    $end            reduce using rule 1 (PROGRAM -> TXT .)
+    $end            reduce using rule 5 (PROGRAM -> TXT .)
     TXT             shift and go to state 2
-    DUMBO_BLOCK     shift and go to state 3
-    STRING          shift and go to state 4
+    OPENING         shift and go to state 4
 
     PROGRAM                        shift and go to state 5
+    DUMBO_BLOCK                    shift and go to state 3
 
 state 3
 
-    (2) PROGRAM -> DUMBO_BLOCK .
     (4) PROGRAM -> DUMBO_BLOCK . PROGRAM
-    (1) PROGRAM -> . TXT
-    (2) PROGRAM -> . DUMBO_BLOCK
+    (6) PROGRAM -> DUMBO_BLOCK .
     (3) PROGRAM -> . TXT PROGRAM
     (4) PROGRAM -> . DUMBO_BLOCK PROGRAM
-    (5) PROGRAM -> . STRING
+    (5) PROGRAM -> . TXT
+    (6) PROGRAM -> . DUMBO_BLOCK
+    (1) DUMBO_BLOCK -> . OPENING STRING CLOSING
 
-    $end            reduce using rule 2 (PROGRAM -> DUMBO_BLOCK .)
+    $end            reduce using rule 6 (PROGRAM -> DUMBO_BLOCK .)
     TXT             shift and go to state 2
-    DUMBO_BLOCK     shift and go to state 3
-    STRING          shift and go to state 4
+    OPENING         shift and go to state 4
 
+    DUMBO_BLOCK                    shift and go to state 3
     PROGRAM                        shift and go to state 6
 
 state 4
 
-    (5) PROGRAM -> STRING .
+    (1) DUMBO_BLOCK -> OPENING . STRING CLOSING
 
-    $end            reduce using rule 5 (PROGRAM -> STRING .)
+    STRING          shift and go to state 7
 
 
 state 5
@@ -121,4 +123,20 @@ state 6
     (4) PROGRAM -> DUMBO_BLOCK PROGRAM .
 
     $end            reduce using rule 4 (PROGRAM -> DUMBO_BLOCK PROGRAM .)
+
+
+state 7
+
+    (1) DUMBO_BLOCK -> OPENING STRING . CLOSING
+
+    CLOSING         shift and go to state 8
+
+
+state 8
+
+    (1) DUMBO_BLOCK -> OPENING STRING CLOSING .
+
+    TXT             reduce using rule 1 (DUMBO_BLOCK -> OPENING STRING CLOSING .)
+    OPENING         reduce using rule 1 (DUMBO_BLOCK -> OPENING STRING CLOSING .)
+    $end            reduce using rule 1 (DUMBO_BLOCK -> OPENING STRING CLOSING .)
 

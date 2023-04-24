@@ -24,8 +24,8 @@ reserved = {
 }
 
 tokens = (
-    "DUMBO_BLOCK",
-    "EXPRESSION_LIST",
+    "OPENING",
+    "CLOSING",
     "EXPRESSION",
     "STRING_EXPRESSION",
     "STRING_LIST",
@@ -39,14 +39,36 @@ tokens = (
 #     TOKEN REGEX
 # *-------------------------------------------------------------------------------------------------------------------*
 
-t_TXT = r"(?!.*\{\{).+"
-t_STRING = r"'[^']*'"
+# t_TXT = r"(?!.*\{\{).+"
+# t_STRING = r"'[^']*'"
 t_VARIABLE = r"[a-zA-Z_]\w*"
 t_ignore = ' \t'
 
 # *-------------------------------------------------------------------------------------------------------------------*
 #     TOKEN METHODS
 # *-------------------------------------------------------------------------------------------------------------------*
+
+
+# I have to define these two as methods so I can give string the priority
+def t_OPENING(t):
+    """\{\{"""
+    return t
+
+
+def t_CLOSING(t):
+    """\}\}"""
+    return t
+
+
+def t_STRING(t):
+    """'[^']*'"""
+    return t
+
+
+def t_TXT(t):
+    """(?!.*\{\{).+"""
+    return t
+
 
 def t_newline(t):
     r"\n+"
@@ -62,6 +84,30 @@ def t_error(t):
 # *-------------------------------------------------------------------------------------------------------------------*
 
 
+def p_dumboblock(p):
+    """
+    DUMBO_BLOCK : OPENING STRING CLOSING
+    """
+    return p
+
+
+def p_expressionlist(p):
+    """
+    EXPRESSION_LIST : STRING STRING STRING
+    """
+    return p
+
+
+def p_program_double(p):
+    """
+    PROGRAM : TXT PROGRAM
+            | DUMBO_BLOCK PROGRAM
+    """
+    print("Encountered PROGRAM : TXT PROGRAM | DUMBO_BLOCK PROGRAM")
+    p[0] = p[1] + p[2]  # TODO : pas sûr
+    return p
+
+
 def p_program_single(p):
     """
     PROGRAM : TXT
@@ -69,16 +115,7 @@ def p_program_single(p):
     """
     print("Encountered PROGRAM : TXT | DUMBO_BLOCK")
     p[0] = p[1]  # TODO : pas sûr
-
-
-def p_program_double(p):
-    """
-    PROGRAM : TXT PROGRAM
-            | DUMBO_BLOCK PROGRAM
-            | STRING
-    """
-    print("Encountered PROGRAM : TXT PROGRAM | DUMBO_BLOCK PROGRAM")
-    p[0] = p[1] + p[2]  # TODO : pas sûr
+    return p
 
 
 def p_error(p):
@@ -112,7 +149,9 @@ if __name__ == "__main__":
             s = input('calc > ')
         except EOFError:
             break
-        if s == "": break
-        if not s: continue
+        if s == "":
+            break
+        if not s:
+            continue
         result = parser.parse(s)
         print(result)

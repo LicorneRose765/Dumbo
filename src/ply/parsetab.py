@@ -6,9 +6,9 @@ _tabversion = '3.10'
 
 _lr_method = 'LALR'
 
-_lr_signature = 'PROGRAMDO DUMBO_BLOCK ENDFOR EXPRESSION EXPRESSION_LIST FOR IN PRINT STRING STRING_EXPRESSION STRING_LIST STRING_LIST_INTERIOR TXT VARIABLE\n    PROGRAM : TXT\n            | DUMBO_BLOCK\n    \n    PROGRAM : TXT PROGRAM\n            | DUMBO_BLOCK PROGRAM\n            | STRING\n    '
+_lr_signature = 'PROGRAMCLOSING DO ENDFOR EXPRESSION FOR IN OPENING PRINT STRING STRING_EXPRESSION STRING_LIST STRING_LIST_INTERIOR TXT VARIABLE\n    DUMBO_BLOCK : OPENING STRING CLOSING\n    \n    EXPRESSION_LIST : STRING STRING STRING\n    \n    PROGRAM : TXT PROGRAM\n            | DUMBO_BLOCK PROGRAM\n    \n    PROGRAM : TXT\n            | DUMBO_BLOCK\n    '
     
-_lr_action_items = {'TXT':([0,2,3,],[2,2,2,]),'DUMBO_BLOCK':([0,2,3,],[3,3,3,]),'STRING':([0,2,3,],[4,4,4,]),'$end':([1,2,3,4,5,6,],[0,-1,-2,-5,-3,-4,]),}
+_lr_action_items = {'TXT':([0,2,3,8,],[2,2,2,-1,]),'OPENING':([0,2,3,8,],[4,4,4,-1,]),'$end':([1,2,3,5,6,8,],[0,-5,-6,-3,-4,-1,]),'STRING':([4,],[7,]),'CLOSING':([7,],[8,]),}
 
 _lr_action = {}
 for _k, _v in _lr_action_items.items():
@@ -17,7 +17,7 @@ for _k, _v in _lr_action_items.items():
       _lr_action[_x][_k] = _y
 del _lr_action_items
 
-_lr_goto_items = {'PROGRAM':([0,2,3,],[1,5,6,]),}
+_lr_goto_items = {'PROGRAM':([0,2,3,],[1,5,6,]),'DUMBO_BLOCK':([0,2,3,],[3,3,3,]),}
 
 _lr_goto = {}
 for _k, _v in _lr_goto_items.items():
@@ -27,9 +27,10 @@ for _k, _v in _lr_goto_items.items():
 del _lr_goto_items
 _lr_productions = [
   ("S' -> PROGRAM","S'",1,None,None,None),
-  ('PROGRAM -> TXT','PROGRAM',1,'p_program_single','dumbo.py',67),
-  ('PROGRAM -> DUMBO_BLOCK','PROGRAM',1,'p_program_single','dumbo.py',68),
-  ('PROGRAM -> TXT PROGRAM','PROGRAM',2,'p_program_double','dumbo.py',76),
-  ('PROGRAM -> DUMBO_BLOCK PROGRAM','PROGRAM',2,'p_program_double','dumbo.py',77),
-  ('PROGRAM -> STRING','PROGRAM',1,'p_program_double','dumbo.py',78),
+  ('DUMBO_BLOCK -> OPENING STRING CLOSING','DUMBO_BLOCK',3,'p_dumboblock','dumbo.py',89),
+  ('EXPRESSION_LIST -> STRING STRING STRING','EXPRESSION_LIST',3,'p_expressionlist','dumbo.py',96),
+  ('PROGRAM -> TXT PROGRAM','PROGRAM',2,'p_program_double','dumbo.py',103),
+  ('PROGRAM -> DUMBO_BLOCK PROGRAM','PROGRAM',2,'p_program_double','dumbo.py',104),
+  ('PROGRAM -> TXT','PROGRAM',1,'p_program_single','dumbo.py',113),
+  ('PROGRAM -> DUMBO_BLOCK','PROGRAM',1,'p_program_single','dumbo.py',114),
 ]
