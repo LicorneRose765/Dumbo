@@ -6,9 +6,9 @@ _tabversion = '3.10'
 
 _lr_method = 'LALR'
 
-_lr_signature = 'PROGRAMCLOSING DO ENDFOR EXPRESSION FOR IN OPENING PRINT STRING STRING_EXPRESSION STRING_LIST STRING_LIST_INTERIOR TXT VARIABLE\n    DUMBO_BLOCK : OPENING STRING CLOSING\n    \n    EXPRESSION_LIST : STRING STRING STRING\n    \n    PROGRAM : TXT PROGRAM\n            | DUMBO_BLOCK PROGRAM\n    \n    PROGRAM : TXT\n            | DUMBO_BLOCK\n    '
+_lr_signature = "PROGRAMASSIGN CLOSING DO ENDFOR FOR IN OPENING PRINT STRING TXT VARIABLE\n    STRING_LIST_INTERIOR : STRING ',' STRING_LIST_INTERIOR\n    \n    STRING_LIST_INTERIOR : STRING\n    \n    STRING_LIST : '(' STRING_LIST_INTERIOR ')'\n    \n    EXPRESSION : VARIABLE ASSIGN STRING_EXPRESSION\n               | VARIABLE ASSIGN STRING_LIST\n    \n    STRING_EXPRESSION : STRING_EXPRESSION '.' STRING_EXPRESSION\n    \n    STRING_EXPRESSION : STRING\n                      | VARIABLE\n    \n    EXPRESSION : FOR VARIABLE IN STRING_LIST DO EXPRESSION_LIST ENDFOR\n    \n    EXPRESSION : FOR VARIABLE IN VARIABLE DO EXPRESSION_LIST ENDFOR\n    \n    EXPRESSION : PRINT STRING_EXPRESSION\n    \n    DUMBO_BLOCK : OPENING EXPRESSION_LIST CLOSING\n    \n    EXPRESSION_LIST : EXPRESSION ';'\n                    | EXPRESSION ';' EXPRESSION_LIST\n    \n    PROGRAM : TXT PROGRAM\n            | DUMBO_BLOCK PROGRAM\n    \n    PROGRAM : DUMBO_BLOCK\n    \n    PROGRAM : TXT\n    "
     
-_lr_action_items = {'TXT':([0,2,3,8,],[2,2,2,-1,]),'OPENING':([0,2,3,8,],[4,4,4,-1,]),'$end':([1,2,3,5,6,8,],[0,-5,-6,-3,-4,-1,]),'STRING':([4,],[7,]),'CLOSING':([7,],[8,]),}
+_lr_action_items = {'TXT':([0,2,3,12,],[2,2,2,-12,]),'OPENING':([0,2,3,12,],[4,4,4,-12,]),'$end':([1,2,3,5,6,12,],[0,-18,-17,-15,-16,-12,]),'VARIABLE':([4,10,11,13,14,23,24,32,33,],[9,15,18,9,18,27,18,9,9,]),'FOR':([4,13,32,33,],[10,10,10,10,]),'PRINT':([4,13,32,33,],[11,11,11,11,]),'CLOSING':([7,13,19,],[12,-13,-14,]),';':([8,16,17,18,20,21,29,30,37,38,],[13,-11,-7,-8,-4,-5,-6,-3,-10,-9,]),'ASSIGN':([9,],[14,]),'STRING':([11,14,22,24,31,],[17,17,26,17,26,]),'ENDFOR':([13,19,35,36,],[-13,-14,37,38,]),'(':([14,23,],[22,22,]),'IN':([15,],[23,]),'.':([16,17,18,20,29,],[24,-7,-8,24,24,]),')':([25,26,34,],[30,-2,-1,]),',':([26,],[31,]),'DO':([27,28,30,],[32,33,-3,]),}
 
 _lr_action = {}
 for _k, _v in _lr_action_items.items():
@@ -17,7 +17,7 @@ for _k, _v in _lr_action_items.items():
       _lr_action[_x][_k] = _y
 del _lr_action_items
 
-_lr_goto_items = {'PROGRAM':([0,2,3,],[1,5,6,]),'DUMBO_BLOCK':([0,2,3,],[3,3,3,]),}
+_lr_goto_items = {'PROGRAM':([0,2,3,],[1,5,6,]),'DUMBO_BLOCK':([0,2,3,],[3,3,3,]),'EXPRESSION_LIST':([4,13,32,33,],[7,19,35,36,]),'EXPRESSION':([4,13,32,33,],[8,8,8,8,]),'STRING_EXPRESSION':([11,14,24,],[16,20,29,]),'STRING_LIST':([14,23,],[21,28,]),'STRING_LIST_INTERIOR':([22,31,],[25,34,]),}
 
 _lr_goto = {}
 for _k, _v in _lr_goto_items.items():
@@ -27,10 +27,22 @@ for _k, _v in _lr_goto_items.items():
 del _lr_goto_items
 _lr_productions = [
   ("S' -> PROGRAM","S'",1,None,None,None),
-  ('DUMBO_BLOCK -> OPENING STRING CLOSING','DUMBO_BLOCK',3,'p_dumboblock','dumbo.py',89),
-  ('EXPRESSION_LIST -> STRING STRING STRING','EXPRESSION_LIST',3,'p_expressionlist','dumbo.py',96),
-  ('PROGRAM -> TXT PROGRAM','PROGRAM',2,'p_program_double','dumbo.py',103),
-  ('PROGRAM -> DUMBO_BLOCK PROGRAM','PROGRAM',2,'p_program_double','dumbo.py',104),
-  ('PROGRAM -> TXT','PROGRAM',1,'p_program_single','dumbo.py',113),
-  ('PROGRAM -> DUMBO_BLOCK','PROGRAM',1,'p_program_single','dumbo.py',114),
+  ('STRING_LIST_INTERIOR -> STRING , STRING_LIST_INTERIOR','STRING_LIST_INTERIOR',3,'p_stringlistinterior_double','dumbo.py',87),
+  ('STRING_LIST_INTERIOR -> STRING','STRING_LIST_INTERIOR',1,'p_stringlistinterior_single','dumbo.py',94),
+  ('STRING_LIST -> ( STRING_LIST_INTERIOR )','STRING_LIST',3,'p_stringlist','dumbo.py',101),
+  ('EXPRESSION -> VARIABLE ASSIGN STRING_EXPRESSION','EXPRESSION',3,'p_expression_assignments','dumbo.py',108),
+  ('EXPRESSION -> VARIABLE ASSIGN STRING_LIST','EXPRESSION',3,'p_expression_assignments','dumbo.py',109),
+  ('STRING_EXPRESSION -> STRING_EXPRESSION . STRING_EXPRESSION','STRING_EXPRESSION',3,'p_stringexpression_double','dumbo.py',116),
+  ('STRING_EXPRESSION -> STRING','STRING_EXPRESSION',1,'p_stringexpression_single','dumbo.py',123),
+  ('STRING_EXPRESSION -> VARIABLE','STRING_EXPRESSION',1,'p_stringexpression_single','dumbo.py',124),
+  ('EXPRESSION -> FOR VARIABLE IN STRING_LIST DO EXPRESSION_LIST ENDFOR','EXPRESSION',7,'p_expression_strlistfor','dumbo.py',131),
+  ('EXPRESSION -> FOR VARIABLE IN VARIABLE DO EXPRESSION_LIST ENDFOR','EXPRESSION',7,'p_expression_varfor','dumbo.py',138),
+  ('EXPRESSION -> PRINT STRING_EXPRESSION','EXPRESSION',2,'p_expression_print','dumbo.py',145),
+  ('DUMBO_BLOCK -> OPENING EXPRESSION_LIST CLOSING','DUMBO_BLOCK',3,'p_dumboblock','dumbo.py',152),
+  ('EXPRESSION_LIST -> EXPRESSION ;','EXPRESSION_LIST',2,'p_expressionlist','dumbo.py',159),
+  ('EXPRESSION_LIST -> EXPRESSION ; EXPRESSION_LIST','EXPRESSION_LIST',3,'p_expressionlist','dumbo.py',160),
+  ('PROGRAM -> TXT PROGRAM','PROGRAM',2,'p_program_double','dumbo.py',168),
+  ('PROGRAM -> DUMBO_BLOCK PROGRAM','PROGRAM',2,'p_program_double','dumbo.py',169),
+  ('PROGRAM -> DUMBO_BLOCK','PROGRAM',1,'p_program_single_dumboblock','dumbo.py',178),
+  ('PROGRAM -> TXT','PROGRAM',1,'p_program_single_txt','dumbo.py',187),
 ]

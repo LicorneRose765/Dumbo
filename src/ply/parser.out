@@ -1,62 +1,67 @@
 Created by PLY version 3.11 (http://www.dabeaz.com/ply)
 
-Unused terminals:
-
-    DO
-    ENDFOR
-    EXPRESSION
-    FOR
-    IN
-    PRINT
-    STRING_EXPRESSION
-    STRING_LIST
-    STRING_LIST_INTERIOR
-    VARIABLE
-
 Grammar
 
 Rule 0     S' -> PROGRAM
-Rule 1     DUMBO_BLOCK -> OPENING STRING CLOSING
-Rule 2     EXPRESSION_LIST -> STRING STRING STRING
-Rule 3     PROGRAM -> TXT PROGRAM
-Rule 4     PROGRAM -> DUMBO_BLOCK PROGRAM
-Rule 5     PROGRAM -> TXT
-Rule 6     PROGRAM -> DUMBO_BLOCK
+Rule 1     STRING_LIST_INTERIOR -> STRING , STRING_LIST_INTERIOR
+Rule 2     STRING_LIST_INTERIOR -> STRING
+Rule 3     STRING_LIST -> ( STRING_LIST_INTERIOR )
+Rule 4     EXPRESSION -> VARIABLE ASSIGN STRING_EXPRESSION
+Rule 5     EXPRESSION -> VARIABLE ASSIGN STRING_LIST
+Rule 6     STRING_EXPRESSION -> STRING_EXPRESSION . STRING_EXPRESSION
+Rule 7     STRING_EXPRESSION -> STRING
+Rule 8     STRING_EXPRESSION -> VARIABLE
+Rule 9     EXPRESSION -> FOR VARIABLE IN STRING_LIST DO EXPRESSION_LIST ENDFOR
+Rule 10    EXPRESSION -> FOR VARIABLE IN VARIABLE DO EXPRESSION_LIST ENDFOR
+Rule 11    EXPRESSION -> PRINT STRING_EXPRESSION
+Rule 12    DUMBO_BLOCK -> OPENING EXPRESSION_LIST CLOSING
+Rule 13    EXPRESSION_LIST -> EXPRESSION ;
+Rule 14    EXPRESSION_LIST -> EXPRESSION ; EXPRESSION_LIST
+Rule 15    PROGRAM -> TXT PROGRAM
+Rule 16    PROGRAM -> DUMBO_BLOCK PROGRAM
+Rule 17    PROGRAM -> DUMBO_BLOCK
+Rule 18    PROGRAM -> TXT
 
 Terminals, with rules where they appear
 
-CLOSING              : 1
-DO                   : 
-ENDFOR               : 
-EXPRESSION           : 
-FOR                  : 
-IN                   : 
-OPENING              : 1
-PRINT                : 
-STRING               : 1 2 2 2
-STRING_EXPRESSION    : 
-STRING_LIST          : 
-STRING_LIST_INTERIOR : 
-TXT                  : 3 5
-VARIABLE             : 
+(                    : 3
+)                    : 3
+,                    : 1
+.                    : 6
+;                    : 13 14
+ASSIGN               : 4 5
+CLOSING              : 12
+DO                   : 9 10
+ENDFOR               : 9 10
+FOR                  : 9 10
+IN                   : 9 10
+OPENING              : 12
+PRINT                : 11
+STRING               : 1 2 7
+TXT                  : 15 18
+VARIABLE             : 4 5 8 9 10 10
 error                : 
 
 Nonterminals, with rules where they appear
 
-DUMBO_BLOCK          : 4 6
-EXPRESSION_LIST      : 
-PROGRAM              : 3 4 0
+DUMBO_BLOCK          : 16 17
+EXPRESSION           : 13 14
+EXPRESSION_LIST      : 9 10 12 14
+PROGRAM              : 15 16 0
+STRING_EXPRESSION    : 4 6 6 11
+STRING_LIST          : 5 9
+STRING_LIST_INTERIOR : 1 3
 
 Parsing method: LALR
 
 state 0
 
     (0) S' -> . PROGRAM
-    (3) PROGRAM -> . TXT PROGRAM
-    (4) PROGRAM -> . DUMBO_BLOCK PROGRAM
-    (5) PROGRAM -> . TXT
-    (6) PROGRAM -> . DUMBO_BLOCK
-    (1) DUMBO_BLOCK -> . OPENING STRING CLOSING
+    (15) PROGRAM -> . TXT PROGRAM
+    (16) PROGRAM -> . DUMBO_BLOCK PROGRAM
+    (17) PROGRAM -> . DUMBO_BLOCK
+    (18) PROGRAM -> . TXT
+    (12) DUMBO_BLOCK -> . OPENING EXPRESSION_LIST CLOSING
 
     TXT             shift and go to state 2
     OPENING         shift and go to state 4
@@ -72,15 +77,15 @@ state 1
 
 state 2
 
-    (3) PROGRAM -> TXT . PROGRAM
-    (5) PROGRAM -> TXT .
-    (3) PROGRAM -> . TXT PROGRAM
-    (4) PROGRAM -> . DUMBO_BLOCK PROGRAM
-    (5) PROGRAM -> . TXT
-    (6) PROGRAM -> . DUMBO_BLOCK
-    (1) DUMBO_BLOCK -> . OPENING STRING CLOSING
+    (15) PROGRAM -> TXT . PROGRAM
+    (18) PROGRAM -> TXT .
+    (15) PROGRAM -> . TXT PROGRAM
+    (16) PROGRAM -> . DUMBO_BLOCK PROGRAM
+    (17) PROGRAM -> . DUMBO_BLOCK
+    (18) PROGRAM -> . TXT
+    (12) DUMBO_BLOCK -> . OPENING EXPRESSION_LIST CLOSING
 
-    $end            reduce using rule 5 (PROGRAM -> TXT .)
+    $end            reduce using rule 18 (PROGRAM -> TXT .)
     TXT             shift and go to state 2
     OPENING         shift and go to state 4
 
@@ -89,15 +94,15 @@ state 2
 
 state 3
 
-    (4) PROGRAM -> DUMBO_BLOCK . PROGRAM
-    (6) PROGRAM -> DUMBO_BLOCK .
-    (3) PROGRAM -> . TXT PROGRAM
-    (4) PROGRAM -> . DUMBO_BLOCK PROGRAM
-    (5) PROGRAM -> . TXT
-    (6) PROGRAM -> . DUMBO_BLOCK
-    (1) DUMBO_BLOCK -> . OPENING STRING CLOSING
+    (16) PROGRAM -> DUMBO_BLOCK . PROGRAM
+    (17) PROGRAM -> DUMBO_BLOCK .
+    (15) PROGRAM -> . TXT PROGRAM
+    (16) PROGRAM -> . DUMBO_BLOCK PROGRAM
+    (17) PROGRAM -> . DUMBO_BLOCK
+    (18) PROGRAM -> . TXT
+    (12) DUMBO_BLOCK -> . OPENING EXPRESSION_LIST CLOSING
 
-    $end            reduce using rule 6 (PROGRAM -> DUMBO_BLOCK .)
+    $end            reduce using rule 17 (PROGRAM -> DUMBO_BLOCK .)
     TXT             shift and go to state 2
     OPENING         shift and go to state 4
 
@@ -106,37 +111,346 @@ state 3
 
 state 4
 
-    (1) DUMBO_BLOCK -> OPENING . STRING CLOSING
+    (12) DUMBO_BLOCK -> OPENING . EXPRESSION_LIST CLOSING
+    (13) EXPRESSION_LIST -> . EXPRESSION ;
+    (14) EXPRESSION_LIST -> . EXPRESSION ; EXPRESSION_LIST
+    (4) EXPRESSION -> . VARIABLE ASSIGN STRING_EXPRESSION
+    (5) EXPRESSION -> . VARIABLE ASSIGN STRING_LIST
+    (9) EXPRESSION -> . FOR VARIABLE IN STRING_LIST DO EXPRESSION_LIST ENDFOR
+    (10) EXPRESSION -> . FOR VARIABLE IN VARIABLE DO EXPRESSION_LIST ENDFOR
+    (11) EXPRESSION -> . PRINT STRING_EXPRESSION
 
-    STRING          shift and go to state 7
+    VARIABLE        shift and go to state 9
+    FOR             shift and go to state 10
+    PRINT           shift and go to state 11
 
+    EXPRESSION_LIST                shift and go to state 7
+    EXPRESSION                     shift and go to state 8
 
 state 5
 
-    (3) PROGRAM -> TXT PROGRAM .
+    (15) PROGRAM -> TXT PROGRAM .
 
-    $end            reduce using rule 3 (PROGRAM -> TXT PROGRAM .)
+    $end            reduce using rule 15 (PROGRAM -> TXT PROGRAM .)
 
 
 state 6
 
-    (4) PROGRAM -> DUMBO_BLOCK PROGRAM .
+    (16) PROGRAM -> DUMBO_BLOCK PROGRAM .
 
-    $end            reduce using rule 4 (PROGRAM -> DUMBO_BLOCK PROGRAM .)
+    $end            reduce using rule 16 (PROGRAM -> DUMBO_BLOCK PROGRAM .)
 
 
 state 7
 
-    (1) DUMBO_BLOCK -> OPENING STRING . CLOSING
+    (12) DUMBO_BLOCK -> OPENING EXPRESSION_LIST . CLOSING
 
-    CLOSING         shift and go to state 8
+    CLOSING         shift and go to state 12
 
 
 state 8
 
-    (1) DUMBO_BLOCK -> OPENING STRING CLOSING .
+    (13) EXPRESSION_LIST -> EXPRESSION . ;
+    (14) EXPRESSION_LIST -> EXPRESSION . ; EXPRESSION_LIST
 
-    TXT             reduce using rule 1 (DUMBO_BLOCK -> OPENING STRING CLOSING .)
-    OPENING         reduce using rule 1 (DUMBO_BLOCK -> OPENING STRING CLOSING .)
-    $end            reduce using rule 1 (DUMBO_BLOCK -> OPENING STRING CLOSING .)
+    ;               shift and go to state 13
 
+
+state 9
+
+    (4) EXPRESSION -> VARIABLE . ASSIGN STRING_EXPRESSION
+    (5) EXPRESSION -> VARIABLE . ASSIGN STRING_LIST
+
+    ASSIGN          shift and go to state 14
+
+
+state 10
+
+    (9) EXPRESSION -> FOR . VARIABLE IN STRING_LIST DO EXPRESSION_LIST ENDFOR
+    (10) EXPRESSION -> FOR . VARIABLE IN VARIABLE DO EXPRESSION_LIST ENDFOR
+
+    VARIABLE        shift and go to state 15
+
+
+state 11
+
+    (11) EXPRESSION -> PRINT . STRING_EXPRESSION
+    (6) STRING_EXPRESSION -> . STRING_EXPRESSION . STRING_EXPRESSION
+    (7) STRING_EXPRESSION -> . STRING
+    (8) STRING_EXPRESSION -> . VARIABLE
+
+    STRING          shift and go to state 17
+    VARIABLE        shift and go to state 18
+
+    STRING_EXPRESSION              shift and go to state 16
+
+state 12
+
+    (12) DUMBO_BLOCK -> OPENING EXPRESSION_LIST CLOSING .
+
+    TXT             reduce using rule 12 (DUMBO_BLOCK -> OPENING EXPRESSION_LIST CLOSING .)
+    OPENING         reduce using rule 12 (DUMBO_BLOCK -> OPENING EXPRESSION_LIST CLOSING .)
+    $end            reduce using rule 12 (DUMBO_BLOCK -> OPENING EXPRESSION_LIST CLOSING .)
+
+
+state 13
+
+    (13) EXPRESSION_LIST -> EXPRESSION ; .
+    (14) EXPRESSION_LIST -> EXPRESSION ; . EXPRESSION_LIST
+    (13) EXPRESSION_LIST -> . EXPRESSION ;
+    (14) EXPRESSION_LIST -> . EXPRESSION ; EXPRESSION_LIST
+    (4) EXPRESSION -> . VARIABLE ASSIGN STRING_EXPRESSION
+    (5) EXPRESSION -> . VARIABLE ASSIGN STRING_LIST
+    (9) EXPRESSION -> . FOR VARIABLE IN STRING_LIST DO EXPRESSION_LIST ENDFOR
+    (10) EXPRESSION -> . FOR VARIABLE IN VARIABLE DO EXPRESSION_LIST ENDFOR
+    (11) EXPRESSION -> . PRINT STRING_EXPRESSION
+
+    CLOSING         reduce using rule 13 (EXPRESSION_LIST -> EXPRESSION ; .)
+    ENDFOR          reduce using rule 13 (EXPRESSION_LIST -> EXPRESSION ; .)
+    VARIABLE        shift and go to state 9
+    FOR             shift and go to state 10
+    PRINT           shift and go to state 11
+
+    EXPRESSION                     shift and go to state 8
+    EXPRESSION_LIST                shift and go to state 19
+
+state 14
+
+    (4) EXPRESSION -> VARIABLE ASSIGN . STRING_EXPRESSION
+    (5) EXPRESSION -> VARIABLE ASSIGN . STRING_LIST
+    (6) STRING_EXPRESSION -> . STRING_EXPRESSION . STRING_EXPRESSION
+    (7) STRING_EXPRESSION -> . STRING
+    (8) STRING_EXPRESSION -> . VARIABLE
+    (3) STRING_LIST -> . ( STRING_LIST_INTERIOR )
+
+    STRING          shift and go to state 17
+    VARIABLE        shift and go to state 18
+    (               shift and go to state 22
+
+    STRING_EXPRESSION              shift and go to state 20
+    STRING_LIST                    shift and go to state 21
+
+state 15
+
+    (9) EXPRESSION -> FOR VARIABLE . IN STRING_LIST DO EXPRESSION_LIST ENDFOR
+    (10) EXPRESSION -> FOR VARIABLE . IN VARIABLE DO EXPRESSION_LIST ENDFOR
+
+    IN              shift and go to state 23
+
+
+state 16
+
+    (11) EXPRESSION -> PRINT STRING_EXPRESSION .
+    (6) STRING_EXPRESSION -> STRING_EXPRESSION . . STRING_EXPRESSION
+
+    ;               reduce using rule 11 (EXPRESSION -> PRINT STRING_EXPRESSION .)
+    .               shift and go to state 24
+
+
+state 17
+
+    (7) STRING_EXPRESSION -> STRING .
+
+    .               reduce using rule 7 (STRING_EXPRESSION -> STRING .)
+    ;               reduce using rule 7 (STRING_EXPRESSION -> STRING .)
+
+
+state 18
+
+    (8) STRING_EXPRESSION -> VARIABLE .
+
+    .               reduce using rule 8 (STRING_EXPRESSION -> VARIABLE .)
+    ;               reduce using rule 8 (STRING_EXPRESSION -> VARIABLE .)
+
+
+state 19
+
+    (14) EXPRESSION_LIST -> EXPRESSION ; EXPRESSION_LIST .
+
+    CLOSING         reduce using rule 14 (EXPRESSION_LIST -> EXPRESSION ; EXPRESSION_LIST .)
+    ENDFOR          reduce using rule 14 (EXPRESSION_LIST -> EXPRESSION ; EXPRESSION_LIST .)
+
+
+state 20
+
+    (4) EXPRESSION -> VARIABLE ASSIGN STRING_EXPRESSION .
+    (6) STRING_EXPRESSION -> STRING_EXPRESSION . . STRING_EXPRESSION
+
+    ;               reduce using rule 4 (EXPRESSION -> VARIABLE ASSIGN STRING_EXPRESSION .)
+    .               shift and go to state 24
+
+
+state 21
+
+    (5) EXPRESSION -> VARIABLE ASSIGN STRING_LIST .
+
+    ;               reduce using rule 5 (EXPRESSION -> VARIABLE ASSIGN STRING_LIST .)
+
+
+state 22
+
+    (3) STRING_LIST -> ( . STRING_LIST_INTERIOR )
+    (1) STRING_LIST_INTERIOR -> . STRING , STRING_LIST_INTERIOR
+    (2) STRING_LIST_INTERIOR -> . STRING
+
+    STRING          shift and go to state 26
+
+    STRING_LIST_INTERIOR           shift and go to state 25
+
+state 23
+
+    (9) EXPRESSION -> FOR VARIABLE IN . STRING_LIST DO EXPRESSION_LIST ENDFOR
+    (10) EXPRESSION -> FOR VARIABLE IN . VARIABLE DO EXPRESSION_LIST ENDFOR
+    (3) STRING_LIST -> . ( STRING_LIST_INTERIOR )
+
+    VARIABLE        shift and go to state 27
+    (               shift and go to state 22
+
+    STRING_LIST                    shift and go to state 28
+
+state 24
+
+    (6) STRING_EXPRESSION -> STRING_EXPRESSION . . STRING_EXPRESSION
+    (6) STRING_EXPRESSION -> . STRING_EXPRESSION . STRING_EXPRESSION
+    (7) STRING_EXPRESSION -> . STRING
+    (8) STRING_EXPRESSION -> . VARIABLE
+
+    STRING          shift and go to state 17
+    VARIABLE        shift and go to state 18
+
+    STRING_EXPRESSION              shift and go to state 29
+
+state 25
+
+    (3) STRING_LIST -> ( STRING_LIST_INTERIOR . )
+
+    )               shift and go to state 30
+
+
+state 26
+
+    (1) STRING_LIST_INTERIOR -> STRING . , STRING_LIST_INTERIOR
+    (2) STRING_LIST_INTERIOR -> STRING .
+
+    ,               shift and go to state 31
+    )               reduce using rule 2 (STRING_LIST_INTERIOR -> STRING .)
+
+
+state 27
+
+    (10) EXPRESSION -> FOR VARIABLE IN VARIABLE . DO EXPRESSION_LIST ENDFOR
+
+    DO              shift and go to state 32
+
+
+state 28
+
+    (9) EXPRESSION -> FOR VARIABLE IN STRING_LIST . DO EXPRESSION_LIST ENDFOR
+
+    DO              shift and go to state 33
+
+
+state 29
+
+    (6) STRING_EXPRESSION -> STRING_EXPRESSION . STRING_EXPRESSION .
+    (6) STRING_EXPRESSION -> STRING_EXPRESSION . . STRING_EXPRESSION
+
+  ! shift/reduce conflict for . resolved as shift
+    ;               reduce using rule 6 (STRING_EXPRESSION -> STRING_EXPRESSION . STRING_EXPRESSION .)
+    .               shift and go to state 24
+
+  ! .               [ reduce using rule 6 (STRING_EXPRESSION -> STRING_EXPRESSION . STRING_EXPRESSION .) ]
+
+
+state 30
+
+    (3) STRING_LIST -> ( STRING_LIST_INTERIOR ) .
+
+    ;               reduce using rule 3 (STRING_LIST -> ( STRING_LIST_INTERIOR ) .)
+    DO              reduce using rule 3 (STRING_LIST -> ( STRING_LIST_INTERIOR ) .)
+
+
+state 31
+
+    (1) STRING_LIST_INTERIOR -> STRING , . STRING_LIST_INTERIOR
+    (1) STRING_LIST_INTERIOR -> . STRING , STRING_LIST_INTERIOR
+    (2) STRING_LIST_INTERIOR -> . STRING
+
+    STRING          shift and go to state 26
+
+    STRING_LIST_INTERIOR           shift and go to state 34
+
+state 32
+
+    (10) EXPRESSION -> FOR VARIABLE IN VARIABLE DO . EXPRESSION_LIST ENDFOR
+    (13) EXPRESSION_LIST -> . EXPRESSION ;
+    (14) EXPRESSION_LIST -> . EXPRESSION ; EXPRESSION_LIST
+    (4) EXPRESSION -> . VARIABLE ASSIGN STRING_EXPRESSION
+    (5) EXPRESSION -> . VARIABLE ASSIGN STRING_LIST
+    (9) EXPRESSION -> . FOR VARIABLE IN STRING_LIST DO EXPRESSION_LIST ENDFOR
+    (10) EXPRESSION -> . FOR VARIABLE IN VARIABLE DO EXPRESSION_LIST ENDFOR
+    (11) EXPRESSION -> . PRINT STRING_EXPRESSION
+
+    VARIABLE        shift and go to state 9
+    FOR             shift and go to state 10
+    PRINT           shift and go to state 11
+
+    EXPRESSION_LIST                shift and go to state 35
+    EXPRESSION                     shift and go to state 8
+
+state 33
+
+    (9) EXPRESSION -> FOR VARIABLE IN STRING_LIST DO . EXPRESSION_LIST ENDFOR
+    (13) EXPRESSION_LIST -> . EXPRESSION ;
+    (14) EXPRESSION_LIST -> . EXPRESSION ; EXPRESSION_LIST
+    (4) EXPRESSION -> . VARIABLE ASSIGN STRING_EXPRESSION
+    (5) EXPRESSION -> . VARIABLE ASSIGN STRING_LIST
+    (9) EXPRESSION -> . FOR VARIABLE IN STRING_LIST DO EXPRESSION_LIST ENDFOR
+    (10) EXPRESSION -> . FOR VARIABLE IN VARIABLE DO EXPRESSION_LIST ENDFOR
+    (11) EXPRESSION -> . PRINT STRING_EXPRESSION
+
+    VARIABLE        shift and go to state 9
+    FOR             shift and go to state 10
+    PRINT           shift and go to state 11
+
+    EXPRESSION_LIST                shift and go to state 36
+    EXPRESSION                     shift and go to state 8
+
+state 34
+
+    (1) STRING_LIST_INTERIOR -> STRING , STRING_LIST_INTERIOR .
+
+    )               reduce using rule 1 (STRING_LIST_INTERIOR -> STRING , STRING_LIST_INTERIOR .)
+
+
+state 35
+
+    (10) EXPRESSION -> FOR VARIABLE IN VARIABLE DO EXPRESSION_LIST . ENDFOR
+
+    ENDFOR          shift and go to state 37
+
+
+state 36
+
+    (9) EXPRESSION -> FOR VARIABLE IN STRING_LIST DO EXPRESSION_LIST . ENDFOR
+
+    ENDFOR          shift and go to state 38
+
+
+state 37
+
+    (10) EXPRESSION -> FOR VARIABLE IN VARIABLE DO EXPRESSION_LIST ENDFOR .
+
+    ;               reduce using rule 10 (EXPRESSION -> FOR VARIABLE IN VARIABLE DO EXPRESSION_LIST ENDFOR .)
+
+
+state 38
+
+    (9) EXPRESSION -> FOR VARIABLE IN STRING_LIST DO EXPRESSION_LIST ENDFOR .
+
+    ;               reduce using rule 9 (EXPRESSION -> FOR VARIABLE IN STRING_LIST DO EXPRESSION_LIST ENDFOR .)
+
+WARNING: 
+WARNING: Conflicts:
+WARNING: 
+WARNING: shift/reduce conflict for . in state 29 resolved as shift

@@ -16,24 +16,21 @@ start = "PROGRAM"
 # *-------------------------------------------------------------------------------------------------------------------*
 
 reserved = {
-    "print": "PRINT",
-    "for": "FOR",
-    "in": "IN",
-    "do": "DO",
-    "endfor": "ENDFOR"
+    "PRINT": "print",
+    "FOR": "for",
+    "IN": "in",
+    "DO": "do",
+    "ENDFOR": "endfor",
+    "ASSIGN": ":="
 }
 
-tokens = (
+tokens = tuple(reserved.keys()) + (
     "OPENING",
     "CLOSING",
-    "EXPRESSION",
-    "STRING_EXPRESSION",
-    "STRING_LIST",
-    "STRING_LIST_INTERIOR",
     "TXT",
     "STRING",
     "VARIABLE"
-) + tuple(reserved.values())
+)
 
 # *-------------------------------------------------------------------------------------------------------------------*
 #     TOKEN REGEX
@@ -65,6 +62,36 @@ def t_STRING(t):
     return t
 
 
+def t_PRINT(t):
+    """print"""
+    return t
+
+
+def t_FOR(t):
+    """for"""
+    return t
+
+
+def t_IN(t):
+    """in"""
+    return t
+
+
+def t_DO(t):
+    """do"""
+    return t
+
+
+def t_ENDFOR(t):
+    """endfor"""
+    return t
+
+
+def t_ASSIGN(t):
+    """assign"""
+    return t
+
+
 def t_TXT(t):
     """(?!.*\{\{).+"""
     return t
@@ -84,17 +111,84 @@ def t_error(t):
 # *-------------------------------------------------------------------------------------------------------------------*
 
 
+def p_stringlistinterior_double(p):
+    """
+    STRING_LIST_INTERIOR : STRING ',' STRING_LIST_INTERIOR
+    """
+    return p
+
+
+def p_stringlistinterior_single(p):
+    """
+    STRING_LIST_INTERIOR : STRING
+    """
+    return p
+
+
+def p_stringlist(p):
+    """
+    STRING_LIST : '(' STRING_LIST_INTERIOR ')'
+    """
+    return p
+
+
+def p_expression_assignments(p):
+    """
+    EXPRESSION : VARIABLE ASSIGN STRING_EXPRESSION
+               | VARIABLE ASSIGN STRING_LIST
+    """
+    return p
+
+
+def p_stringexpression_double(p):
+    """
+    STRING_EXPRESSION : STRING_EXPRESSION '.' STRING_EXPRESSION
+    """
+    return p
+
+
+def p_stringexpression_single(p):
+    """
+    STRING_EXPRESSION : STRING
+                      | VARIABLE
+    """
+    return p
+
+
+def p_expression_strlistfor(p):
+    """
+    EXPRESSION : FOR VARIABLE IN STRING_LIST DO EXPRESSION_LIST ENDFOR
+    """
+    return p
+
+
+def p_expression_varfor(p):
+    """
+    EXPRESSION : FOR VARIABLE IN VARIABLE DO EXPRESSION_LIST ENDFOR
+    """
+    return p
+
+
+def p_expression_print(p):
+    """
+    EXPRESSION : PRINT STRING_EXPRESSION
+    """
+    return p
+
+
 def p_dumboblock(p):
     """
-    DUMBO_BLOCK : OPENING STRING CLOSING
+    DUMBO_BLOCK : OPENING EXPRESSION_LIST CLOSING
     """
     return p
 
 
 def p_expressionlist(p):
     """
-    EXPRESSION_LIST : STRING STRING STRING
+    EXPRESSION_LIST : EXPRESSION ';'
+                    | EXPRESSION ';' EXPRESSION_LIST
     """
+    print("Encountered EXPRESSION_LIST : EXPRESSION | EXPRESSION ; EXPRESSION_LIST")
     return p
 
 
@@ -108,18 +202,22 @@ def p_program_double(p):
     return p
 
 
-def p_program_single(p):
+def p_program_single_dumboblock(p):
     """
-    PROGRAM : TXT
-            | DUMBO_BLOCK
+    PROGRAM : DUMBO_BLOCK
     """
-    print("Encountered PROGRAM : TXT | DUMBO_BLOCK")
+    print("Encountered PROGRAM : DUMBO_BLOCK")
     p[0] = p[1]  # TODO : pas sûr
     return p
 
 
-def p_error(p):
-    print(f"Syntax error in input {p} !")
+def p_program_single_txt(p):
+    """
+    PROGRAM : TXT
+    """
+    print("Encountered PROGRAM : TXT")
+    p[0] = p[1]  # TODO : pas sûr
+    return p
 
 
 # *-------------------------------------------------------------------------------------------------------------------*
