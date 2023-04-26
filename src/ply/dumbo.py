@@ -16,9 +16,17 @@ states = (
 start = "PROGRAM"
 
 variables_table = {}
-last_read_variable = None
 
-last_read_string = None
+# *-------------------------------------------------------------------------------------------------------------------*
+#     METHODS
+# *-------------------------------------------------------------------------------------------------------------------*
+
+
+def assign(variable_name, value):
+    """Assigns the value 'value' to the variable named 'variable_name'."""
+    print(f"Assigning {value:} to {variable_name:}")
+    variables_table[variable_name] = value
+
 
 # *-------------------------------------------------------------------------------------------------------------------*
 #     TOKENS
@@ -88,7 +96,7 @@ def t_IN_CLOSING(t):
 
 def t_CLOSING(t):
     """}}"""
-    print(f"Unexpected '{t.value[0]}' at line {lexer.lineno}")
+    print(f"Unexpected '{t.value[0]*2}' at line {lexer.lineno}")
 
 
 def t_IN_SEMICOLON(t):
@@ -192,7 +200,6 @@ def p_IN_stringlistinterior_single(p):
     """
     STRING_LIST_INTERIOR : STRING
     """
-
     print("Call to method p_stringlistinterior_single")
 
 
@@ -209,30 +216,38 @@ def p_IN_expression_assignments(p):
                | VARIABLE ASSIGN STRING_LIST
     """
     print("Call to method p_expression_assignments")
+    value = p[3]
+    variable_name = p[1]
+    assign(variable_name, value)
+    p[0] = ''
 
 
 def p_IN_stringexpression_double(p):
     """
     STRING_EXPRESSION : STRING_EXPRESSION DOT STRING_EXPRESSION
     """
-    p[0] = p[1] + p[3]
     print("Call to method p_stringexpression_double")
+    p[0] = p[1] + p[3]
 
 
 def p_IN_string_expression_string(p):
     """
     STRING_EXPRESSION : STRING
     """
-    p[0] = p[1][1:-1]
     print("Call to method p_stringexpression_string")
+    p[0] = p[1][1:-1]
 
 
 def p_IN_string_expression_variable(p):
     """
     STRING_EXPRESSION : VARIABLE
     """
-    p[0] = p[1]
     print("Call to method p_stringexpression_variable")
+    try:
+        value = variables_table[p[1]]
+    except KeyError:
+        raise SyntaxError(f"Cannot find variable {p[1]} in the scope.")
+    p[0] = value
 
 
 def p_IN_expression_strlistfor(p):
@@ -253,32 +268,32 @@ def p_IN_expression_print(p):
     """
     EXPRESSION : PRINT STRING_EXPRESSION
     """
-    p[0] = p[2]
     print("Call to method p_expression_print")
+    p[0] = p[2]
 
 
 def p_IN_dumboblock(p):
     """
     DUMBO_BLOCK : OPENING EXPRESSION_LIST CLOSING
     """
-    p[0] = "".join(p[2])
     print("Call to method p_dumboblock")
+    p[0] = "".join(p[2])
 
 
 def p_IN_expression_list_single(p):
     """
     EXPRESSION_LIST : EXPRESSION SEMICOLON
     """
-    p[0] = [p[1]]
     print("Call to method p_expression_list_single")
+    p[0] = [p[1]]
 
 
 def p_IN_expression_list_multiple(p):
     """
     EXPRESSION_LIST : EXPRESSION SEMICOLON EXPRESSION_LIST
     """
-    p[0] = [p[1]] + p[3]
     print("Call to method p_expression_list_multiple")
+    p[0] = [p[1]] + p[3]
 
 
 def p_program_double(p):
@@ -286,8 +301,8 @@ def p_program_double(p):
     PROGRAM : DUMBO_BLOCK PROGRAM
             | TXT PROGRAM
     """
-    p[0] = p[1] + p[2]
     print("Call to method p_program_double")
+    p[0] = p[1] + p[2]
 
 
 def p_program_single(p):
@@ -295,8 +310,8 @@ def p_program_single(p):
     PROGRAM : DUMBO_BLOCK
             | TXT
     """
-    p[0] = p[1]
     print("Call to method p_program_single")
+    p[0] = p[1]
 
 
 def p_error(p):
@@ -375,3 +390,4 @@ if __name__ == "__main__":
                 continue
             result = parser.parse(s)
             print(result)
+            print(variables_table)
