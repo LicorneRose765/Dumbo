@@ -9,6 +9,8 @@ from pathlib import Path
 #     VARS
 # *-------------------------------------------------------------------------------------------------------------------*
 
+verbose = True
+
 states = (
     ("IN", "exclusive"),  # state 'IN'  : when inside dumbo code
 )
@@ -26,6 +28,21 @@ def assign(variable_name, value):
     """Assigns the value 'value' to the variable named 'variable_name'."""
     print(f"Assigning {value:} to {variable_name:}")
     variables_table[variable_name] = value
+
+
+def infinite_yacc():
+    while True:
+        try:
+            s = input('doombo > ')
+        except EOFError:
+            break
+        if s == "":
+            break
+        if not s:
+            continue
+        result = parser.parse(s)
+        print(result)
+        print(variables_table)
 
 
 # *-------------------------------------------------------------------------------------------------------------------*
@@ -189,60 +206,72 @@ def t_error(t):
 # *-------------------------------------------------------------------------------------------------------------------*
 
 
-def p_IN_stringlistinterior_double(p):
+def p_stringlistinterior_double(p):
     """
     STRING_LIST_INTERIOR : STRING COMMA STRING_LIST_INTERIOR
     """
-    print("Call to method p_stringlistinterior_double")
+    if verbose:
+        print("Call to method p_stringlistinterior_double")
+    print(f"{p[1]:}")
+    print(f"{p[3]:}")
+    p[0] = [p[1][1:-1]] + p[3]
 
 
-def p_IN_stringlistinterior_single(p):
+def p_stringlistinterior_single(p):
     """
     STRING_LIST_INTERIOR : STRING
     """
-    print("Call to method p_stringlistinterior_single")
+    if verbose:
+        print("Call to method p_stringlistinterior_single")
+    p[0] = [p[1][1:-1]]
 
 
-def p_IN_stringlist(p):
+def p_stringlist(p):
     """
     STRING_LIST : LPAREN STRING_LIST_INTERIOR RPAREN
     """
-    print("Call to method p_stringlist")
+    if verbose:
+        print("Call to method p_stringlist")
+    p[0] = p[2]
 
 
-def p_IN_expression_assignments(p):
+def p_expression_assignments(p):
     """
     EXPRESSION : VARIABLE ASSIGN STRING_EXPRESSION
                | VARIABLE ASSIGN STRING_LIST
     """
-    print("Call to method p_expression_assignments")
+    if verbose:
+        print("Call to method p_expression_assignments")
     value = p[3]
     variable_name = p[1]
     assign(variable_name, value)
     p[0] = ''
 
 
-def p_IN_stringexpression_double(p):
+def p_stringexpression_double(p):
     """
     STRING_EXPRESSION : STRING_EXPRESSION DOT STRING_EXPRESSION
     """
-    print("Call to method p_stringexpression_double")
+    if verbose:
+        print("Call to method p_stringexpression_double")
     p[0] = p[1] + p[3]
 
 
-def p_IN_string_expression_string(p):
+def p_string_expression_string(p):
     """
     STRING_EXPRESSION : STRING
     """
-    print("Call to method p_stringexpression_string")
+    if verbose:
+        print("Call to method p_stringexpression_string")
     p[0] = p[1][1:-1]
 
 
-def p_IN_string_expression_variable(p):
+def p_string_expression_variable(p):
     """
     STRING_EXPRESSION : VARIABLE
     """
-    print("Call to method p_stringexpression_variable")
+    if verbose:
+        print("Call to method p_stringexpression_variable")
     try:
         value = variables_table[p[1]]
     except KeyError:
@@ -250,49 +279,55 @@ def p_IN_string_expression_variable(p):
     p[0] = value
 
 
-def p_IN_expression_strlistfor(p):
+def p_expression_strlistfor(p):
     """
     EXPRESSION : FOR VARIABLE IN STRING_LIST DO EXPRESSION_LIST ENDFOR
     """
-    print("Call to method p_expression_strlistfor")
+    if verbose:
+        print("Call to method p_expression_strlistfor")
 
 
-def p_IN_expression_varfor(p):
+def p_expression_varfor(p):
     """
     EXPRESSION : FOR VARIABLE IN VARIABLE DO EXPRESSION_LIST ENDFOR
     """
-    print("Call to method p_expression_varfor")
+    if verbose:
+        print("Call to method p_expression_varfor")
 
 
-def p_IN_expression_print(p):
+def p_expression_print(p):
     """
     EXPRESSION : PRINT STRING_EXPRESSION
     """
-    print("Call to method p_expression_print")
+    if verbose:
+        print("Call to method p_expression_print")
     p[0] = p[2]
 
 
-def p_IN_dumboblock(p):
+def p_dumboblock(p):
     """
     DUMBO_BLOCK : OPENING EXPRESSION_LIST CLOSING
     """
-    print("Call to method p_dumboblock")
+    if verbose:
+        print("Call to method p_dumboblock")
     p[0] = "".join(p[2])
 
 
-def p_IN_expression_list_single(p):
+def p_expression_list_single(p):
     """
     EXPRESSION_LIST : EXPRESSION SEMICOLON
     """
-    print("Call to method p_expression_list_single")
+    if verbose:
+        print("Call to method p_expression_list_single")
     p[0] = [p[1]]
 
 
-def p_IN_expression_list_multiple(p):
+def p_expression_list_multiple(p):
     """
     EXPRESSION_LIST : EXPRESSION SEMICOLON EXPRESSION_LIST
     """
-    print("Call to method p_expression_list_multiple")
+    if verbose:
+        print("Call to method p_expression_list_multiple")
     p[0] = [p[1]] + p[3]
 
 
@@ -301,7 +336,8 @@ def p_program_double(p):
     PROGRAM : DUMBO_BLOCK PROGRAM
             | TXT PROGRAM
     """
-    print("Call to method p_program_double")
+    if verbose:
+        print("Call to method p_program_double")
     p[0] = p[1] + p[2]
 
 
@@ -310,7 +346,8 @@ def p_program_single(p):
     PROGRAM : DUMBO_BLOCK
             | TXT
     """
-    print("Call to method p_program_single")
+    if verbose:
+        print("Call to method p_program_single")
     p[0] = p[1]
 
 
@@ -372,6 +409,8 @@ if __name__ == "__main__":
         parser = yacc.yacc(start=start, debug=True)
         result = parser.parse(data_content_as_str)
         print(result)
+
+        infinite_yacc()
     else:
         lexer = lex.lex()
         lexer.input(input())
@@ -379,15 +418,4 @@ if __name__ == "__main__":
             print(f"line {token.lineno} : token '{token.value}' (type '{token.type}')")
 
         parser = yacc.yacc(start=start, debug=True)
-        while True:
-            try:
-                s = input('doombo > ')
-            except EOFError:
-                break
-            if s == "":
-                break
-            if not s:
-                continue
-            result = parser.parse(s)
-            print(result)
-            print(variables_table)
+        infinite_yacc()
