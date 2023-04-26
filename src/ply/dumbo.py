@@ -47,7 +47,6 @@ tokens = tuple(reserved.keys()) + (
 
 # t_TXT = r"(?!.*\{\{).+"
 # t_STRING = r"'[^']*'"
-t_VARIABLE = r"[a-zA-Z_]\w*"
 t_ignore = ' \t'
 t_IN_ignore = ' \t'
 
@@ -143,7 +142,12 @@ def t_IN_ENDFOR(t):
 
 
 def t_IN_ASSIGN(t):
-    """assign"""
+    """:="""
+    return t
+
+
+def t_IN_VARIABLE(t):
+    """[a-zA-Z_]\w*"""
     return t
 
 
@@ -304,28 +308,58 @@ def p_error(p):
 
 
 if __name__ == "__main__":
-    """
-    if len(sys.argv) != 3:
-        print('Usage: python3 dumbo.py <data> <template>')
-        exit(1)
-    data_content = open(Path(os.getcwd()) / sys.argv[1], "r").readlines()
-    template_content = open(Path(os.getcwd()) / sys.argv[2], "r").readlines()
-    """
+    if len(sys.argv) != 1:
+        if len(sys.argv) != 3:
+            print('Usage: python3 dumbo.py <data> <template>')
+            exit(1)
+        data_content = open(Path(os.getcwd()) / sys.argv[1], "r").readlines()
+        data_content_as_str = "".join(data_content)
+        template_content = open(Path(os.getcwd()) / sys.argv[2], "r").readlines()
+        template_content_as_str = "".join(template_content)
 
-    lexer = lex.lex()
-    lexer.input(input())
-    for token in lexer:
-        print(f"line {token.lineno} : token '{token.value}' (type '{token.type}')")
+        print("=========")
+        print("   LEX   ")
+        print("=========")
+        print()
+        print("Content that will be lexed :")
+        print()
+        print(data_content_as_str)
+        print()
 
-    parser = yacc.yacc(start=start, debug=True)
-    while True:
-        try:
-            s = input('doombo > ')
-        except EOFError:
-            break
-        if s == "":
-            break
-        if not s:
-            continue
-        result = parser.parse(s)
+        lexer = lex.lex()
+        lexer.input(data_content_as_str)
+        for token in lexer:
+            print(f"line {token.lineno} : token '{token.value}' (type '{token.type}')")
+
+        print()
+        print()
+        print("=========")
+        print("  YACC   ")
+        print("=========")
+        print()
+        print("Content that will be yacced :")
+        print()
+        print(data_content_as_str)
+        print()
+
+        parser = yacc.yacc(start=start, debug=True)
+        result = parser.parse(data_content_as_str)
         print(result)
+    else:
+        lexer = lex.lex()
+        lexer.input(input())
+        for token in lexer:
+            print(f"line {token.lineno} : token '{token.value}' (type '{token.type}')")
+
+        parser = yacc.yacc(start=start, debug=True)
+        while True:
+            try:
+                s = input('doombo > ')
+            except EOFError:
+                break
+            if s == "":
+                break
+            if not s:
+                continue
+            result = parser.parse(s)
+            print(result)
