@@ -15,6 +15,11 @@ states = (
 
 start = "PROGRAM"
 
+variables_table = {}
+last_read_variable = None
+
+last_read_string = None
+
 # *-------------------------------------------------------------------------------------------------------------------*
 #     TOKENS
 # *-------------------------------------------------------------------------------------------------------------------*
@@ -152,7 +157,7 @@ def t_IN_VARIABLE(t):
 
 
 def t_TXT(t):
-    """(?!.*\{\{).+"""
+    """[^{]+"""  # """(?!.*{{).+"""
     return t
 
 
@@ -181,15 +186,14 @@ def p_IN_stringlistinterior_double(p):
     STRING_LIST_INTERIOR : STRING COMMA STRING_LIST_INTERIOR
     """
     print("Call to method p_stringlistinterior_double")
-    return p
 
 
 def p_IN_stringlistinterior_single(p):
     """
     STRING_LIST_INTERIOR : STRING
     """
+
     print("Call to method p_stringlistinterior_single")
-    return p
 
 
 def p_IN_stringlist(p):
@@ -197,7 +201,6 @@ def p_IN_stringlist(p):
     STRING_LIST : LPAREN STRING_LIST_INTERIOR RPAREN
     """
     print("Call to method p_stringlist")
-    return p
 
 
 def p_IN_expression_assignments(p):
@@ -206,7 +209,6 @@ def p_IN_expression_assignments(p):
                | VARIABLE ASSIGN STRING_LIST
     """
     print("Call to method p_expression_assignments")
-    return p
 
 
 def p_IN_stringexpression_double(p):
@@ -214,16 +216,22 @@ def p_IN_stringexpression_double(p):
     STRING_EXPRESSION : STRING_EXPRESSION DOT STRING_EXPRESSION
     """
     print("Call to method p_stringexpression_double")
-    return p
 
 
-def p_IN_stringexpression_single(p):
+def p_IN_string_expression_string(p):
     """
     STRING_EXPRESSION : STRING
-                      | VARIABLE
     """
-    print("Call to method p_stringexpression_single")
-    return p
+    p[0] = p[1][1:-1]
+    print("Call to method p_stringexpression_string")
+
+
+def p_IN_string_expression_variable(p):
+    """
+    STRING_EXPRESSION : VARIABLE
+    """
+    p[0] = p[1]
+    print("Call to method p_stringexpression_variable")
 
 
 def p_IN_expression_strlistfor(p):
@@ -231,7 +239,6 @@ def p_IN_expression_strlistfor(p):
     EXPRESSION : FOR VARIABLE IN STRING_LIST DO EXPRESSION_LIST ENDFOR
     """
     print("Call to method p_expression_strlistfor")
-    return p
 
 
 def p_IN_expression_varfor(p):
@@ -239,32 +246,38 @@ def p_IN_expression_varfor(p):
     EXPRESSION : FOR VARIABLE IN VARIABLE DO EXPRESSION_LIST ENDFOR
     """
     print("Call to method p_expression_varfor")
-    return p
 
 
 def p_IN_expression_print(p):
     """
     EXPRESSION : PRINT STRING_EXPRESSION
     """
+    p[0] = p[2]
     print("Call to method p_expression_print")
-    return p
 
 
 def p_IN_dumboblock(p):
     """
     DUMBO_BLOCK : OPENING EXPRESSION_LIST CLOSING
     """
+    p[0] = "\n".join(p[2])
     print("Call to method p_dumboblock")
-    return p
 
 
-def p_IN_expressionlist(p):
+def p_IN_expression_list_single(p):
     """
     EXPRESSION_LIST : EXPRESSION SEMICOLON
-                    | EXPRESSION SEMICOLON EXPRESSION_LIST
     """
-    print("Call to method p_expressionlist")
-    return p
+    p[0] = [p[1]]
+    print("Call to method p_expression_list_single")
+
+
+def p_IN_expression_list_multiple(p):
+    """
+    EXPRESSION_LIST : EXPRESSION SEMICOLON EXPRESSION_LIST
+    """
+    p[0] = [p[1]] + p[3]
+    print("Call to method p_expression_list_multiple")
 
 
 def p_program_double(p):
@@ -272,9 +285,7 @@ def p_program_double(p):
     PROGRAM : DUMBO_BLOCK PROGRAM
             | TXT PROGRAM
     """
-    p[0] = p[1] + p[2]  # TODO : pas sûr
     print("Call to method p_program_double")
-    return p
 
 
 def p_program_single(p):
@@ -282,9 +293,8 @@ def p_program_single(p):
     PROGRAM : DUMBO_BLOCK
             | TXT
     """
-    p[0] = p[1]  # TODO : pas sûr
+    p[0] = p[1]
     print("Call to method p_program_single")
-    return p
 
 
 def p_error(p):
