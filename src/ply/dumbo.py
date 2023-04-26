@@ -72,7 +72,7 @@ def t_OPENING(t):
 
 def t_IN_OPENING(t):
     """{{"""
-    t.lexel.level += 1
+    t.lexer.level += 1
     return t
 
 
@@ -215,6 +215,7 @@ def p_IN_stringexpression_double(p):
     """
     STRING_EXPRESSION : STRING_EXPRESSION DOT STRING_EXPRESSION
     """
+    p[0] = p[1] + p[3]
     print("Call to method p_stringexpression_double")
 
 
@@ -260,7 +261,7 @@ def p_IN_dumboblock(p):
     """
     DUMBO_BLOCK : OPENING EXPRESSION_LIST CLOSING
     """
-    p[0] = "\n".join(p[2])
+    p[0] = "".join(p[2])
     print("Call to method p_dumboblock")
 
 
@@ -285,6 +286,7 @@ def p_program_double(p):
     PROGRAM : DUMBO_BLOCK PROGRAM
             | TXT PROGRAM
     """
+    p[0] = p[1] + p[2]
     print("Call to method p_program_double")
 
 
