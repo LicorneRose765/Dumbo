@@ -25,6 +25,11 @@ reserved = {
     "IN": "in",
     "DO": "do",
     "ENDFOR": "endfor",
+    "SEMICOLON": ";",
+    "COMMA": ",",
+    "LPAREN": "(",
+    "RPAREN": ")",
+    "DOT": ".",
     "ASSIGN": ":="
 }
 
@@ -45,6 +50,7 @@ tokens = tuple(reserved.keys()) + (
 t_VARIABLE = r"[a-zA-Z_]\w*"
 t_ignore = ' \t'
 t_IN_ignore = ' \t'
+
 
 # *-------------------------------------------------------------------------------------------------------------------*
 #     TOKEN METHODS
@@ -71,7 +77,7 @@ def t_IN_CLOSING(t):
     t.lexer.level -= 1
 
     if t.lexer.level == 0:
-         t.lexer.begin('INITIAL')
+        t.lexer.begin('INITIAL')
 
     return t
 
@@ -79,6 +85,31 @@ def t_IN_CLOSING(t):
 def t_CLOSING(t):
     """}}"""
     print(f"Unexpected '{t.value[0]}' at line {lexer.lineno}")
+
+
+def t_IN_SEMICOLON(t):
+    """;"""
+    return t
+
+
+def t_IN_COMMA(t):
+    ""","""
+    return t
+
+
+def t_IN_LPAREN(t):
+    """\("""
+    return t
+
+
+def t_IN_RPAREN(t):
+    """\)"""
+    return t
+
+
+def t_IN_DOT(t):
+    """\."""
+    return t
 
 
 def t_IN_STRING(t):
@@ -135,20 +166,21 @@ def t_error(t):
     print(f"Illegal character in initial state : {t.value[0]}")
     t.lexer.skip(1)
 
+
 # *-------------------------------------------------------------------------------------------------------------------*
 #     GRAMMAR METHODS
 # *-------------------------------------------------------------------------------------------------------------------*
 
 
-def p_stringlistinterior_double(p):
+def p_IN_stringlistinterior_double(p):
     """
-    STRING_LIST_INTERIOR : STRING ',' STRING_LIST_INTERIOR
+    STRING_LIST_INTERIOR : STRING COMMA STRING_LIST_INTERIOR
     """
     print("Call to method p_stringlistinterior_double")
     return p
 
 
-def p_stringlistinterior_single(p):
+def p_IN_stringlistinterior_single(p):
     """
     STRING_LIST_INTERIOR : STRING
     """
@@ -156,15 +188,15 @@ def p_stringlistinterior_single(p):
     return p
 
 
-def p_stringlist(p):
+def p_IN_stringlist(p):
     """
-    STRING_LIST : '(' STRING_LIST_INTERIOR ')'
+    STRING_LIST : LPAREN STRING_LIST_INTERIOR RPAREN
     """
     print("Call to method p_stringlist")
     return p
 
 
-def p_expression_assignments(p):
+def p_IN_expression_assignments(p):
     """
     EXPRESSION : VARIABLE ASSIGN STRING_EXPRESSION
                | VARIABLE ASSIGN STRING_LIST
@@ -173,15 +205,15 @@ def p_expression_assignments(p):
     return p
 
 
-def p_stringexpression_double(p):
+def p_IN_stringexpression_double(p):
     """
-    STRING_EXPRESSION : STRING_EXPRESSION '.' STRING_EXPRESSION
+    STRING_EXPRESSION : STRING_EXPRESSION DOT STRING_EXPRESSION
     """
     print("Call to method p_stringexpression_double")
     return p
 
 
-def p_stringexpression_single(p):
+def p_IN_stringexpression_single(p):
     """
     STRING_EXPRESSION : STRING
                       | VARIABLE
@@ -190,7 +222,7 @@ def p_stringexpression_single(p):
     return p
 
 
-def p_expression_strlistfor(p):
+def p_IN_expression_strlistfor(p):
     """
     EXPRESSION : FOR VARIABLE IN STRING_LIST DO EXPRESSION_LIST ENDFOR
     """
@@ -198,7 +230,7 @@ def p_expression_strlistfor(p):
     return p
 
 
-def p_expression_varfor(p):
+def p_IN_expression_varfor(p):
     """
     EXPRESSION : FOR VARIABLE IN VARIABLE DO EXPRESSION_LIST ENDFOR
     """
@@ -206,7 +238,7 @@ def p_expression_varfor(p):
     return p
 
 
-def p_expression_print(p):
+def p_IN_expression_print(p):
     """
     EXPRESSION : PRINT STRING_EXPRESSION
     """
@@ -214,7 +246,7 @@ def p_expression_print(p):
     return p
 
 
-def p_dumboblock(p):
+def p_IN_dumboblock(p):
     """
     DUMBO_BLOCK : OPENING EXPRESSION_LIST CLOSING
     """
@@ -222,10 +254,10 @@ def p_dumboblock(p):
     return p
 
 
-def p_expressionlist(p):
+def p_IN_expressionlist(p):
     """
-    EXPRESSION_LIST : EXPRESSION ';'
-                    | EXPRESSION ';' EXPRESSION_LIST
+    EXPRESSION_LIST : EXPRESSION SEMICOLON
+                    | EXPRESSION SEMICOLON EXPRESSION_LIST
     """
     print("Call to method p_expressionlist")
     return p
@@ -233,30 +265,37 @@ def p_expressionlist(p):
 
 def p_program_double(p):
     """
-    PROGRAM : TXT PROGRAM
-            | DUMBO_BLOCK PROGRAM
+    PROGRAM : DUMBO_BLOCK PROGRAM
+            | TXT PROGRAM
     """
     p[0] = p[1] + p[2]  # TODO : pas sûr
     print("Call to method p_program_double")
     return p
 
 
-def p_program_single_dumboblock(p):
+def p_program_single(p):
     """
     PROGRAM : DUMBO_BLOCK
+            | TXT
     """
     p[0] = p[1]  # TODO : pas sûr
-    print("Call to method p_program_single_dumboblock")
+    print("Call to method p_program_single")
     return p
 
 
-def p_program_single_txt(p):
-    """
-    PROGRAM : TXT
-    """
-    p[0] = p[1]  # TODO : pas sûr
-    print("Call to method p_program_single_txt")
-    return p
+def p_error(p):
+    if p:
+        print(f"Syntax error at token {p.type} (value='{p.value}')")
+        while True:
+            tok = parser.token()  # Get the next token
+            if not tok or tok.type == 'CLOSING':
+                break
+        parser.errok()
+
+        # Return CLOSING to the parser as the next lookahead token
+        return tok
+    else:
+        print("Syntax error at EOF")
 
 
 # *-------------------------------------------------------------------------------------------------------------------*

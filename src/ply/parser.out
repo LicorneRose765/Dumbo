@@ -3,48 +3,48 @@ Created by PLY version 3.11 (http://www.dabeaz.com/ply)
 Grammar
 
 Rule 0     S' -> PROGRAM
-Rule 1     STRING_LIST_INTERIOR -> STRING , STRING_LIST_INTERIOR
+Rule 1     STRING_LIST_INTERIOR -> STRING COMMA STRING_LIST_INTERIOR
 Rule 2     STRING_LIST_INTERIOR -> STRING
-Rule 3     STRING_LIST -> ( STRING_LIST_INTERIOR )
+Rule 3     STRING_LIST -> LPAREN STRING_LIST_INTERIOR RPAREN
 Rule 4     EXPRESSION -> VARIABLE ASSIGN STRING_EXPRESSION
 Rule 5     EXPRESSION -> VARIABLE ASSIGN STRING_LIST
-Rule 6     STRING_EXPRESSION -> STRING_EXPRESSION . STRING_EXPRESSION
+Rule 6     STRING_EXPRESSION -> STRING_EXPRESSION DOT STRING_EXPRESSION
 Rule 7     STRING_EXPRESSION -> STRING
 Rule 8     STRING_EXPRESSION -> VARIABLE
 Rule 9     EXPRESSION -> FOR VARIABLE IN STRING_LIST DO EXPRESSION_LIST ENDFOR
 Rule 10    EXPRESSION -> FOR VARIABLE IN VARIABLE DO EXPRESSION_LIST ENDFOR
 Rule 11    EXPRESSION -> PRINT STRING_EXPRESSION
 Rule 12    DUMBO_BLOCK -> OPENING EXPRESSION_LIST CLOSING
-Rule 13    EXPRESSION_LIST -> EXPRESSION ;
-Rule 14    EXPRESSION_LIST -> EXPRESSION ; EXPRESSION_LIST
-Rule 15    PROGRAM -> TXT PROGRAM
-Rule 16    PROGRAM -> DUMBO_BLOCK PROGRAM
+Rule 13    EXPRESSION_LIST -> EXPRESSION SEMICOLON
+Rule 14    EXPRESSION_LIST -> EXPRESSION SEMICOLON EXPRESSION_LIST
+Rule 15    PROGRAM -> DUMBO_BLOCK PROGRAM
+Rule 16    PROGRAM -> TXT PROGRAM
 Rule 17    PROGRAM -> DUMBO_BLOCK
 Rule 18    PROGRAM -> TXT
 
 Terminals, with rules where they appear
 
-(                    : 3
-)                    : 3
-,                    : 1
-.                    : 6
-;                    : 13 14
 ASSIGN               : 4 5
 CLOSING              : 12
+COMMA                : 1
 DO                   : 9 10
+DOT                  : 6
 ENDFOR               : 9 10
 FOR                  : 9 10
 IN                   : 9 10
+LPAREN               : 3
 OPENING              : 12
 PRINT                : 11
+RPAREN               : 3
+SEMICOLON            : 13 14
 STRING               : 1 2 7
-TXT                  : 15 18
+TXT                  : 16 18
 VARIABLE             : 4 5 8 9 10 10
 error                : 
 
 Nonterminals, with rules where they appear
 
-DUMBO_BLOCK          : 16 17
+DUMBO_BLOCK          : 15 17
 EXPRESSION           : 13 14
 EXPRESSION_LIST      : 9 10 12 14
 PROGRAM              : 15 16 0
@@ -57,17 +57,17 @@ Parsing method: LALR
 state 0
 
     (0) S' -> . PROGRAM
-    (15) PROGRAM -> . TXT PROGRAM
-    (16) PROGRAM -> . DUMBO_BLOCK PROGRAM
+    (15) PROGRAM -> . DUMBO_BLOCK PROGRAM
+    (16) PROGRAM -> . TXT PROGRAM
     (17) PROGRAM -> . DUMBO_BLOCK
     (18) PROGRAM -> . TXT
     (12) DUMBO_BLOCK -> . OPENING EXPRESSION_LIST CLOSING
 
-    TXT             shift and go to state 2
+    TXT             shift and go to state 3
     OPENING         shift and go to state 4
 
     PROGRAM                        shift and go to state 1
-    DUMBO_BLOCK                    shift and go to state 3
+    DUMBO_BLOCK                    shift and go to state 2
 
 state 1
 
@@ -77,43 +77,43 @@ state 1
 
 state 2
 
-    (15) PROGRAM -> TXT . PROGRAM
-    (18) PROGRAM -> TXT .
-    (15) PROGRAM -> . TXT PROGRAM
-    (16) PROGRAM -> . DUMBO_BLOCK PROGRAM
-    (17) PROGRAM -> . DUMBO_BLOCK
-    (18) PROGRAM -> . TXT
-    (12) DUMBO_BLOCK -> . OPENING EXPRESSION_LIST CLOSING
-
-    $end            reduce using rule 18 (PROGRAM -> TXT .)
-    TXT             shift and go to state 2
-    OPENING         shift and go to state 4
-
-    PROGRAM                        shift and go to state 5
-    DUMBO_BLOCK                    shift and go to state 3
-
-state 3
-
-    (16) PROGRAM -> DUMBO_BLOCK . PROGRAM
+    (15) PROGRAM -> DUMBO_BLOCK . PROGRAM
     (17) PROGRAM -> DUMBO_BLOCK .
-    (15) PROGRAM -> . TXT PROGRAM
-    (16) PROGRAM -> . DUMBO_BLOCK PROGRAM
+    (15) PROGRAM -> . DUMBO_BLOCK PROGRAM
+    (16) PROGRAM -> . TXT PROGRAM
     (17) PROGRAM -> . DUMBO_BLOCK
     (18) PROGRAM -> . TXT
     (12) DUMBO_BLOCK -> . OPENING EXPRESSION_LIST CLOSING
 
     $end            reduce using rule 17 (PROGRAM -> DUMBO_BLOCK .)
-    TXT             shift and go to state 2
+    TXT             shift and go to state 3
     OPENING         shift and go to state 4
 
-    DUMBO_BLOCK                    shift and go to state 3
+    DUMBO_BLOCK                    shift and go to state 2
+    PROGRAM                        shift and go to state 5
+
+state 3
+
+    (16) PROGRAM -> TXT . PROGRAM
+    (18) PROGRAM -> TXT .
+    (15) PROGRAM -> . DUMBO_BLOCK PROGRAM
+    (16) PROGRAM -> . TXT PROGRAM
+    (17) PROGRAM -> . DUMBO_BLOCK
+    (18) PROGRAM -> . TXT
+    (12) DUMBO_BLOCK -> . OPENING EXPRESSION_LIST CLOSING
+
+    $end            reduce using rule 18 (PROGRAM -> TXT .)
+    TXT             shift and go to state 3
+    OPENING         shift and go to state 4
+
     PROGRAM                        shift and go to state 6
+    DUMBO_BLOCK                    shift and go to state 2
 
 state 4
 
     (12) DUMBO_BLOCK -> OPENING . EXPRESSION_LIST CLOSING
-    (13) EXPRESSION_LIST -> . EXPRESSION ;
-    (14) EXPRESSION_LIST -> . EXPRESSION ; EXPRESSION_LIST
+    (13) EXPRESSION_LIST -> . EXPRESSION SEMICOLON
+    (14) EXPRESSION_LIST -> . EXPRESSION SEMICOLON EXPRESSION_LIST
     (4) EXPRESSION -> . VARIABLE ASSIGN STRING_EXPRESSION
     (5) EXPRESSION -> . VARIABLE ASSIGN STRING_LIST
     (9) EXPRESSION -> . FOR VARIABLE IN STRING_LIST DO EXPRESSION_LIST ENDFOR
@@ -129,16 +129,16 @@ state 4
 
 state 5
 
-    (15) PROGRAM -> TXT PROGRAM .
+    (15) PROGRAM -> DUMBO_BLOCK PROGRAM .
 
-    $end            reduce using rule 15 (PROGRAM -> TXT PROGRAM .)
+    $end            reduce using rule 15 (PROGRAM -> DUMBO_BLOCK PROGRAM .)
 
 
 state 6
 
-    (16) PROGRAM -> DUMBO_BLOCK PROGRAM .
+    (16) PROGRAM -> TXT PROGRAM .
 
-    $end            reduce using rule 16 (PROGRAM -> DUMBO_BLOCK PROGRAM .)
+    $end            reduce using rule 16 (PROGRAM -> TXT PROGRAM .)
 
 
 state 7
@@ -150,10 +150,10 @@ state 7
 
 state 8
 
-    (13) EXPRESSION_LIST -> EXPRESSION . ;
-    (14) EXPRESSION_LIST -> EXPRESSION . ; EXPRESSION_LIST
+    (13) EXPRESSION_LIST -> EXPRESSION . SEMICOLON
+    (14) EXPRESSION_LIST -> EXPRESSION . SEMICOLON EXPRESSION_LIST
 
-    ;               shift and go to state 13
+    SEMICOLON       shift and go to state 13
 
 
 state 9
@@ -175,7 +175,7 @@ state 10
 state 11
 
     (11) EXPRESSION -> PRINT . STRING_EXPRESSION
-    (6) STRING_EXPRESSION -> . STRING_EXPRESSION . STRING_EXPRESSION
+    (6) STRING_EXPRESSION -> . STRING_EXPRESSION DOT STRING_EXPRESSION
     (7) STRING_EXPRESSION -> . STRING
     (8) STRING_EXPRESSION -> . VARIABLE
 
@@ -195,18 +195,18 @@ state 12
 
 state 13
 
-    (13) EXPRESSION_LIST -> EXPRESSION ; .
-    (14) EXPRESSION_LIST -> EXPRESSION ; . EXPRESSION_LIST
-    (13) EXPRESSION_LIST -> . EXPRESSION ;
-    (14) EXPRESSION_LIST -> . EXPRESSION ; EXPRESSION_LIST
+    (13) EXPRESSION_LIST -> EXPRESSION SEMICOLON .
+    (14) EXPRESSION_LIST -> EXPRESSION SEMICOLON . EXPRESSION_LIST
+    (13) EXPRESSION_LIST -> . EXPRESSION SEMICOLON
+    (14) EXPRESSION_LIST -> . EXPRESSION SEMICOLON EXPRESSION_LIST
     (4) EXPRESSION -> . VARIABLE ASSIGN STRING_EXPRESSION
     (5) EXPRESSION -> . VARIABLE ASSIGN STRING_LIST
     (9) EXPRESSION -> . FOR VARIABLE IN STRING_LIST DO EXPRESSION_LIST ENDFOR
     (10) EXPRESSION -> . FOR VARIABLE IN VARIABLE DO EXPRESSION_LIST ENDFOR
     (11) EXPRESSION -> . PRINT STRING_EXPRESSION
 
-    CLOSING         reduce using rule 13 (EXPRESSION_LIST -> EXPRESSION ; .)
-    ENDFOR          reduce using rule 13 (EXPRESSION_LIST -> EXPRESSION ; .)
+    CLOSING         reduce using rule 13 (EXPRESSION_LIST -> EXPRESSION SEMICOLON .)
+    ENDFOR          reduce using rule 13 (EXPRESSION_LIST -> EXPRESSION SEMICOLON .)
     VARIABLE        shift and go to state 9
     FOR             shift and go to state 10
     PRINT           shift and go to state 11
@@ -218,14 +218,14 @@ state 14
 
     (4) EXPRESSION -> VARIABLE ASSIGN . STRING_EXPRESSION
     (5) EXPRESSION -> VARIABLE ASSIGN . STRING_LIST
-    (6) STRING_EXPRESSION -> . STRING_EXPRESSION . STRING_EXPRESSION
+    (6) STRING_EXPRESSION -> . STRING_EXPRESSION DOT STRING_EXPRESSION
     (7) STRING_EXPRESSION -> . STRING
     (8) STRING_EXPRESSION -> . VARIABLE
-    (3) STRING_LIST -> . ( STRING_LIST_INTERIOR )
+    (3) STRING_LIST -> . LPAREN STRING_LIST_INTERIOR RPAREN
 
     STRING          shift and go to state 17
     VARIABLE        shift and go to state 18
-    (               shift and go to state 22
+    LPAREN          shift and go to state 22
 
     STRING_EXPRESSION              shift and go to state 20
     STRING_LIST                    shift and go to state 21
@@ -241,56 +241,56 @@ state 15
 state 16
 
     (11) EXPRESSION -> PRINT STRING_EXPRESSION .
-    (6) STRING_EXPRESSION -> STRING_EXPRESSION . . STRING_EXPRESSION
+    (6) STRING_EXPRESSION -> STRING_EXPRESSION . DOT STRING_EXPRESSION
 
-    ;               reduce using rule 11 (EXPRESSION -> PRINT STRING_EXPRESSION .)
-    .               shift and go to state 24
+    SEMICOLON       reduce using rule 11 (EXPRESSION -> PRINT STRING_EXPRESSION .)
+    DOT             shift and go to state 24
 
 
 state 17
 
     (7) STRING_EXPRESSION -> STRING .
 
-    .               reduce using rule 7 (STRING_EXPRESSION -> STRING .)
-    ;               reduce using rule 7 (STRING_EXPRESSION -> STRING .)
+    DOT             reduce using rule 7 (STRING_EXPRESSION -> STRING .)
+    SEMICOLON       reduce using rule 7 (STRING_EXPRESSION -> STRING .)
 
 
 state 18
 
     (8) STRING_EXPRESSION -> VARIABLE .
 
-    .               reduce using rule 8 (STRING_EXPRESSION -> VARIABLE .)
-    ;               reduce using rule 8 (STRING_EXPRESSION -> VARIABLE .)
+    DOT             reduce using rule 8 (STRING_EXPRESSION -> VARIABLE .)
+    SEMICOLON       reduce using rule 8 (STRING_EXPRESSION -> VARIABLE .)
 
 
 state 19
 
-    (14) EXPRESSION_LIST -> EXPRESSION ; EXPRESSION_LIST .
+    (14) EXPRESSION_LIST -> EXPRESSION SEMICOLON EXPRESSION_LIST .
 
-    CLOSING         reduce using rule 14 (EXPRESSION_LIST -> EXPRESSION ; EXPRESSION_LIST .)
-    ENDFOR          reduce using rule 14 (EXPRESSION_LIST -> EXPRESSION ; EXPRESSION_LIST .)
+    CLOSING         reduce using rule 14 (EXPRESSION_LIST -> EXPRESSION SEMICOLON EXPRESSION_LIST .)
+    ENDFOR          reduce using rule 14 (EXPRESSION_LIST -> EXPRESSION SEMICOLON EXPRESSION_LIST .)
 
 
 state 20
 
     (4) EXPRESSION -> VARIABLE ASSIGN STRING_EXPRESSION .
-    (6) STRING_EXPRESSION -> STRING_EXPRESSION . . STRING_EXPRESSION
+    (6) STRING_EXPRESSION -> STRING_EXPRESSION . DOT STRING_EXPRESSION
 
-    ;               reduce using rule 4 (EXPRESSION -> VARIABLE ASSIGN STRING_EXPRESSION .)
-    .               shift and go to state 24
+    SEMICOLON       reduce using rule 4 (EXPRESSION -> VARIABLE ASSIGN STRING_EXPRESSION .)
+    DOT             shift and go to state 24
 
 
 state 21
 
     (5) EXPRESSION -> VARIABLE ASSIGN STRING_LIST .
 
-    ;               reduce using rule 5 (EXPRESSION -> VARIABLE ASSIGN STRING_LIST .)
+    SEMICOLON       reduce using rule 5 (EXPRESSION -> VARIABLE ASSIGN STRING_LIST .)
 
 
 state 22
 
-    (3) STRING_LIST -> ( . STRING_LIST_INTERIOR )
-    (1) STRING_LIST_INTERIOR -> . STRING , STRING_LIST_INTERIOR
+    (3) STRING_LIST -> LPAREN . STRING_LIST_INTERIOR RPAREN
+    (1) STRING_LIST_INTERIOR -> . STRING COMMA STRING_LIST_INTERIOR
     (2) STRING_LIST_INTERIOR -> . STRING
 
     STRING          shift and go to state 26
@@ -301,17 +301,17 @@ state 23
 
     (9) EXPRESSION -> FOR VARIABLE IN . STRING_LIST DO EXPRESSION_LIST ENDFOR
     (10) EXPRESSION -> FOR VARIABLE IN . VARIABLE DO EXPRESSION_LIST ENDFOR
-    (3) STRING_LIST -> . ( STRING_LIST_INTERIOR )
+    (3) STRING_LIST -> . LPAREN STRING_LIST_INTERIOR RPAREN
 
     VARIABLE        shift and go to state 27
-    (               shift and go to state 22
+    LPAREN          shift and go to state 22
 
     STRING_LIST                    shift and go to state 28
 
 state 24
 
-    (6) STRING_EXPRESSION -> STRING_EXPRESSION . . STRING_EXPRESSION
-    (6) STRING_EXPRESSION -> . STRING_EXPRESSION . STRING_EXPRESSION
+    (6) STRING_EXPRESSION -> STRING_EXPRESSION DOT . STRING_EXPRESSION
+    (6) STRING_EXPRESSION -> . STRING_EXPRESSION DOT STRING_EXPRESSION
     (7) STRING_EXPRESSION -> . STRING
     (8) STRING_EXPRESSION -> . VARIABLE
 
@@ -322,18 +322,18 @@ state 24
 
 state 25
 
-    (3) STRING_LIST -> ( STRING_LIST_INTERIOR . )
+    (3) STRING_LIST -> LPAREN STRING_LIST_INTERIOR . RPAREN
 
-    )               shift and go to state 30
+    RPAREN          shift and go to state 30
 
 
 state 26
 
-    (1) STRING_LIST_INTERIOR -> STRING . , STRING_LIST_INTERIOR
+    (1) STRING_LIST_INTERIOR -> STRING . COMMA STRING_LIST_INTERIOR
     (2) STRING_LIST_INTERIOR -> STRING .
 
-    ,               shift and go to state 31
-    )               reduce using rule 2 (STRING_LIST_INTERIOR -> STRING .)
+    COMMA           shift and go to state 31
+    RPAREN          reduce using rule 2 (STRING_LIST_INTERIOR -> STRING .)
 
 
 state 27
@@ -352,28 +352,28 @@ state 28
 
 state 29
 
-    (6) STRING_EXPRESSION -> STRING_EXPRESSION . STRING_EXPRESSION .
-    (6) STRING_EXPRESSION -> STRING_EXPRESSION . . STRING_EXPRESSION
+    (6) STRING_EXPRESSION -> STRING_EXPRESSION DOT STRING_EXPRESSION .
+    (6) STRING_EXPRESSION -> STRING_EXPRESSION . DOT STRING_EXPRESSION
 
-  ! shift/reduce conflict for . resolved as shift
-    ;               reduce using rule 6 (STRING_EXPRESSION -> STRING_EXPRESSION . STRING_EXPRESSION .)
-    .               shift and go to state 24
+  ! shift/reduce conflict for DOT resolved as shift
+    SEMICOLON       reduce using rule 6 (STRING_EXPRESSION -> STRING_EXPRESSION DOT STRING_EXPRESSION .)
+    DOT             shift and go to state 24
 
-  ! .               [ reduce using rule 6 (STRING_EXPRESSION -> STRING_EXPRESSION . STRING_EXPRESSION .) ]
+  ! DOT             [ reduce using rule 6 (STRING_EXPRESSION -> STRING_EXPRESSION DOT STRING_EXPRESSION .) ]
 
 
 state 30
 
-    (3) STRING_LIST -> ( STRING_LIST_INTERIOR ) .
+    (3) STRING_LIST -> LPAREN STRING_LIST_INTERIOR RPAREN .
 
-    ;               reduce using rule 3 (STRING_LIST -> ( STRING_LIST_INTERIOR ) .)
-    DO              reduce using rule 3 (STRING_LIST -> ( STRING_LIST_INTERIOR ) .)
+    SEMICOLON       reduce using rule 3 (STRING_LIST -> LPAREN STRING_LIST_INTERIOR RPAREN .)
+    DO              reduce using rule 3 (STRING_LIST -> LPAREN STRING_LIST_INTERIOR RPAREN .)
 
 
 state 31
 
-    (1) STRING_LIST_INTERIOR -> STRING , . STRING_LIST_INTERIOR
-    (1) STRING_LIST_INTERIOR -> . STRING , STRING_LIST_INTERIOR
+    (1) STRING_LIST_INTERIOR -> STRING COMMA . STRING_LIST_INTERIOR
+    (1) STRING_LIST_INTERIOR -> . STRING COMMA STRING_LIST_INTERIOR
     (2) STRING_LIST_INTERIOR -> . STRING
 
     STRING          shift and go to state 26
@@ -383,8 +383,8 @@ state 31
 state 32
 
     (10) EXPRESSION -> FOR VARIABLE IN VARIABLE DO . EXPRESSION_LIST ENDFOR
-    (13) EXPRESSION_LIST -> . EXPRESSION ;
-    (14) EXPRESSION_LIST -> . EXPRESSION ; EXPRESSION_LIST
+    (13) EXPRESSION_LIST -> . EXPRESSION SEMICOLON
+    (14) EXPRESSION_LIST -> . EXPRESSION SEMICOLON EXPRESSION_LIST
     (4) EXPRESSION -> . VARIABLE ASSIGN STRING_EXPRESSION
     (5) EXPRESSION -> . VARIABLE ASSIGN STRING_LIST
     (9) EXPRESSION -> . FOR VARIABLE IN STRING_LIST DO EXPRESSION_LIST ENDFOR
@@ -401,8 +401,8 @@ state 32
 state 33
 
     (9) EXPRESSION -> FOR VARIABLE IN STRING_LIST DO . EXPRESSION_LIST ENDFOR
-    (13) EXPRESSION_LIST -> . EXPRESSION ;
-    (14) EXPRESSION_LIST -> . EXPRESSION ; EXPRESSION_LIST
+    (13) EXPRESSION_LIST -> . EXPRESSION SEMICOLON
+    (14) EXPRESSION_LIST -> . EXPRESSION SEMICOLON EXPRESSION_LIST
     (4) EXPRESSION -> . VARIABLE ASSIGN STRING_EXPRESSION
     (5) EXPRESSION -> . VARIABLE ASSIGN STRING_LIST
     (9) EXPRESSION -> . FOR VARIABLE IN STRING_LIST DO EXPRESSION_LIST ENDFOR
@@ -418,9 +418,9 @@ state 33
 
 state 34
 
-    (1) STRING_LIST_INTERIOR -> STRING , STRING_LIST_INTERIOR .
+    (1) STRING_LIST_INTERIOR -> STRING COMMA STRING_LIST_INTERIOR .
 
-    )               reduce using rule 1 (STRING_LIST_INTERIOR -> STRING , STRING_LIST_INTERIOR .)
+    RPAREN          reduce using rule 1 (STRING_LIST_INTERIOR -> STRING COMMA STRING_LIST_INTERIOR .)
 
 
 state 35
@@ -441,16 +441,16 @@ state 37
 
     (10) EXPRESSION -> FOR VARIABLE IN VARIABLE DO EXPRESSION_LIST ENDFOR .
 
-    ;               reduce using rule 10 (EXPRESSION -> FOR VARIABLE IN VARIABLE DO EXPRESSION_LIST ENDFOR .)
+    SEMICOLON       reduce using rule 10 (EXPRESSION -> FOR VARIABLE IN VARIABLE DO EXPRESSION_LIST ENDFOR .)
 
 
 state 38
 
     (9) EXPRESSION -> FOR VARIABLE IN STRING_LIST DO EXPRESSION_LIST ENDFOR .
 
-    ;               reduce using rule 9 (EXPRESSION -> FOR VARIABLE IN STRING_LIST DO EXPRESSION_LIST ENDFOR .)
+    SEMICOLON       reduce using rule 9 (EXPRESSION -> FOR VARIABLE IN STRING_LIST DO EXPRESSION_LIST ENDFOR .)
 
 WARNING: 
 WARNING: Conflicts:
 WARNING: 
-WARNING: shift/reduce conflict for . in state 29 resolved as shift
+WARNING: shift/reduce conflict for DOT in state 29 resolved as shift
