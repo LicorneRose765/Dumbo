@@ -9,6 +9,10 @@ from pathlib import Path
 #     VARS
 # *-------------------------------------------------------------------------------------------------------------------*
 
+states = (
+    ("IN", "exclusive"),  # state 'IN'  : when inside dumbo code
+)
+
 start = "PROGRAM"
 
 # *-------------------------------------------------------------------------------------------------------------------*
@@ -40,6 +44,7 @@ tokens = tuple(reserved.keys()) + (
 # t_STRING = r"'[^']*'"
 t_VARIABLE = r"[a-zA-Z_]\w*"
 t_ignore = ' \t'
+t_IN_ignore = ' \t'
 
 # *-------------------------------------------------------------------------------------------------------------------*
 #     TOKEN METHODS
@@ -48,46 +53,65 @@ t_ignore = ' \t'
 
 # I have to define these two as methods so I can give string the priority
 def t_OPENING(t):
-    """\{\{"""
+    """{{"""
+    # INITIAL -> IN
+    t.lexer.level = 1
+    t.lexer.begin('IN')
+    return t
+
+
+def t_IN_OPENING(t):
+    """{{"""
+    t.lexel.level += 1
+    return t
+
+
+def t_IN_CLOSING(t):
+    """}}"""
+    t.lexer.level -= 1
+
+    if t.lexer.level == 0:
+         t.lexer.begin('INITIAL')
+
     return t
 
 
 def t_CLOSING(t):
-    """\}\}"""
-    return t
+    """}}"""
+    print(f"Unexpected '{t.value[0]}' at line {lexer.lineno}")
 
 
-def t_STRING(t):
+def t_IN_STRING(t):
     """'[^']*'"""
     return t
 
 
-def t_PRINT(t):
+def t_IN_PRINT(t):
     """print"""
     return t
 
 
-def t_FOR(t):
+def t_IN_FOR(t):
     """for"""
     return t
 
 
-def t_IN(t):
+def t_IN_IN(t):
     """in"""
     return t
 
 
-def t_DO(t):
+def t_IN_DO(t):
     """do"""
     return t
 
 
-def t_ENDFOR(t):
+def t_IN_ENDFOR(t):
     """endfor"""
     return t
 
 
-def t_ASSIGN(t):
+def t_IN_ASSIGN(t):
     """assign"""
     return t
 
@@ -97,13 +121,18 @@ def t_TXT(t):
     return t
 
 
-def t_newline(t):
+def t_ANY_newline(t):
     r"\n+"
     t.lexer.lineno += len(t.value)
 
 
+def t_IN_error(t):
+    print(f"Illegal character in dumbo code : {t.value[0]}")
+    t.lexer.skip(1)
+
+
 def t_error(t):
-    print(f"Illegal character : {t.value[0]}")
+    print(f"Illegal character in initial state : {t.value[0]}")
     t.lexer.skip(1)
 
 # *-------------------------------------------------------------------------------------------------------------------*
@@ -115,6 +144,7 @@ def p_stringlistinterior_double(p):
     """
     STRING_LIST_INTERIOR : STRING ',' STRING_LIST_INTERIOR
     """
+    print("Call to method p_stringlistinterior_double")
     return p
 
 
@@ -122,6 +152,7 @@ def p_stringlistinterior_single(p):
     """
     STRING_LIST_INTERIOR : STRING
     """
+    print("Call to method p_stringlistinterior_single")
     return p
 
 
@@ -129,6 +160,7 @@ def p_stringlist(p):
     """
     STRING_LIST : '(' STRING_LIST_INTERIOR ')'
     """
+    print("Call to method p_stringlist")
     return p
 
 
@@ -137,6 +169,7 @@ def p_expression_assignments(p):
     EXPRESSION : VARIABLE ASSIGN STRING_EXPRESSION
                | VARIABLE ASSIGN STRING_LIST
     """
+    print("Call to method p_expression_assignments")
     return p
 
 
@@ -144,6 +177,7 @@ def p_stringexpression_double(p):
     """
     STRING_EXPRESSION : STRING_EXPRESSION '.' STRING_EXPRESSION
     """
+    print("Call to method p_stringexpression_double")
     return p
 
 
@@ -152,6 +186,7 @@ def p_stringexpression_single(p):
     STRING_EXPRESSION : STRING
                       | VARIABLE
     """
+    print("Call to method p_stringexpression_single")
     return p
 
 
@@ -159,6 +194,7 @@ def p_expression_strlistfor(p):
     """
     EXPRESSION : FOR VARIABLE IN STRING_LIST DO EXPRESSION_LIST ENDFOR
     """
+    print("Call to method p_expression_strlistfor")
     return p
 
 
@@ -166,6 +202,7 @@ def p_expression_varfor(p):
     """
     EXPRESSION : FOR VARIABLE IN VARIABLE DO EXPRESSION_LIST ENDFOR
     """
+    print("Call to method p_expression_varfor")
     return p
 
 
@@ -173,6 +210,7 @@ def p_expression_print(p):
     """
     EXPRESSION : PRINT STRING_EXPRESSION
     """
+    print("Call to method p_expression_print")
     return p
 
 
@@ -180,6 +218,7 @@ def p_dumboblock(p):
     """
     DUMBO_BLOCK : OPENING EXPRESSION_LIST CLOSING
     """
+    print("Call to method p_dumboblock")
     return p
 
 
@@ -188,7 +227,7 @@ def p_expressionlist(p):
     EXPRESSION_LIST : EXPRESSION ';'
                     | EXPRESSION ';' EXPRESSION_LIST
     """
-    print("Encountered EXPRESSION_LIST : EXPRESSION | EXPRESSION ; EXPRESSION_LIST")
+    print("Call to method p_expressionlist")
     return p
 
 
@@ -197,8 +236,8 @@ def p_program_double(p):
     PROGRAM : TXT PROGRAM
             | DUMBO_BLOCK PROGRAM
     """
-    print("Encountered PROGRAM : TXT PROGRAM | DUMBO_BLOCK PROGRAM")
     p[0] = p[1] + p[2]  # TODO : pas sûr
+    print("Call to method p_program_double")
     return p
 
 
@@ -206,8 +245,8 @@ def p_program_single_dumboblock(p):
     """
     PROGRAM : DUMBO_BLOCK
     """
-    print("Encountered PROGRAM : DUMBO_BLOCK")
     p[0] = p[1]  # TODO : pas sûr
+    print("Call to method p_program_single_dumboblock")
     return p
 
 
@@ -215,8 +254,8 @@ def p_program_single_txt(p):
     """
     PROGRAM : TXT
     """
-    print("Encountered PROGRAM : TXT")
     p[0] = p[1]  # TODO : pas sûr
+    print("Call to method p_program_single_txt")
     return p
 
 
@@ -234,8 +273,6 @@ if __name__ == "__main__":
     template_content = open(Path(os.getcwd()) / sys.argv[2], "r").readlines()
     """
 
-    import sys
-
     lexer = lex.lex()
     lexer.input(input())
     for token in lexer:
@@ -244,7 +281,7 @@ if __name__ == "__main__":
     parser = yacc.yacc(start=start, debug=True)
     while True:
         try:
-            s = input('calc > ')
+            s = input('doombo > ')
         except EOFError:
             break
         if s == "":
