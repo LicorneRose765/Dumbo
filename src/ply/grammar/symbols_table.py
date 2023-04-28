@@ -67,6 +67,9 @@ class SymbolsTable:
         self.table[scope_depth] = {}
 
 
+symbols_table = SymbolsTable()
+
+
 if __name__ == "__main__":
     """
     st =
