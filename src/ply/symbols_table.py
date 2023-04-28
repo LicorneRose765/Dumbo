@@ -53,7 +53,10 @@ class SymbolsTable:
         if verbose:
             print(f"Table before deletion of {scope_depth=:} :")
             print(f"    {self.table}")
-        del self.table[scope_depth]
+        try:
+            del self.table[scope_depth]
+        except KeyError as ignored:
+            pass
         if verbose:
             print(f"Table after deletion of {scope_depth=:} :")
             print(f"    {self.table}")

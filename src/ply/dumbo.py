@@ -63,6 +63,13 @@ reserved = {
     "IN": "in",
     "DO": "do",
     "ENDFOR": "endfor",
+    "TRUE": "true",
+    "FALSE": "false",
+    "IF": "if",
+    "ENDIF": "endif"
+}
+
+specials = {
     "SEMICOLON": ";",
     "COMMA": ",",
     "LPAREN": "(",
@@ -71,11 +78,25 @@ reserved = {
     "ASSIGN": ":="
 }
 
-tokens = tuple(reserved.keys()) + (
+ops = {
+    "ADD": "+",
+    "SUB": "-",
+    "MUL": "*",
+    "DIV": "/",
+    "LT": "<",
+    "GT": ">",
+    "EQ": "=",
+    "NE": "!=",
+    "AND": "and",
+    "OR": "or"
+}
+
+tokens = tuple(reserved.keys()) + tuple(specials.keys()) + tuple(ops.keys()) + (
     "OPENING",
     "CLOSING",
     "TXT",
     "STRING",
+    "INTEGER",
     "VARIABLE"
 )
 
@@ -193,8 +214,83 @@ def t_IN_ENDFOR(t):
     return t
 
 
+def t_IN_TRUE(t):
+    """true"""
+    return t
+
+
+def t_IN_FALSE(t):
+    """false"""
+    return t
+
+
+def t_IN_IF(t):
+    """if"""
+    return t
+
+
+def t_IN_ENDIF(t):
+    """endif"""
+    return t
+
+
 def t_IN_ASSIGN(t):
     """:="""
+    return t
+
+
+def t_IN_ADD(t):
+    """\+"""
+    return t
+
+
+def t_IN_SUB(t):
+    """\-"""
+    return t
+
+
+def t_IN_MUL(t):
+    """\*"""
+    return t
+
+
+def t_IN_DIV(t):
+    """\/"""
+    return t
+
+
+def t_IN_LT(t):
+    """\<"""
+    return t
+
+
+def t_IN_GT(t):
+    """\>"""
+    return t
+
+
+def t_IN_EQ(t):
+    """\="""
+    return t
+
+
+def t_IN_NE(t):
+    """\!\="""
+    return t
+
+
+def t_IN_AND(t):
+    """and"""
+    return t
+
+
+def t_IN_OR(t):
+    """or"""
+    return t
+
+
+def t_IN_INTEGER(t):
+    """\d+"""
     return t
 
 
@@ -261,9 +357,11 @@ def p_expression_assignments(p):
     """
     EXPRESSION : VARIABLE ASSIGN STRING_EXPRESSION
                | VARIABLE ASSIGN STRING_LIST
+               | VARIABLE ASSIGN MATH_EXPRESSION
+               | VARIABLE ASSIGN BOOLEAN_EXPRESSION
     """
     if verbose:
-        print("Call to method p_expression_assignments : EXPRESSION : VARIABLE ASSIGN STRING_EXPRESSION\n           | VARIABLE ASSIGN STRING_LIST")
+        print("Call to method p_expression_assignments : EXPRESSION : VARIABLE ASSIGN STRING_EXPRESSION\n           | VARIABLE ASSIGN STRING_LIST\n           | VARIABLE ASSIGN MATH_EXPRESSION")
     value = p[3]
     variable_name = p[1]
     assign(variable_name, value, current_scope_depth)
@@ -328,6 +426,33 @@ def p_expression_print(p):
     p[0] = p[2]
 
 
+def p_expression_mathexpression(p):
+    """
+    EXPRESSION : MATH_EXPRESSION
+    """
+    if verbose:
+        print("Call to method p_expression_mathexpression : EXPRESSION : MATH_EXPRESSION")
+    p[0] = p[1]  # TODO : str(p[1]) ?
+
+
+def p_expression_booleanexpression(p):
+    """
+    EXPRESSION : BOOLEAN_EXPRESSION
+    """
+    if verbose:
+        print("Call to method p_expression_booleanexpression : EXPRESSION : BOOLEAN_EXPRESSION")
+    p[0] = p[1]  # TODO : str(p[1]) ?
+
+
+def p_expression_ifexpression(p):
+    """
+    EXPRESSION : IF_EXPRESSION
+    """
+    if verbose:
+        print("Call to method p_expression_ifexpression : EXPRESSION : IF_EXPRESSION")
+    p[0] = p[1]
+
+
 def p_dumboblock(p):
     """
     DUMBO_BLOCK : OPENING EXPRESSION_LIST CLOSING
@@ -373,6 +498,138 @@ def p_program_single(p):
     if verbose:
         print("Call to method p_program_single : PROGRAM : DUMBO_BLOCK\n        | TXT")
     p[0] = p[1]
+
+
+def p_IN_mathexpression_plus(p):
+    """
+    MATH_EXPRESSION : MATH_EXPRESSION ADD TERM
+    """
+    p[0] = str(int(p[1]) + int(p[3]))
+
+
+def p_IN_mathexpression_minus(p):
+    """
+    MATH_EXPRESSION : MATH_EXPRESSION SUB TERM
+    """
+    p[0] = str(int(p[1]) - int(p[3]))
+
+
+def p_IN_mathexpression_TERM(p):
+    """
+    MATH_EXPRESSION : TERM
+    """
+    p[0] = str(int(p[1]))
+
+
+def p_IN_term_times(p):
+    """
+    TERM : TERM MUL FACTOR
+    """
+    p[0] = str(int(p[1]) * int(p[3]))
+
+
+def p_IN_term_div(p):
+    """
+    TERM : TERM DIV FACTOR
+    """
+    p[0] = str(int(int(p[1]) / int(p[3])))
+
+
+def p_IN_term_factor(p):
+    """
+    TERM : FACTOR
+    """
+    p[0] = p[1]
+
+
+def p_IN_factor_num(p):
+    """
+    FACTOR : INTEGER
+    """
+    p[0] = p[1]
+
+
+def p_IN_booleanexpression(p):
+    """
+    BOOLEAN_EXPRESSION : BOOLEAN BOOLEAN_OPERATOR BOOLEAN
+    """
+    operator = p[2]
+    left = p[1]
+    right = p[3]
+    if operator == "and":
+        p[0] = left and right
+    else:
+        p[0] = left or right
+
+
+def p_IN_booleanexpression_simple(p):
+    """
+    BOOLEAN_EXPRESSION : BOOLEAN
+    """
+    p[0] = p[1]
+
+
+def p_IN_boolean(p):
+    """
+    BOOLEAN : TRUE
+            | FALSE
+    """
+    p[0] = bool(p[1])
+
+
+def p_IN_booleanoperator_and(p):
+    """
+    BOOLEAN_OPERATOR : AND
+    """
+    p[0] = p[1]
+
+
+def p_IN_booleanoperator_or(p):
+    """
+    BOOLEAN_OPERATOR : OR
+    """
+    p[0] = p[1]
+
+
+def p_IN_integercomparison(p):
+    """
+    BOOLEAN_EXPRESSION : INTEGER INTEGER_COMPARATOR INTEGER
+    """
+    operator = p[2]
+    left = int(p[1])
+    right = int(p[3])
+    if operator == "<":
+        p[0] = left < right
+    elif operator == ">":
+        p[0] = left > right
+    elif operator == "=":
+        p[0] = left == right
+    elif operator == "!=":
+        p[0] = left != right
+
+
+def p_IN_integercomparator(p):
+    """
+    INTEGER_COMPARATOR : LT
+                       | GT
+                       | EQ
+                       | NE
+    """
+    p[0] = p[1]
+
+
+def p_IN_ifexpression(p):
+    """
+    IF_EXPRESSION : IF BOOLEAN_EXPRESSION DO EXPRESSION_LIST ENDIF
+    """
+    print("Call to method p_IN_ifexpression : IF_EXPRESSION : IF BOOLEAN_EXPRESSION DO EXPRESSION_LIST ENDIF")
+    condition = p[2]
+    if condition:
+        global current_scope_depth
+        current_scope_depth += 1
+        # TODO what about expression list ?
+    else:
+        p[0] = ""
 
 
 def p_error(p):
@@ -442,5 +699,6 @@ if __name__ == "__main__":
             print(f"line {token.lineno} : token '{token.value}' (type '{token.type}')")
         """
         parser = yacc.yacc(start=start, debug=True)
-        expression = "{{ a := '2'; b := '4'; {{ c := '6'; print a; print b; print c; }} print c; }}"
+        # expression = "{{ a := '2'; b := '4'; {{ c := '6'; print a; print b; print c; }} print c; }}"
+        expression = "{{ if true do print 'true'; endif }}"
         print(f"{expression} = {parser.parse(expression)}")

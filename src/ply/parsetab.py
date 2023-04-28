@@ -6,9 +6,9 @@ _tabversion = '3.10'
 
 _lr_method = 'LALR'
 
-_lr_signature = 'PROGRAMASSIGN CLOSING COMMA DO DOT ENDFOR FOR IN LPAREN OPENING PRINT RPAREN SEMICOLON STRING TXT VARIABLE\n    STRING_LIST_INTERIOR : STRING COMMA STRING_LIST_INTERIOR\n    \n    STRING_LIST_INTERIOR : STRING\n    \n    STRING_LIST : LPAREN STRING_LIST_INTERIOR RPAREN\n    \n    EXPRESSION : VARIABLE ASSIGN STRING_EXPRESSION\n               | VARIABLE ASSIGN STRING_LIST\n    \n    STRING_EXPRESSION : STRING_EXPRESSION DOT STRING_EXPRESSION\n    \n    STRING_EXPRESSION : STRING\n    \n    STRING_EXPRESSION : VARIABLE\n    \n    EXPRESSION : FOR VARIABLE IN STRING_LIST DO EXPRESSION_LIST ENDFOR\n    \n    EXPRESSION : FOR VARIABLE IN VARIABLE DO EXPRESSION_LIST ENDFOR\n    \n    EXPRESSION : PRINT STRING_EXPRESSION\n    \n    DUMBO_BLOCK : OPENING EXPRESSION_LIST CLOSING\n    \n    EXPRESSION_LIST : EXPRESSION SEMICOLON\n    \n    EXPRESSION_LIST : EXPRESSION SEMICOLON EXPRESSION_LIST\n    \n    PROGRAM : DUMBO_BLOCK PROGRAM\n            | TXT PROGRAM\n    \n    PROGRAM : DUMBO_BLOCK\n            | TXT\n    '
+_lr_signature = 'PROGRAMADD AND ASSIGN CLOSING COMMA DIV DO DOT ENDFOR ENDIF EQ FALSE FOR GT IF IN INTEGER LPAREN LT MUL NE OPENING OR PRINT RPAREN SEMICOLON STRING SUB TRUE TXT VARIABLE\n    STRING_LIST_INTERIOR : STRING COMMA STRING_LIST_INTERIOR\n    \n    STRING_LIST_INTERIOR : STRING\n    \n    STRING_LIST : LPAREN STRING_LIST_INTERIOR RPAREN\n    \n    EXPRESSION : VARIABLE ASSIGN STRING_EXPRESSION\n               | VARIABLE ASSIGN STRING_LIST\n               | VARIABLE ASSIGN MATH_EXPRESSION\n               | VARIABLE ASSIGN BOOLEAN_EXPRESSION\n    \n    STRING_EXPRESSION : STRING_EXPRESSION DOT STRING_EXPRESSION\n    \n    STRING_EXPRESSION : STRING\n    \n    STRING_EXPRESSION : VARIABLE\n    \n    EXPRESSION : FOR VARIABLE IN STRING_LIST DO EXPRESSION_LIST ENDFOR\n    \n    EXPRESSION : FOR VARIABLE IN VARIABLE DO EXPRESSION_LIST ENDFOR\n    \n    EXPRESSION : PRINT STRING_EXPRESSION\n    \n    EXPRESSION : MATH_EXPRESSION\n    \n    EXPRESSION : BOOLEAN_EXPRESSION\n    \n    EXPRESSION : IF_EXPRESSION\n    \n    DUMBO_BLOCK : OPENING EXPRESSION_LIST CLOSING\n    \n    EXPRESSION_LIST : EXPRESSION SEMICOLON\n    \n    EXPRESSION_LIST : EXPRESSION SEMICOLON EXPRESSION_LIST\n    \n    PROGRAM : DUMBO_BLOCK PROGRAM\n            | TXT PROGRAM\n    \n    PROGRAM : DUMBO_BLOCK\n            | TXT\n    \n    MATH_EXPRESSION : MATH_EXPRESSION ADD TERM\n    \n    MATH_EXPRESSION : MATH_EXPRESSION SUB TERM\n    \n    MATH_EXPRESSION : TERM\n    \n    TERM : TERM MUL FACTOR\n    \n    TERM : TERM DIV FACTOR\n    \n    TERM : FACTOR\n    \n    FACTOR : INTEGER\n    \n    BOOLEAN_EXPRESSION : BOOLEAN BOOLEAN_OPERATOR BOOLEAN\n    \n    BOOLEAN_EXPRESSION : BOOLEAN\n    \n    BOOLEAN : TRUE\n            | FALSE\n    \n    BOOLEAN_OPERATOR : AND\n    \n    BOOLEAN_OPERATOR : OR\n    \n    BOOLEAN_EXPRESSION : INTEGER INTEGER_COMPARATOR INTEGER\n    \n    INTEGER_COMPARATOR : LT\n                       | GT\n                       | EQ\n                       | NE\n    \n    IF_EXPRESSION : IF BOOLEAN_EXPRESSION DO EXPRESSION_LIST ENDIF\n    '
     
-_lr_action_items = {'TXT':([0,2,3,12,],[3,3,3,-12,]),'OPENING':([0,2,3,12,],[4,4,4,-12,]),'$end':([1,2,3,5,6,12,],[0,-17,-18,-15,-16,-12,]),'VARIABLE':([4,10,11,13,14,23,24,32,33,],[9,15,18,9,18,27,18,9,9,]),'FOR':([4,13,32,33,],[10,10,10,10,]),'PRINT':([4,13,32,33,],[11,11,11,11,]),'CLOSING':([7,13,19,],[12,-13,-14,]),'SEMICOLON':([8,16,17,18,20,21,29,30,37,38,],[13,-11,-7,-8,-4,-5,-6,-3,-10,-9,]),'ASSIGN':([9,],[14,]),'STRING':([11,14,22,24,31,],[17,17,26,17,26,]),'ENDFOR':([13,19,35,36,],[-13,-14,37,38,]),'LPAREN':([14,23,],[22,22,]),'IN':([15,],[23,]),'DOT':([16,17,18,20,29,],[24,-7,-8,24,24,]),'RPAREN':([25,26,34,],[30,-2,-1,]),'COMMA':([26,],[31,]),'DO':([27,28,30,],[32,33,-3,]),}
+_lr_action_items = {'TXT':([0,2,3,22,],[3,3,3,-17,]),'OPENING':([0,2,3,22,],[4,4,4,-17,]),'$end':([1,2,3,5,6,22,],[0,-22,-23,-20,-21,-17,]),'VARIABLE':([4,12,13,23,24,52,53,58,67,68,],[9,27,30,9,30,61,30,9,9,9,]),'FOR':([4,23,58,67,68,],[12,12,12,12,12,]),'PRINT':([4,23,58,67,68,],[13,13,13,13,13,]),'INTEGER':([4,18,23,24,25,26,31,32,36,37,38,39,40,58,67,68,],[17,42,17,17,50,50,50,50,57,-38,-39,-40,-41,17,17,17,]),'IF':([4,23,58,67,68,],[18,18,18,18,18,]),'TRUE':([4,18,23,24,33,34,35,58,67,68,],[20,20,20,20,20,-35,-36,20,20,20,]),'FALSE':([4,18,23,24,33,34,35,58,67,68,],[21,21,21,21,21,-35,-36,21,21,21,]),'CLOSING':([7,23,43,],[22,-18,-19,]),'SEMICOLON':([8,10,11,14,15,16,17,19,20,21,28,29,30,44,45,46,47,49,50,51,54,55,56,57,63,65,69,73,74,],[23,-14,-15,-16,-26,-32,-30,-29,-33,-34,-13,-9,-10,-4,-5,-6,-7,-24,-30,-25,-27,-28,-31,-37,-8,-3,-42,-12,-11,]),'ASSIGN':([9,],[24,]),'ADD':([10,15,17,19,46,49,50,51,54,55,],[25,-26,-30,-29,25,-24,-30,-25,-27,-28,]),'SUB':([10,15,17,19,46,49,50,51,54,55,],[26,-26,-30,-29,26,-24,-30,-25,-27,-28,]),'STRING':([13,24,48,53,66,],[29,29,60,29,60,]),'MUL':([15,17,19,49,50,51,54,55,],[31,-30,-29,31,-30,31,-27,-28,]),'DIV':([15,17,19,49,50,51,54,55,],[32,-30,-29,32,-30,32,-27,-28,]),'DO':([16,20,21,41,56,57,61,62,65,],[-32,-33,-34,58,-31,-37,67,68,-3,]),'AND':([16,20,21,],[34,-33,-34,]),'OR':([16,20,21,],[35,-33,-34,]),'LT':([17,42,],[37,37,]),'GT':([17,42,],[38,38,]),'EQ':([17,42,],[39,39,]),'NE':([17,42,],[40,40,]),'ENDIF':([23,43,64,],[-18,-19,69,]),'ENDFOR':([23,43,71,72,],[-18,-19,73,74,]),'LPAREN':([24,52,],[48,48,]),'IN':([27,],[52,]),'DOT':([28,29,30,44,63,],[53,-9,-10,53,53,]),'RPAREN':([59,60,70,],[65,-2,-1,]),'COMMA':([60,],[66,]),}
 
 _lr_action = {}
 for _k, _v in _lr_action_items.items():
@@ -17,7 +17,7 @@ for _k, _v in _lr_action_items.items():
       _lr_action[_x][_k] = _y
 del _lr_action_items
 
-_lr_goto_items = {'PROGRAM':([0,2,3,],[1,5,6,]),'DUMBO_BLOCK':([0,2,3,],[2,2,2,]),'EXPRESSION_LIST':([4,13,32,33,],[7,19,35,36,]),'EXPRESSION':([4,13,32,33,],[8,8,8,8,]),'STRING_EXPRESSION':([11,14,24,],[16,20,29,]),'STRING_LIST':([14,23,],[21,28,]),'STRING_LIST_INTERIOR':([22,31,],[25,34,]),}
+_lr_goto_items = {'PROGRAM':([0,2,3,],[1,5,6,]),'DUMBO_BLOCK':([0,2,3,],[2,2,2,]),'EXPRESSION_LIST':([4,23,58,67,68,],[7,43,64,71,72,]),'EXPRESSION':([4,23,58,67,68,],[8,8,8,8,8,]),'MATH_EXPRESSION':([4,23,24,58,67,68,],[10,10,46,10,10,10,]),'BOOLEAN_EXPRESSION':([4,18,23,24,58,67,68,],[11,41,11,47,11,11,11,]),'IF_EXPRESSION':([4,23,58,67,68,],[14,14,14,14,14,]),'TERM':([4,23,24,25,26,58,67,68,],[15,15,15,49,51,15,15,15,]),'BOOLEAN':([4,18,23,24,33,58,67,68,],[16,16,16,16,56,16,16,16,]),'FACTOR':([4,23,24,25,26,31,32,58,67,68,],[19,19,19,19,19,54,55,19,19,19,]),'STRING_EXPRESSION':([13,24,53,],[28,44,63,]),'BOOLEAN_OPERATOR':([16,],[33,]),'INTEGER_COMPARATOR':([17,42,],[36,36,]),'STRING_LIST':([24,52,],[45,62,]),'STRING_LIST_INTERIOR':([48,66,],[59,70,]),}
 
 _lr_goto = {}
 for _k, _v in _lr_goto_items.items():
@@ -27,22 +27,46 @@ for _k, _v in _lr_goto_items.items():
 del _lr_goto_items
 _lr_productions = [
   ("S' -> PROGRAM","S'",1,None,None,None),
-  ('STRING_LIST_INTERIOR -> STRING COMMA STRING_LIST_INTERIOR','STRING_LIST_INTERIOR',3,'p_stringlistinterior_double','dumbo.py',211),
-  ('STRING_LIST_INTERIOR -> STRING','STRING_LIST_INTERIOR',1,'p_stringlistinterior_single','dumbo.py',222),
-  ('STRING_LIST -> LPAREN STRING_LIST_INTERIOR RPAREN','STRING_LIST',3,'p_stringlist','dumbo.py',231),
-  ('EXPRESSION -> VARIABLE ASSIGN STRING_EXPRESSION','EXPRESSION',3,'p_expression_assignments','dumbo.py',240),
-  ('EXPRESSION -> VARIABLE ASSIGN STRING_LIST','EXPRESSION',3,'p_expression_assignments','dumbo.py',241),
-  ('STRING_EXPRESSION -> STRING_EXPRESSION DOT STRING_EXPRESSION','STRING_EXPRESSION',3,'p_stringexpression_double','dumbo.py',253),
-  ('STRING_EXPRESSION -> STRING','STRING_EXPRESSION',1,'p_string_expression_string','dumbo.py',262),
-  ('STRING_EXPRESSION -> VARIABLE','STRING_EXPRESSION',1,'p_string_expression_variable','dumbo.py',271),
-  ('EXPRESSION -> FOR VARIABLE IN STRING_LIST DO EXPRESSION_LIST ENDFOR','EXPRESSION',7,'p_expression_strlistfor','dumbo.py',284),
-  ('EXPRESSION -> FOR VARIABLE IN VARIABLE DO EXPRESSION_LIST ENDFOR','EXPRESSION',7,'p_expression_varfor','dumbo.py',292),
-  ('EXPRESSION -> PRINT STRING_EXPRESSION','EXPRESSION',2,'p_expression_print','dumbo.py',300),
-  ('DUMBO_BLOCK -> OPENING EXPRESSION_LIST CLOSING','DUMBO_BLOCK',3,'p_dumboblock','dumbo.py',309),
-  ('EXPRESSION_LIST -> EXPRESSION SEMICOLON','EXPRESSION_LIST',2,'p_expression_list_single','dumbo.py',318),
-  ('EXPRESSION_LIST -> EXPRESSION SEMICOLON EXPRESSION_LIST','EXPRESSION_LIST',3,'p_expression_list_multiple','dumbo.py',327),
-  ('PROGRAM -> DUMBO_BLOCK PROGRAM','PROGRAM',2,'p_program_double','dumbo.py',336),
-  ('PROGRAM -> TXT PROGRAM','PROGRAM',2,'p_program_double','dumbo.py',337),
-  ('PROGRAM -> DUMBO_BLOCK','PROGRAM',1,'p_program_single','dumbo.py',346),
-  ('PROGRAM -> TXT','PROGRAM',1,'p_program_single','dumbo.py',347),
+  ('STRING_LIST_INTERIOR -> STRING COMMA STRING_LIST_INTERIOR','STRING_LIST_INTERIOR',3,'p_stringlistinterior_double','dumbo.py',329),
+  ('STRING_LIST_INTERIOR -> STRING','STRING_LIST_INTERIOR',1,'p_stringlistinterior_single','dumbo.py',340),
+  ('STRING_LIST -> LPAREN STRING_LIST_INTERIOR RPAREN','STRING_LIST',3,'p_stringlist','dumbo.py',349),
+  ('EXPRESSION -> VARIABLE ASSIGN STRING_EXPRESSION','EXPRESSION',3,'p_expression_assignments','dumbo.py',358),
+  ('EXPRESSION -> VARIABLE ASSIGN STRING_LIST','EXPRESSION',3,'p_expression_assignments','dumbo.py',359),
+  ('EXPRESSION -> VARIABLE ASSIGN MATH_EXPRESSION','EXPRESSION',3,'p_expression_assignments','dumbo.py',360),
+  ('EXPRESSION -> VARIABLE ASSIGN BOOLEAN_EXPRESSION','EXPRESSION',3,'p_expression_assignments','dumbo.py',361),
+  ('STRING_EXPRESSION -> STRING_EXPRESSION DOT STRING_EXPRESSION','STRING_EXPRESSION',3,'p_stringexpression_double','dumbo.py',373),
+  ('STRING_EXPRESSION -> STRING','STRING_EXPRESSION',1,'p_string_expression_string','dumbo.py',382),
+  ('STRING_EXPRESSION -> VARIABLE','STRING_EXPRESSION',1,'p_string_expression_variable','dumbo.py',391),
+  ('EXPRESSION -> FOR VARIABLE IN STRING_LIST DO EXPRESSION_LIST ENDFOR','EXPRESSION',7,'p_expression_strlistfor','dumbo.py',406),
+  ('EXPRESSION -> FOR VARIABLE IN VARIABLE DO EXPRESSION_LIST ENDFOR','EXPRESSION',7,'p_expression_varfor','dumbo.py',414),
+  ('EXPRESSION -> PRINT STRING_EXPRESSION','EXPRESSION',2,'p_expression_print','dumbo.py',422),
+  ('EXPRESSION -> MATH_EXPRESSION','EXPRESSION',1,'p_expression_mathexpression','dumbo.py',431),
+  ('EXPRESSION -> BOOLEAN_EXPRESSION','EXPRESSION',1,'p_expression_booleanexpression','dumbo.py',440),
+  ('EXPRESSION -> IF_EXPRESSION','EXPRESSION',1,'p_expression_ifexpression','dumbo.py',449),
+  ('DUMBO_BLOCK -> OPENING EXPRESSION_LIST CLOSING','DUMBO_BLOCK',3,'p_dumboblock','dumbo.py',458),
+  ('EXPRESSION_LIST -> EXPRESSION SEMICOLON','EXPRESSION_LIST',2,'p_expression_list_single','dumbo.py',467),
+  ('EXPRESSION_LIST -> EXPRESSION SEMICOLON EXPRESSION_LIST','EXPRESSION_LIST',3,'p_expression_list_multiple','dumbo.py',476),
+  ('PROGRAM -> DUMBO_BLOCK PROGRAM','PROGRAM',2,'p_program_double','dumbo.py',485),
+  ('PROGRAM -> TXT PROGRAM','PROGRAM',2,'p_program_double','dumbo.py',486),
+  ('PROGRAM -> DUMBO_BLOCK','PROGRAM',1,'p_program_single','dumbo.py',495),
+  ('PROGRAM -> TXT','PROGRAM',1,'p_program_single','dumbo.py',496),
+  ('MATH_EXPRESSION -> MATH_EXPRESSION ADD TERM','MATH_EXPRESSION',3,'p_IN_mathexpression_plus','dumbo.py',505),
+  ('MATH_EXPRESSION -> MATH_EXPRESSION SUB TERM','MATH_EXPRESSION',3,'p_IN_mathexpression_minus','dumbo.py',512),
+  ('MATH_EXPRESSION -> TERM','MATH_EXPRESSION',1,'p_IN_mathexpression_TERM','dumbo.py',519),
+  ('TERM -> TERM MUL FACTOR','TERM',3,'p_IN_term_times','dumbo.py',526),
+  ('TERM -> TERM DIV FACTOR','TERM',3,'p_IN_term_div','dumbo.py',533),
+  ('TERM -> FACTOR','TERM',1,'p_IN_term_factor','dumbo.py',540),
+  ('FACTOR -> INTEGER','FACTOR',1,'p_IN_factor_num','dumbo.py',547),
+  ('BOOLEAN_EXPRESSION -> BOOLEAN BOOLEAN_OPERATOR BOOLEAN','BOOLEAN_EXPRESSION',3,'p_IN_booleanexpression','dumbo.py',554),
+  ('BOOLEAN_EXPRESSION -> BOOLEAN','BOOLEAN_EXPRESSION',1,'p_IN_booleanexpression_simple','dumbo.py',567),
+  ('BOOLEAN -> TRUE','BOOLEAN',1,'p_IN_boolean','dumbo.py',574),
+  ('BOOLEAN -> FALSE','BOOLEAN',1,'p_IN_boolean','dumbo.py',575),
+  ('BOOLEAN_OPERATOR -> AND','BOOLEAN_OPERATOR',1,'p_IN_booleanoperator_and','dumbo.py',582),
+  ('BOOLEAN_OPERATOR -> OR','BOOLEAN_OPERATOR',1,'p_IN_booleanoperator_or','dumbo.py',589),
+  ('BOOLEAN_EXPRESSION -> INTEGER INTEGER_COMPARATOR INTEGER','BOOLEAN_EXPRESSION',3,'p_IN_integercomparison','dumbo.py',596),
+  ('INTEGER_COMPARATOR -> LT','INTEGER_COMPARATOR',1,'p_IN_integercomparator','dumbo.py',613),
+  ('INTEGER_COMPARATOR -> GT','INTEGER_COMPARATOR',1,'p_IN_integercomparator','dumbo.py',614),
+  ('INTEGER_COMPARATOR -> EQ','INTEGER_COMPARATOR',1,'p_IN_integercomparator','dumbo.py',615),
+  ('INTEGER_COMPARATOR -> NE','INTEGER_COMPARATOR',1,'p_IN_integercomparator','dumbo.py',616),
+  ('IF_EXPRESSION -> IF BOOLEAN_EXPRESSION DO EXPRESSION_LIST ENDIF','IF_EXPRESSION',5,'p_IN_ifexpression','dumbo.py',623),
 ]
