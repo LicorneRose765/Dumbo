@@ -1,15 +1,15 @@
 import ply.lex as lex
 import ply.yacc as yacc
 import os
-from lark import Lark, Transformer, Token, Tree
 import sys
 from pathlib import Path
+from symbols_table import SymbolsTable
 
 # *-------------------------------------------------------------------------------------------------------------------*
 #     VARS
 # *-------------------------------------------------------------------------------------------------------------------*
 
-verbose = True
+verbose = False
 
 states = (
     ("IN", "exclusive"),  # state 'IN'  : when inside dumbo code
@@ -17,17 +17,22 @@ states = (
 
 start = "PROGRAM"
 
-variables_table = {}
+symbols_table = SymbolsTable()
+
+current_scope_depth = 0
 
 # *-------------------------------------------------------------------------------------------------------------------*
 #     METHODS
 # *-------------------------------------------------------------------------------------------------------------------*
 
 
-def assign(variable_name, value):
-    """Assigns the value 'value' to the variable named 'variable_name'."""
-    print(f"Assigning {value:} to {variable_name:}")
-    variables_table[variable_name] = value
+def assign(variable_name, value, scope_depth):
+    """Assigns the value 'value' to the variable named 'variable_name' at the scope depth 'scope_depth' via the symbols table."""
+    symbols_table.assign(variable_name, value, scope_depth)
+
+
+def get(variable_name, scope_depth):
+    return symbols_table.get(variable_name, scope_depth)
 
 
 def infinite_yacc():
@@ -42,7 +47,10 @@ def infinite_yacc():
             continue
         result = parser.parse(s)
         print(result)
-        print(variables_table)
+        if verbose:
+            print("===== SYMBOLS TABLE =====")
+            print(symbols_table)
+            print("===== ======= ===== =====")
 
 
 # *-------------------------------------------------------------------------------------------------------------------*
@@ -89,31 +97,45 @@ t_IN_ignore = ' \t'
 # I have to define these two as methods so I can give string the priority
 def t_OPENING(t):
     """{{"""
+    global current_scope_depth
     # INITIAL -> IN
     t.lexer.level = 1
+    current_scope_depth = 1
+    if verbose:
+        print(f"Current scope depth changed to {current_scope_depth=:} because of first opening {'{{'}")
+    symbols_table.init_depth_entry(current_scope_depth)
     t.lexer.begin('IN')
     return t
 
 
 def t_IN_OPENING(t):
     """{{"""
+    global current_scope_depth
     t.lexer.level += 1
+    current_scope_depth += 1
+    if verbose:
+        print(f"Current scope depth changed to {current_scope_depth=:} because of new opening {'{{'}")
+    symbols_table.init_depth_entry(current_scope_depth)
     return t
 
 
 def t_IN_CLOSING(t):
     """}}"""
+    global current_scope_depth
     t.lexer.level -= 1
-
+    symbols_table.delete(current_scope_depth)
+    current_scope_depth -= 1
+    if verbose:
+        print(f"Current scope depth changed to {current_scope_depth=:} because of closing {'}}'}")
     if t.lexer.level == 0:
         t.lexer.begin('INITIAL')
-
     return t
 
 
 def t_CLOSING(t):
     """}}"""
-    print(f"Unexpected '{t.value[0]*2}' at line {lexer.lineno}")
+    if verbose:
+        print(f"Unexpected '{t.value[0]*2}' at line {lexer.lineno}")
 
 
 def t_IN_SEMICOLON(t):
@@ -211,9 +233,9 @@ def p_stringlistinterior_double(p):
     STRING_LIST_INTERIOR : STRING COMMA STRING_LIST_INTERIOR
     """
     if verbose:
-        print("Call to method p_stringlistinterior_double")
-    print(f"{p[1]:}")
-    print(f"{p[3]:}")
+        print("Call to method p_stringlistinterior_double : STRING_LIST_INTERIOR : STRING COMMA STRING_LIST_INTERIOR")
+        print(f"{p[1]:}")
+        print(f"{p[3]:}")
     p[0] = [p[1][1:-1]] + p[3]
 
 
@@ -222,7 +244,7 @@ def p_stringlistinterior_single(p):
     STRING_LIST_INTERIOR : STRING
     """
     if verbose:
-        print("Call to method p_stringlistinterior_single")
+        print("Call to method p_stringlistinterior_single : STRING_LIST_INTERIOR : STRING")
     p[0] = [p[1][1:-1]]
 
 
@@ -231,7 +253,7 @@ def p_stringlist(p):
     STRING_LIST : LPAREN STRING_LIST_INTERIOR RPAREN
     """
     if verbose:
-        print("Call to method p_stringlist")
+        print("Call to method p_stringlist : STRING_LIST : LPAREN STRING_LIST_INTERIOR RPAREN")
     p[0] = p[2]
 
 
@@ -241,10 +263,10 @@ def p_expression_assignments(p):
                | VARIABLE ASSIGN STRING_LIST
     """
     if verbose:
-        print("Call to method p_expression_assignments")
+        print("Call to method p_expression_assignments : EXPRESSION : VARIABLE ASSIGN STRING_EXPRESSION\n           | VARIABLE ASSIGN STRING_LIST")
     value = p[3]
     variable_name = p[1]
-    assign(variable_name, value)
+    assign(variable_name, value, current_scope_depth)
     p[0] = ''
 
 
@@ -253,7 +275,7 @@ def p_stringexpression_double(p):
     STRING_EXPRESSION : STRING_EXPRESSION DOT STRING_EXPRESSION
     """
     if verbose:
-        print("Call to method p_stringexpression_double")
+        print("Call to method p_stringexpression_double : STRING_EXPRESSION : STRING_EXPRESSION DOT STRING_EXPRESSION")
     p[0] = p[1] + p[3]
 
 
@@ -262,7 +284,7 @@ def p_string_expression_string(p):
     STRING_EXPRESSION : STRING
     """
     if verbose:
-        print("Call to method p_stringexpression_string")
+        print("Call to method p_stringexpression_string : STRING_EXPRESSION : STRING")
     p[0] = p[1][1:-1]
 
 
@@ -271,12 +293,14 @@ def p_string_expression_variable(p):
     STRING_EXPRESSION : VARIABLE
     """
     if verbose:
-        print("Call to method p_stringexpression_variable")
-    try:
-        value = variables_table[p[1]]
-    except KeyError:
-        raise SyntaxError(f"Cannot find variable {p[1]} in the scope.")
-    p[0] = value
+        print("Call to method p_stringexpression_variable : STRING_EXPRESSION : VARIABLE")
+    value = get(p[1], current_scope_depth)
+    if type(value) == str:
+        p[0] = value
+    elif type(value) == list or type(value) == tuple:
+        p[0] = ", ".join(value)
+    else:
+        p[0] = str(value)
 
 
 def p_expression_strlistfor(p):
@@ -284,7 +308,7 @@ def p_expression_strlistfor(p):
     EXPRESSION : FOR VARIABLE IN STRING_LIST DO EXPRESSION_LIST ENDFOR
     """
     if verbose:
-        print("Call to method p_expression_strlistfor")
+        print("Call to method p_expression_strlistfor : EXPRESSION : FOR VARIABLE IN STRING_LIST DO EXPRESSION_LIST ENDFOR")
 
 
 def p_expression_varfor(p):
@@ -292,7 +316,7 @@ def p_expression_varfor(p):
     EXPRESSION : FOR VARIABLE IN VARIABLE DO EXPRESSION_LIST ENDFOR
     """
     if verbose:
-        print("Call to method p_expression_varfor")
+        print("Call to method p_expression_varfor : EXPRESSION : FOR VARIABLE IN VARIABLE DO EXPRESSION_LIST ENDFOR")
 
 
 def p_expression_print(p):
@@ -300,7 +324,7 @@ def p_expression_print(p):
     EXPRESSION : PRINT STRING_EXPRESSION
     """
     if verbose:
-        print("Call to method p_expression_print")
+        print("Call to method p_expression_print : EXPRESSION : PRINT STRING_EXPRESSION")
     p[0] = p[2]
 
 
@@ -309,7 +333,7 @@ def p_dumboblock(p):
     DUMBO_BLOCK : OPENING EXPRESSION_LIST CLOSING
     """
     if verbose:
-        print("Call to method p_dumboblock")
+        print("Call to method p_dumboblock : DUMBO_BLOCK : OPENING EXPRESSION_LIST CLOSING")
     p[0] = "".join(p[2])
 
 
@@ -318,7 +342,7 @@ def p_expression_list_single(p):
     EXPRESSION_LIST : EXPRESSION SEMICOLON
     """
     if verbose:
-        print("Call to method p_expression_list_single")
+        print("Call to method p_expression_list_single : EXPRESSION_LIST : EXPRESSION SEMICOLON")
     p[0] = [p[1]]
 
 
@@ -327,7 +351,7 @@ def p_expression_list_multiple(p):
     EXPRESSION_LIST : EXPRESSION SEMICOLON EXPRESSION_LIST
     """
     if verbose:
-        print("Call to method p_expression_list_multiple")
+        print("Call to method p_expression_list_multiple : EXPRESSION_LIST : EXPRESSION SEMICOLON EXPRESSION_LIST")
     p[0] = [p[1]] + p[3]
 
 
@@ -337,7 +361,7 @@ def p_program_double(p):
             | TXT PROGRAM
     """
     if verbose:
-        print("Call to method p_program_double")
+        print("Call to method p_program_double : PROGRAM : DUMBO_BLOCK PROGRAM\n        | TXT PROGRAM")
     p[0] = p[1] + p[2]
 
 
@@ -347,7 +371,7 @@ def p_program_single(p):
             | TXT
     """
     if verbose:
-        print("Call to method p_program_single")
+        print("Call to method p_program_single : PROGRAM : DUMBO_BLOCK\n        | TXT")
     p[0] = p[1]
 
 
@@ -413,9 +437,10 @@ if __name__ == "__main__":
         infinite_yacc()
     else:
         lexer = lex.lex()
-        lexer.input(input())
+        """lexer.input(input())
         for token in lexer:
             print(f"line {token.lineno} : token '{token.value}' (type '{token.type}')")
-
+        """
         parser = yacc.yacc(start=start, debug=True)
-        infinite_yacc()
+        expression = "{{ a := '2'; b := '4'; {{ c := '6'; print a; print b; print c; }} print c; }}"
+        print(f"{expression} = {parser.parse(expression)}")
