@@ -88,7 +88,6 @@ def t_IN_CLOSING(t):
     """}}"""
     global current_scope_depth
     t.lexer.level -= 1
-    symbols_table.delete(current_scope_depth)
     current_scope_depth -= 1
     if verbose:
         print(f"Current scope depth changed to {current_scope_depth=:} because of closing {'}}'}")
@@ -140,6 +139,12 @@ def t_IN_PRINT(t):
 
 def t_IN_FOR(t):
     """for"""
+    global current_scope_depth
+    t.lexer.level += 1
+    current_scope_depth += 1
+    if verbose:
+        print(f"Current scope depth changed to {current_scope_depth=:} because of for")
+    symbols_table.init_depth_entry(current_scope_depth)
     return t
 
 
@@ -155,6 +160,14 @@ def t_IN_DO(t):
 
 def t_IN_ENDFOR(t):
     """endfor"""
+    global current_scope_depth
+    t.lexer.level -= 1
+    symbols_table.delete(current_scope_depth)
+    current_scope_depth -= 1
+    if verbose:
+        print(f"Current scope depth changed to {current_scope_depth=:} because of endfor")
+    if t.lexer.level == 0:
+        t.lexer.begin('INITIAL')
     return t
 
 

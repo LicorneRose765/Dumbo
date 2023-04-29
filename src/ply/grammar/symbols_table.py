@@ -1,4 +1,4 @@
-verbose = False
+verbose = True
 
 
 class SymbolsTable:

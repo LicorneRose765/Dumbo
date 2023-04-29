@@ -101,6 +101,7 @@ def p_expression_strlistfor(p):
     """
     if verbose:
         print("Call to method p_expression_strlistfor : EXPRESSION : FOR VARIABLE IN STRING_LIST DO EXPRESSION_LIST ENDFOR")
+    p[0] = "should have been a for result :("
 
 
 def p_expression_varfor(p):
@@ -109,6 +110,15 @@ def p_expression_varfor(p):
     """
     if verbose:
         print("Call to method p_expression_varfor : EXPRESSION : FOR VARIABLE IN VARIABLE DO EXPRESSION_LIST ENDFOR")
+    global current_scope_depth
+    iterate_over = p[4]
+    iterate_over_value = get(p[4], current_scope_depth)
+    if iterate_over_value is None:
+        p[0] = ""
+    else:
+        iterator_name = p[2]
+        assign(iterator_name, iterate_over_value[0], current_scope_depth)
+        p[0] = "should have been a for result :("
 
 
 def p_expression_print(p):

@@ -119,5 +119,5 @@ if __name__ == "__main__":
         parser = yacc.yacc(start=start, debug=True)
         # expression = "{{ a := '2'; b := '4'; {{ c := '6'; print a; print b; print c; }} print c; }}"
         # expression = "{{ if true do print 'true'; endif }}"
-        expression = "{{ a := 2+2 > 5; print a; }}"
+        expression = "{{ list := ('1', '2', '3'); for var in list do print var; endfor; }}"
         print(f"{expression} = {parser.parse(expression)}")
