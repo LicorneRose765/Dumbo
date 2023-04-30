@@ -3,33 +3,33 @@ Created by PLY version 3.11 (http://www.dabeaz.com/ply)
 Grammar
 
 Rule 0     S' -> PROGRAM
-Rule 1     BOOLEAN_EXPRESSION -> BOOLEAN BOOLEAN_OPERATOR BOOLEAN
+Rule 1     BOOLEAN_EXPRESSION -> BOOLEAN_EXPRESSION BOOLEAN_OPERATOR BOOLEAN_EXPRESSION
 Rule 2     MATH_EXPRESSION -> MATH_EXPRESSION ADD TERM
 Rule 3     MATH_EXPRESSION -> MATH_EXPRESSION SUB TERM
-Rule 4     BOOLEAN_EXPRESSION -> BOOLEAN
-Rule 5     MATH_EXPRESSION -> TERM
-Rule 6     STRING_LIST_INTERIOR -> STRING COMMA STRING_LIST_INTERIOR
-Rule 7     BOOLEAN -> TRUE
-Rule 8     BOOLEAN -> FALSE
-Rule 9     TERM -> TERM MUL FACTOR
-Rule 10    STRING_LIST_INTERIOR -> STRING
-Rule 11    BOOLEAN_OPERATOR -> AND
-Rule 12    TERM -> TERM DIV FACTOR
-Rule 13    BOOLEAN_OPERATOR -> OR
+Rule 4     STRING_LIST_INTERIOR -> STRING COMMA STRING_LIST_INTERIOR
+Rule 5     BOOLEAN_EXPRESSION -> BOOLEAN
+Rule 6     MATH_EXPRESSION -> TERM
+Rule 7     STRING_LIST_INTERIOR -> STRING
+Rule 8     BOOLEAN -> TRUE
+Rule 9     BOOLEAN -> FALSE
+Rule 10    TERM -> TERM MUL FACTOR
+Rule 11    TERM -> TERM DIV FACTOR
+Rule 12    STRING_LIST -> LPAREN STRING_LIST_INTERIOR RPAREN
+Rule 13    BOOLEAN_OPERATOR -> AND
 Rule 14    TERM -> FACTOR
-Rule 15    STRING_LIST -> LPAREN STRING_LIST_INTERIOR RPAREN
-Rule 16    BOOLEAN_EXPRESSION -> MATH_EXPRESSION INTEGER_COMPARATOR MATH_EXPRESSION
-Rule 17    FACTOR -> INTEGER
-Rule 18    EXPRESSION -> VARIABLE ASSIGN STRING_EXPRESSION
-Rule 19    EXPRESSION -> VARIABLE ASSIGN STRING_LIST
-Rule 20    EXPRESSION -> VARIABLE ASSIGN MATH_EXPRESSION
-Rule 21    EXPRESSION -> VARIABLE ASSIGN BOOLEAN_EXPRESSION
-Rule 22    INTEGER_COMPARATOR -> LT
-Rule 23    INTEGER_COMPARATOR -> GT
-Rule 24    INTEGER_COMPARATOR -> EQ
-Rule 25    INTEGER_COMPARATOR -> NE
-Rule 26    STRING_EXPRESSION -> STRING_EXPRESSION DOT STRING_EXPRESSION
-Rule 27    STRING_EXPRESSION -> STRING
+Rule 15    EXPRESSION -> VARIABLE ASSIGN STRING_EXPRESSION
+Rule 16    EXPRESSION -> VARIABLE ASSIGN STRING_LIST
+Rule 17    EXPRESSION -> VARIABLE ASSIGN MATH_EXPRESSION
+Rule 18    EXPRESSION -> VARIABLE ASSIGN BOOLEAN_EXPRESSION
+Rule 19    BOOLEAN_OPERATOR -> OR
+Rule 20    FACTOR -> INTEGER
+Rule 21    BOOLEAN_EXPRESSION -> MATH_EXPRESSION INTEGER_COMPARATOR MATH_EXPRESSION
+Rule 22    STRING_EXPRESSION -> STRING_EXPRESSION DOT STRING_EXPRESSION
+Rule 23    STRING_EXPRESSION -> STRING
+Rule 24    INTEGER_COMPARATOR -> LT
+Rule 25    INTEGER_COMPARATOR -> GT
+Rule 26    INTEGER_COMPARATOR -> EQ
+Rule 27    INTEGER_COMPARATOR -> NE
 Rule 28    STRING_EXPRESSION -> VARIABLE
 Rule 29    EXPRESSION -> FOR VARIABLE IN STRING_LIST DO EXPRESSION_LIST ENDFOR
 Rule 30    EXPRESSION -> FOR VARIABLE IN VARIABLE DO EXPRESSION_LIST ENDFOR
@@ -37,78 +37,78 @@ Rule 31    EXPRESSION -> PRINT STRING_EXPRESSION
 Rule 32    EXPRESSION -> MATH_EXPRESSION
 Rule 33    EXPRESSION -> BOOLEAN_EXPRESSION
 Rule 34    EXPRESSION -> IF_EXPRESSION
-Rule 35    DUMBO_BLOCK -> OPENING EXPRESSION_LIST CLOSING
+Rule 35    IF_EXPRESSION -> IF BOOLEAN_EXPRESSION DO EXPRESSION_LIST ENDIF
 Rule 36    EXPRESSION_LIST -> EXPRESSION SEMICOLON
 Rule 37    EXPRESSION_LIST -> EXPRESSION SEMICOLON EXPRESSION_LIST
-Rule 38    PROGRAM -> DUMBO_BLOCK PROGRAM
-Rule 39    PROGRAM -> TXT PROGRAM
-Rule 40    PROGRAM -> DUMBO_BLOCK
-Rule 41    PROGRAM -> TXT
-Rule 42    IF_EXPRESSION -> IF BOOLEAN_EXPRESSION DO EXPRESSION_LIST ENDIF
+Rule 38    DUMBO_BLOCK -> OPENING EXPRESSION_LIST CLOSING
+Rule 39    PROGRAM -> DUMBO_BLOCK PROGRAM
+Rule 40    PROGRAM -> TXT PROGRAM
+Rule 41    PROGRAM -> DUMBO_BLOCK
+Rule 42    PROGRAM -> TXT
 
 Terminals, with rules where they appear
 
 ADD                  : 2
-AND                  : 11
-ASSIGN               : 18 19 20 21
-CLOSING              : 35
-COMMA                : 6
-DIV                  : 12
-DO                   : 29 30 42
-DOT                  : 26
+AND                  : 13
+ASSIGN               : 15 16 17 18
+CLOSING              : 38
+COMMA                : 4
+DIV                  : 11
+DO                   : 29 30 35
+DOT                  : 22
 ENDFOR               : 29 30
-ENDIF                : 42
-EQ                   : 24
-FALSE                : 8
+ENDIF                : 35
+EQ                   : 26
+FALSE                : 9
 FOR                  : 29 30
-GT                   : 23
-IF                   : 42
+GT                   : 25
+IF                   : 35
 IN                   : 29 30
-INTEGER              : 17
-LPAREN               : 15
-LT                   : 22
-MUL                  : 9
-NE                   : 25
-OPENING              : 35
-OR                   : 13
+INTEGER              : 20
+LPAREN               : 12
+LT                   : 24
+MUL                  : 10
+NE                   : 27
+OPENING              : 38
+OR                   : 19
 PRINT                : 31
-RPAREN               : 15
+RPAREN               : 12
 SEMICOLON            : 36 37
-STRING               : 6 10 27
+STRING               : 4 7 23
 SUB                  : 3
-TRUE                 : 7
-TXT                  : 39 41
-VARIABLE             : 18 19 20 21 28 29 30 30
+TRUE                 : 8
+TXT                  : 40 42
+VARIABLE             : 15 16 17 18 28 29 30 30
 error                : 
 
 Nonterminals, with rules where they appear
 
-BOOLEAN              : 1 1 4
-BOOLEAN_EXPRESSION   : 21 33 42
+BOOLEAN              : 5
+BOOLEAN_EXPRESSION   : 1 1 18 33 35
 BOOLEAN_OPERATOR     : 1
-DUMBO_BLOCK          : 38 40
+DUMBO_BLOCK          : 39 41
 EXPRESSION           : 36 37
-EXPRESSION_LIST      : 29 30 35 37 42
-FACTOR               : 9 12 14
+EXPRESSION_LIST      : 29 30 35 37 38
+FACTOR               : 10 11 14
 IF_EXPRESSION        : 34
-INTEGER_COMPARATOR   : 16
-MATH_EXPRESSION      : 2 3 16 16 20 32
-PROGRAM              : 38 39 0
-STRING_EXPRESSION    : 18 26 26 31
-STRING_LIST          : 19 29
-STRING_LIST_INTERIOR : 6 15
-TERM                 : 2 3 5 9 12
+INTEGER_COMPARATOR   : 21
+MATH_EXPRESSION      : 2 3 17 21 21 32
+PROGRAM              : 39 40 0
+STRING_EXPRESSION    : 15 22 22 31
+STRING_LIST          : 16 29
+STRING_LIST_INTERIOR : 4 12
+TERM                 : 2 3 6 10 11
 
 Parsing method: LALR
 
 state 0
 
     (0) S' -> . PROGRAM
-    (38) PROGRAM -> . DUMBO_BLOCK PROGRAM
-    (39) PROGRAM -> . TXT PROGRAM
-    (40) PROGRAM -> . DUMBO_BLOCK
-    (41) PROGRAM -> . TXT
-    (35) DUMBO_BLOCK -> . OPENING EXPRESSION_LIST CLOSING
+    (39) PROGRAM -> . DUMBO_BLOCK PROGRAM
+    (40) PROGRAM -> . TXT PROGRAM
+    (41) PROGRAM -> . DUMBO_BLOCK
+    (42) PROGRAM -> . TXT
+    (38) DUMBO_BLOCK -> . OPENING EXPRESSION_LIST CLOSING
 
     TXT             shift and go to state 3
     OPENING         shift and go to state 4
@@ -124,15 +124,15 @@ state 1
 
 state 2
 
-    (38) PROGRAM -> DUMBO_BLOCK . PROGRAM
-    (40) PROGRAM -> DUMBO_BLOCK .
-    (38) PROGRAM -> . DUMBO_BLOCK PROGRAM
-    (39) PROGRAM -> . TXT PROGRAM
-    (40) PROGRAM -> . DUMBO_BLOCK
-    (41) PROGRAM -> . TXT
-    (35) DUMBO_BLOCK -> . OPENING EXPRESSION_LIST CLOSING
+    (39) PROGRAM -> DUMBO_BLOCK . PROGRAM
+    (41) PROGRAM -> DUMBO_BLOCK .
+    (39) PROGRAM -> . DUMBO_BLOCK PROGRAM
+    (40) PROGRAM -> . TXT PROGRAM
+    (41) PROGRAM -> . DUMBO_BLOCK
+    (42) PROGRAM -> . TXT
+    (38) DUMBO_BLOCK -> . OPENING EXPRESSION_LIST CLOSING
 
-    $end            reduce using rule 40 (PROGRAM -> DUMBO_BLOCK .)
+    $end            reduce using rule 41 (PROGRAM -> DUMBO_BLOCK .)
     TXT             shift and go to state 3
     OPENING         shift and go to state 4
 
@@ -141,15 +141,15 @@ state 2
 
 state 3
 
-    (39) PROGRAM -> TXT . PROGRAM
-    (41) PROGRAM -> TXT .
-    (38) PROGRAM -> . DUMBO_BLOCK PROGRAM
-    (39) PROGRAM -> . TXT PROGRAM
-    (40) PROGRAM -> . DUMBO_BLOCK
-    (41) PROGRAM -> . TXT
-    (35) DUMBO_BLOCK -> . OPENING EXPRESSION_LIST CLOSING
+    (40) PROGRAM -> TXT . PROGRAM
+    (42) PROGRAM -> TXT .
+    (39) PROGRAM -> . DUMBO_BLOCK PROGRAM
+    (40) PROGRAM -> . TXT PROGRAM
+    (41) PROGRAM -> . DUMBO_BLOCK
+    (42) PROGRAM -> . TXT
+    (38) DUMBO_BLOCK -> . OPENING EXPRESSION_LIST CLOSING
 
-    $end            reduce using rule 41 (PROGRAM -> TXT .)
+    $end            reduce using rule 42 (PROGRAM -> TXT .)
     TXT             shift and go to state 3
     OPENING         shift and go to state 4
 
@@ -158,13 +158,13 @@ state 3
 
 state 4
 
-    (35) DUMBO_BLOCK -> OPENING . EXPRESSION_LIST CLOSING
+    (38) DUMBO_BLOCK -> OPENING . EXPRESSION_LIST CLOSING
     (36) EXPRESSION_LIST -> . EXPRESSION SEMICOLON
     (37) EXPRESSION_LIST -> . EXPRESSION SEMICOLON EXPRESSION_LIST
-    (18) EXPRESSION -> . VARIABLE ASSIGN STRING_EXPRESSION
-    (19) EXPRESSION -> . VARIABLE ASSIGN STRING_LIST
-    (20) EXPRESSION -> . VARIABLE ASSIGN MATH_EXPRESSION
-    (21) EXPRESSION -> . VARIABLE ASSIGN BOOLEAN_EXPRESSION
+    (15) EXPRESSION -> . VARIABLE ASSIGN STRING_EXPRESSION
+    (16) EXPRESSION -> . VARIABLE ASSIGN STRING_LIST
+    (17) EXPRESSION -> . VARIABLE ASSIGN MATH_EXPRESSION
+    (18) EXPRESSION -> . VARIABLE ASSIGN BOOLEAN_EXPRESSION
     (29) EXPRESSION -> . FOR VARIABLE IN STRING_LIST DO EXPRESSION_LIST ENDFOR
     (30) EXPRESSION -> . FOR VARIABLE IN VARIABLE DO EXPRESSION_LIST ENDFOR
     (31) EXPRESSION -> . PRINT STRING_EXPRESSION
@@ -173,17 +173,17 @@ state 4
     (34) EXPRESSION -> . IF_EXPRESSION
     (2) MATH_EXPRESSION -> . MATH_EXPRESSION ADD TERM
     (3) MATH_EXPRESSION -> . MATH_EXPRESSION SUB TERM
-    (5) MATH_EXPRESSION -> . TERM
-    (1) BOOLEAN_EXPRESSION -> . BOOLEAN BOOLEAN_OPERATOR BOOLEAN
-    (4) BOOLEAN_EXPRESSION -> . BOOLEAN
-    (16) BOOLEAN_EXPRESSION -> . MATH_EXPRESSION INTEGER_COMPARATOR MATH_EXPRESSION
-    (42) IF_EXPRESSION -> . IF BOOLEAN_EXPRESSION DO EXPRESSION_LIST ENDIF
-    (9) TERM -> . TERM MUL FACTOR
-    (12) TERM -> . TERM DIV FACTOR
+    (6) MATH_EXPRESSION -> . TERM
+    (1) BOOLEAN_EXPRESSION -> . BOOLEAN_EXPRESSION BOOLEAN_OPERATOR BOOLEAN_EXPRESSION
+    (5) BOOLEAN_EXPRESSION -> . BOOLEAN
+    (21) BOOLEAN_EXPRESSION -> . MATH_EXPRESSION INTEGER_COMPARATOR MATH_EXPRESSION
+    (35) IF_EXPRESSION -> . IF BOOLEAN_EXPRESSION DO EXPRESSION_LIST ENDIF
+    (10) TERM -> . TERM MUL FACTOR
+    (11) TERM -> . TERM DIV FACTOR
     (14) TERM -> . FACTOR
-    (7) BOOLEAN -> . TRUE
-    (8) BOOLEAN -> . FALSE
-    (17) FACTOR -> . INTEGER
+    (8) BOOLEAN -> . TRUE
+    (9) BOOLEAN -> . FALSE
+    (20) FACTOR -> . INTEGER
 
     VARIABLE        shift and go to state 9
     FOR             shift and go to state 12
@@ -204,21 +204,21 @@ state 4
 
 state 5
 
-    (38) PROGRAM -> DUMBO_BLOCK PROGRAM .
+    (39) PROGRAM -> DUMBO_BLOCK PROGRAM .
 
-    $end            reduce using rule 38 (PROGRAM -> DUMBO_BLOCK PROGRAM .)
+    $end            reduce using rule 39 (PROGRAM -> DUMBO_BLOCK PROGRAM .)
 
 
 state 6
 
-    (39) PROGRAM -> TXT PROGRAM .
+    (40) PROGRAM -> TXT PROGRAM .
 
-    $end            reduce using rule 39 (PROGRAM -> TXT PROGRAM .)
+    $end            reduce using rule 40 (PROGRAM -> TXT PROGRAM .)
 
 
 state 7
 
-    (35) DUMBO_BLOCK -> OPENING EXPRESSION_LIST . CLOSING
+    (38) DUMBO_BLOCK -> OPENING EXPRESSION_LIST . CLOSING
 
     CLOSING         shift and go to state 22
 
@@ -233,10 +233,10 @@ state 8
 
 state 9
 
-    (18) EXPRESSION -> VARIABLE . ASSIGN STRING_EXPRESSION
-    (19) EXPRESSION -> VARIABLE . ASSIGN STRING_LIST
-    (20) EXPRESSION -> VARIABLE . ASSIGN MATH_EXPRESSION
-    (21) EXPRESSION -> VARIABLE . ASSIGN BOOLEAN_EXPRESSION
+    (15) EXPRESSION -> VARIABLE . ASSIGN STRING_EXPRESSION
+    (16) EXPRESSION -> VARIABLE . ASSIGN STRING_LIST
+    (17) EXPRESSION -> VARIABLE . ASSIGN MATH_EXPRESSION
+    (18) EXPRESSION -> VARIABLE . ASSIGN BOOLEAN_EXPRESSION
 
     ASSIGN          shift and go to state 24
 
@@ -246,11 +246,11 @@ state 10
     (32) EXPRESSION -> MATH_EXPRESSION .
     (2) MATH_EXPRESSION -> MATH_EXPRESSION . ADD TERM
     (3) MATH_EXPRESSION -> MATH_EXPRESSION . SUB TERM
-    (16) BOOLEAN_EXPRESSION -> MATH_EXPRESSION . INTEGER_COMPARATOR MATH_EXPRESSION
-    (22) INTEGER_COMPARATOR -> . LT
-    (23) INTEGER_COMPARATOR -> . GT
-    (24) INTEGER_COMPARATOR -> . EQ
-    (25) INTEGER_COMPARATOR -> . NE
+    (21) BOOLEAN_EXPRESSION -> MATH_EXPRESSION . INTEGER_COMPARATOR MATH_EXPRESSION
+    (24) INTEGER_COMPARATOR -> . LT
+    (25) INTEGER_COMPARATOR -> . GT
+    (26) INTEGER_COMPARATOR -> . EQ
+    (27) INTEGER_COMPARATOR -> . NE
 
     SEMICOLON       reduce using rule 32 (EXPRESSION -> MATH_EXPRESSION .)
     ADD             shift and go to state 25
@@ -265,29 +265,35 @@ state 10
 state 11
 
     (33) EXPRESSION -> BOOLEAN_EXPRESSION .
+    (1) BOOLEAN_EXPRESSION -> BOOLEAN_EXPRESSION . BOOLEAN_OPERATOR BOOLEAN_EXPRESSION
+    (13) BOOLEAN_OPERATOR -> . AND
+    (19) BOOLEAN_OPERATOR -> . OR
 
     SEMICOLON       reduce using rule 33 (EXPRESSION -> BOOLEAN_EXPRESSION .)
+    AND             shift and go to state 33
+    OR              shift and go to state 34
 
+    BOOLEAN_OPERATOR               shift and go to state 32
 
 state 12
 
     (29) EXPRESSION -> FOR . VARIABLE IN STRING_LIST DO EXPRESSION_LIST ENDFOR
     (30) EXPRESSION -> FOR . VARIABLE IN VARIABLE DO EXPRESSION_LIST ENDFOR
 
-    VARIABLE        shift and go to state 32
+    VARIABLE        shift and go to state 35
 
 
 state 13
 
     (31) EXPRESSION -> PRINT . STRING_EXPRESSION
-    (26) STRING_EXPRESSION -> . STRING_EXPRESSION DOT STRING_EXPRESSION
-    (27) STRING_EXPRESSION -> . STRING
+    (22) STRING_EXPRESSION -> . STRING_EXPRESSION DOT STRING_EXPRESSION
+    (23) STRING_EXPRESSION -> . STRING
     (28) STRING_EXPRESSION -> . VARIABLE
 
-    STRING          shift and go to state 34
-    VARIABLE        shift and go to state 35
+    STRING          shift and go to state 37
+    VARIABLE        shift and go to state 38
 
-    STRING_EXPRESSION              shift and go to state 33
+    STRING_EXPRESSION              shift and go to state 36
 
 state 14
 
@@ -298,51 +304,49 @@ state 14
 
 state 15
 
-    (5) MATH_EXPRESSION -> TERM .
-    (9) TERM -> TERM . MUL FACTOR
-    (12) TERM -> TERM . DIV FACTOR
+    (6) MATH_EXPRESSION -> TERM .
+    (10) TERM -> TERM . MUL FACTOR
+    (11) TERM -> TERM . DIV FACTOR
 
-    ADD             reduce using rule 5 (MATH_EXPRESSION -> TERM .)
-    SUB             reduce using rule 5 (MATH_EXPRESSION -> TERM .)
-    LT              reduce using rule 5 (MATH_EXPRESSION -> TERM .)
-    GT              reduce using rule 5 (MATH_EXPRESSION -> TERM .)
-    EQ              reduce using rule 5 (MATH_EXPRESSION -> TERM .)
-    NE              reduce using rule 5 (MATH_EXPRESSION -> TERM .)
-    SEMICOLON       reduce using rule 5 (MATH_EXPRESSION -> TERM .)
-    DO              reduce using rule 5 (MATH_EXPRESSION -> TERM .)
-    MUL             shift and go to state 36
-    DIV             shift and go to state 37
+    ADD             reduce using rule 6 (MATH_EXPRESSION -> TERM .)
+    SUB             reduce using rule 6 (MATH_EXPRESSION -> TERM .)
+    LT              reduce using rule 6 (MATH_EXPRESSION -> TERM .)
+    GT              reduce using rule 6 (MATH_EXPRESSION -> TERM .)
+    EQ              reduce using rule 6 (MATH_EXPRESSION -> TERM .)
+    NE              reduce using rule 6 (MATH_EXPRESSION -> TERM .)
+    SEMICOLON       reduce using rule 6 (MATH_EXPRESSION -> TERM .)
+    AND             reduce using rule 6 (MATH_EXPRESSION -> TERM .)
+    OR              reduce using rule 6 (MATH_EXPRESSION -> TERM .)
+    DO              reduce using rule 6 (MATH_EXPRESSION -> TERM .)
+    MUL             shift and go to state 39
+    DIV             shift and go to state 40
 
 
 state 16
 
-    (1) BOOLEAN_EXPRESSION -> BOOLEAN . BOOLEAN_OPERATOR BOOLEAN
-    (4) BOOLEAN_EXPRESSION -> BOOLEAN .
-    (11) BOOLEAN_OPERATOR -> . AND
-    (13) BOOLEAN_OPERATOR -> . OR
+    (5) BOOLEAN_EXPRESSION -> BOOLEAN .
 
-    SEMICOLON       reduce using rule 4 (BOOLEAN_EXPRESSION -> BOOLEAN .)
-    DO              reduce using rule 4 (BOOLEAN_EXPRESSION -> BOOLEAN .)
-    AND             shift and go to state 39
-    OR              shift and go to state 40
+    AND             reduce using rule 5 (BOOLEAN_EXPRESSION -> BOOLEAN .)
+    OR              reduce using rule 5 (BOOLEAN_EXPRESSION -> BOOLEAN .)
+    SEMICOLON       reduce using rule 5 (BOOLEAN_EXPRESSION -> BOOLEAN .)
+    DO              reduce using rule 5 (BOOLEAN_EXPRESSION -> BOOLEAN .)
 
-    BOOLEAN_OPERATOR               shift and go to state 38
 
 state 17
 
-    (42) IF_EXPRESSION -> IF . BOOLEAN_EXPRESSION DO EXPRESSION_LIST ENDIF
-    (1) BOOLEAN_EXPRESSION -> . BOOLEAN BOOLEAN_OPERATOR BOOLEAN
-    (4) BOOLEAN_EXPRESSION -> . BOOLEAN
-    (16) BOOLEAN_EXPRESSION -> . MATH_EXPRESSION INTEGER_COMPARATOR MATH_EXPRESSION
-    (7) BOOLEAN -> . TRUE
-    (8) BOOLEAN -> . FALSE
+    (35) IF_EXPRESSION -> IF . BOOLEAN_EXPRESSION DO EXPRESSION_LIST ENDIF
+    (1) BOOLEAN_EXPRESSION -> . BOOLEAN_EXPRESSION BOOLEAN_OPERATOR BOOLEAN_EXPRESSION
+    (5) BOOLEAN_EXPRESSION -> . BOOLEAN
+    (21) BOOLEAN_EXPRESSION -> . MATH_EXPRESSION INTEGER_COMPARATOR MATH_EXPRESSION
+    (8) BOOLEAN -> . TRUE
+    (9) BOOLEAN -> . FALSE
     (2) MATH_EXPRESSION -> . MATH_EXPRESSION ADD TERM
     (3) MATH_EXPRESSION -> . MATH_EXPRESSION SUB TERM
-    (5) MATH_EXPRESSION -> . TERM
-    (9) TERM -> . TERM MUL FACTOR
-    (12) TERM -> . TERM DIV FACTOR
+    (6) MATH_EXPRESSION -> . TERM
+    (10) TERM -> . TERM MUL FACTOR
+    (11) TERM -> . TERM DIV FACTOR
     (14) TERM -> . FACTOR
-    (17) FACTOR -> . INTEGER
+    (20) FACTOR -> . INTEGER
 
     TRUE            shift and go to state 19
     FALSE           shift and go to state 20
@@ -367,52 +371,56 @@ state 18
     EQ              reduce using rule 14 (TERM -> FACTOR .)
     NE              reduce using rule 14 (TERM -> FACTOR .)
     SEMICOLON       reduce using rule 14 (TERM -> FACTOR .)
+    AND             reduce using rule 14 (TERM -> FACTOR .)
+    OR              reduce using rule 14 (TERM -> FACTOR .)
     DO              reduce using rule 14 (TERM -> FACTOR .)
 
 
 state 19
 
-    (7) BOOLEAN -> TRUE .
+    (8) BOOLEAN -> TRUE .
 
-    AND             reduce using rule 7 (BOOLEAN -> TRUE .)
-    OR              reduce using rule 7 (BOOLEAN -> TRUE .)
-    SEMICOLON       reduce using rule 7 (BOOLEAN -> TRUE .)
-    DO              reduce using rule 7 (BOOLEAN -> TRUE .)
+    AND             reduce using rule 8 (BOOLEAN -> TRUE .)
+    OR              reduce using rule 8 (BOOLEAN -> TRUE .)
+    SEMICOLON       reduce using rule 8 (BOOLEAN -> TRUE .)
+    DO              reduce using rule 8 (BOOLEAN -> TRUE .)
 
 
 state 20
 
-    (8) BOOLEAN -> FALSE .
+    (9) BOOLEAN -> FALSE .
 
-    AND             reduce using rule 8 (BOOLEAN -> FALSE .)
-    OR              reduce using rule 8 (BOOLEAN -> FALSE .)
-    SEMICOLON       reduce using rule 8 (BOOLEAN -> FALSE .)
-    DO              reduce using rule 8 (BOOLEAN -> FALSE .)
+    AND             reduce using rule 9 (BOOLEAN -> FALSE .)
+    OR              reduce using rule 9 (BOOLEAN -> FALSE .)
+    SEMICOLON       reduce using rule 9 (BOOLEAN -> FALSE .)
+    DO              reduce using rule 9 (BOOLEAN -> FALSE .)
 
 
 state 21
 
-    (17) FACTOR -> INTEGER .
+    (20) FACTOR -> INTEGER .
 
-    MUL             reduce using rule 17 (FACTOR -> INTEGER .)
-    DIV             reduce using rule 17 (FACTOR -> INTEGER .)
-    ADD             reduce using rule 17 (FACTOR -> INTEGER .)
-    SUB             reduce using rule 17 (FACTOR -> INTEGER .)
-    LT              reduce using rule 17 (FACTOR -> INTEGER .)
-    GT              reduce using rule 17 (FACTOR -> INTEGER .)
-    EQ              reduce using rule 17 (FACTOR -> INTEGER .)
-    NE              reduce using rule 17 (FACTOR -> INTEGER .)
-    SEMICOLON       reduce using rule 17 (FACTOR -> INTEGER .)
-    DO              reduce using rule 17 (FACTOR -> INTEGER .)
+    MUL             reduce using rule 20 (FACTOR -> INTEGER .)
+    DIV             reduce using rule 20 (FACTOR -> INTEGER .)
+    ADD             reduce using rule 20 (FACTOR -> INTEGER .)
+    SUB             reduce using rule 20 (FACTOR -> INTEGER .)
+    LT              reduce using rule 20 (FACTOR -> INTEGER .)
+    GT              reduce using rule 20 (FACTOR -> INTEGER .)
+    EQ              reduce using rule 20 (FACTOR -> INTEGER .)
+    NE              reduce using rule 20 (FACTOR -> INTEGER .)
+    SEMICOLON       reduce using rule 20 (FACTOR -> INTEGER .)
+    AND             reduce using rule 20 (FACTOR -> INTEGER .)
+    OR              reduce using rule 20 (FACTOR -> INTEGER .)
+    DO              reduce using rule 20 (FACTOR -> INTEGER .)
 
 
 state 22
 
-    (35) DUMBO_BLOCK -> OPENING EXPRESSION_LIST CLOSING .
+    (38) DUMBO_BLOCK -> OPENING EXPRESSION_LIST CLOSING .
 
-    TXT             reduce using rule 35 (DUMBO_BLOCK -> OPENING EXPRESSION_LIST CLOSING .)
-    OPENING         reduce using rule 35 (DUMBO_BLOCK -> OPENING EXPRESSION_LIST CLOSING .)
-    $end            reduce using rule 35 (DUMBO_BLOCK -> OPENING EXPRESSION_LIST CLOSING .)
+    TXT             reduce using rule 38 (DUMBO_BLOCK -> OPENING EXPRESSION_LIST CLOSING .)
+    OPENING         reduce using rule 38 (DUMBO_BLOCK -> OPENING EXPRESSION_LIST CLOSING .)
+    $end            reduce using rule 38 (DUMBO_BLOCK -> OPENING EXPRESSION_LIST CLOSING .)
 
 
 state 23
@@ -421,10 +429,10 @@ state 23
     (37) EXPRESSION_LIST -> EXPRESSION SEMICOLON . EXPRESSION_LIST
     (36) EXPRESSION_LIST -> . EXPRESSION SEMICOLON
     (37) EXPRESSION_LIST -> . EXPRESSION SEMICOLON EXPRESSION_LIST
-    (18) EXPRESSION -> . VARIABLE ASSIGN STRING_EXPRESSION
-    (19) EXPRESSION -> . VARIABLE ASSIGN STRING_LIST
-    (20) EXPRESSION -> . VARIABLE ASSIGN MATH_EXPRESSION
-    (21) EXPRESSION -> . VARIABLE ASSIGN BOOLEAN_EXPRESSION
+    (15) EXPRESSION -> . VARIABLE ASSIGN STRING_EXPRESSION
+    (16) EXPRESSION -> . VARIABLE ASSIGN STRING_LIST
+    (17) EXPRESSION -> . VARIABLE ASSIGN MATH_EXPRESSION
+    (18) EXPRESSION -> . VARIABLE ASSIGN BOOLEAN_EXPRESSION
     (29) EXPRESSION -> . FOR VARIABLE IN STRING_LIST DO EXPRESSION_LIST ENDFOR
     (30) EXPRESSION -> . FOR VARIABLE IN VARIABLE DO EXPRESSION_LIST ENDFOR
     (31) EXPRESSION -> . PRINT STRING_EXPRESSION
@@ -433,17 +441,17 @@ state 23
     (34) EXPRESSION -> . IF_EXPRESSION
     (2) MATH_EXPRESSION -> . MATH_EXPRESSION ADD TERM
     (3) MATH_EXPRESSION -> . MATH_EXPRESSION SUB TERM
-    (5) MATH_EXPRESSION -> . TERM
-    (1) BOOLEAN_EXPRESSION -> . BOOLEAN BOOLEAN_OPERATOR BOOLEAN
-    (4) BOOLEAN_EXPRESSION -> . BOOLEAN
-    (16) BOOLEAN_EXPRESSION -> . MATH_EXPRESSION INTEGER_COMPARATOR MATH_EXPRESSION
-    (42) IF_EXPRESSION -> . IF BOOLEAN_EXPRESSION DO EXPRESSION_LIST ENDIF
-    (9) TERM -> . TERM MUL FACTOR
-    (12) TERM -> . TERM DIV FACTOR
+    (6) MATH_EXPRESSION -> . TERM
+    (1) BOOLEAN_EXPRESSION -> . BOOLEAN_EXPRESSION BOOLEAN_OPERATOR BOOLEAN_EXPRESSION
+    (5) BOOLEAN_EXPRESSION -> . BOOLEAN
+    (21) BOOLEAN_EXPRESSION -> . MATH_EXPRESSION INTEGER_COMPARATOR MATH_EXPRESSION
+    (35) IF_EXPRESSION -> . IF BOOLEAN_EXPRESSION DO EXPRESSION_LIST ENDIF
+    (10) TERM -> . TERM MUL FACTOR
+    (11) TERM -> . TERM DIV FACTOR
     (14) TERM -> . FACTOR
-    (7) BOOLEAN -> . TRUE
-    (8) BOOLEAN -> . FALSE
-    (17) FACTOR -> . INTEGER
+    (8) BOOLEAN -> . TRUE
+    (9) BOOLEAN -> . FALSE
+    (20) FACTOR -> . INTEGER
 
     CLOSING         reduce using rule 36 (EXPRESSION_LIST -> EXPRESSION SEMICOLON .)
     ENDIF           reduce using rule 36 (EXPRESSION_LIST -> EXPRESSION SEMICOLON .)
@@ -467,29 +475,29 @@ state 23
 
 state 24
 
-    (18) EXPRESSION -> VARIABLE ASSIGN . STRING_EXPRESSION
-    (19) EXPRESSION -> VARIABLE ASSIGN . STRING_LIST
-    (20) EXPRESSION -> VARIABLE ASSIGN . MATH_EXPRESSION
-    (21) EXPRESSION -> VARIABLE ASSIGN . BOOLEAN_EXPRESSION
-    (26) STRING_EXPRESSION -> . STRING_EXPRESSION DOT STRING_EXPRESSION
-    (27) STRING_EXPRESSION -> . STRING
+    (15) EXPRESSION -> VARIABLE ASSIGN . STRING_EXPRESSION
+    (16) EXPRESSION -> VARIABLE ASSIGN . STRING_LIST
+    (17) EXPRESSION -> VARIABLE ASSIGN . MATH_EXPRESSION
+    (18) EXPRESSION -> VARIABLE ASSIGN . BOOLEAN_EXPRESSION
+    (22) STRING_EXPRESSION -> . STRING_EXPRESSION DOT STRING_EXPRESSION
+    (23) STRING_EXPRESSION -> . STRING
     (28) STRING_EXPRESSION -> . VARIABLE
-    (15) STRING_LIST -> . LPAREN STRING_LIST_INTERIOR RPAREN
+    (12) STRING_LIST -> . LPAREN STRING_LIST_INTERIOR RPAREN
     (2) MATH_EXPRESSION -> . MATH_EXPRESSION ADD TERM
     (3) MATH_EXPRESSION -> . MATH_EXPRESSION SUB TERM
-    (5) MATH_EXPRESSION -> . TERM
-    (1) BOOLEAN_EXPRESSION -> . BOOLEAN BOOLEAN_OPERATOR BOOLEAN
-    (4) BOOLEAN_EXPRESSION -> . BOOLEAN
-    (16) BOOLEAN_EXPRESSION -> . MATH_EXPRESSION INTEGER_COMPARATOR MATH_EXPRESSION
-    (9) TERM -> . TERM MUL FACTOR
-    (12) TERM -> . TERM DIV FACTOR
+    (6) MATH_EXPRESSION -> . TERM
+    (1) BOOLEAN_EXPRESSION -> . BOOLEAN_EXPRESSION BOOLEAN_OPERATOR BOOLEAN_EXPRESSION
+    (5) BOOLEAN_EXPRESSION -> . BOOLEAN
+    (21) BOOLEAN_EXPRESSION -> . MATH_EXPRESSION INTEGER_COMPARATOR MATH_EXPRESSION
+    (10) TERM -> . TERM MUL FACTOR
+    (11) TERM -> . TERM DIV FACTOR
     (14) TERM -> . FACTOR
-    (7) BOOLEAN -> . TRUE
-    (8) BOOLEAN -> . FALSE
-    (17) FACTOR -> . INTEGER
+    (8) BOOLEAN -> . TRUE
+    (9) BOOLEAN -> . FALSE
+    (20) FACTOR -> . INTEGER
 
-    STRING          shift and go to state 34
-    VARIABLE        shift and go to state 35
+    STRING          shift and go to state 37
+    VARIABLE        shift and go to state 38
     LPAREN          shift and go to state 48
     TRUE            shift and go to state 19
     FALSE           shift and go to state 20
@@ -506,10 +514,10 @@ state 24
 state 25
 
     (2) MATH_EXPRESSION -> MATH_EXPRESSION ADD . TERM
-    (9) TERM -> . TERM MUL FACTOR
-    (12) TERM -> . TERM DIV FACTOR
+    (10) TERM -> . TERM MUL FACTOR
+    (11) TERM -> . TERM DIV FACTOR
     (14) TERM -> . FACTOR
-    (17) FACTOR -> . INTEGER
+    (20) FACTOR -> . INTEGER
 
     INTEGER         shift and go to state 21
 
@@ -519,10 +527,10 @@ state 25
 state 26
 
     (3) MATH_EXPRESSION -> MATH_EXPRESSION SUB . TERM
-    (9) TERM -> . TERM MUL FACTOR
-    (12) TERM -> . TERM DIV FACTOR
+    (10) TERM -> . TERM MUL FACTOR
+    (11) TERM -> . TERM DIV FACTOR
     (14) TERM -> . FACTOR
-    (17) FACTOR -> . INTEGER
+    (20) FACTOR -> . INTEGER
 
     INTEGER         shift and go to state 21
 
@@ -531,14 +539,14 @@ state 26
 
 state 27
 
-    (16) BOOLEAN_EXPRESSION -> MATH_EXPRESSION INTEGER_COMPARATOR . MATH_EXPRESSION
+    (21) BOOLEAN_EXPRESSION -> MATH_EXPRESSION INTEGER_COMPARATOR . MATH_EXPRESSION
     (2) MATH_EXPRESSION -> . MATH_EXPRESSION ADD TERM
     (3) MATH_EXPRESSION -> . MATH_EXPRESSION SUB TERM
-    (5) MATH_EXPRESSION -> . TERM
-    (9) TERM -> . TERM MUL FACTOR
-    (12) TERM -> . TERM DIV FACTOR
+    (6) MATH_EXPRESSION -> . TERM
+    (10) TERM -> . TERM MUL FACTOR
+    (11) TERM -> . TERM DIV FACTOR
     (14) TERM -> . FACTOR
-    (17) FACTOR -> . INTEGER
+    (20) FACTOR -> . INTEGER
 
     INTEGER         shift and go to state 21
 
@@ -548,58 +556,102 @@ state 27
 
 state 28
 
-    (22) INTEGER_COMPARATOR -> LT .
+    (24) INTEGER_COMPARATOR -> LT .
 
-    INTEGER         reduce using rule 22 (INTEGER_COMPARATOR -> LT .)
+    INTEGER         reduce using rule 24 (INTEGER_COMPARATOR -> LT .)
 
 
 state 29
 
-    (23) INTEGER_COMPARATOR -> GT .
+    (25) INTEGER_COMPARATOR -> GT .
 
-    INTEGER         reduce using rule 23 (INTEGER_COMPARATOR -> GT .)
+    INTEGER         reduce using rule 25 (INTEGER_COMPARATOR -> GT .)
 
 
 state 30
 
-    (24) INTEGER_COMPARATOR -> EQ .
+    (26) INTEGER_COMPARATOR -> EQ .
 
-    INTEGER         reduce using rule 24 (INTEGER_COMPARATOR -> EQ .)
+    INTEGER         reduce using rule 26 (INTEGER_COMPARATOR -> EQ .)
 
 
 state 31
 
-    (25) INTEGER_COMPARATOR -> NE .
+    (27) INTEGER_COMPARATOR -> NE .
 
-    INTEGER         reduce using rule 25 (INTEGER_COMPARATOR -> NE .)
+    INTEGER         reduce using rule 27 (INTEGER_COMPARATOR -> NE .)
 
 
 state 32
 
-    (29) EXPRESSION -> FOR VARIABLE . IN STRING_LIST DO EXPRESSION_LIST ENDFOR
-    (30) EXPRESSION -> FOR VARIABLE . IN VARIABLE DO EXPRESSION_LIST ENDFOR
+    (1) BOOLEAN_EXPRESSION -> BOOLEAN_EXPRESSION BOOLEAN_OPERATOR . BOOLEAN_EXPRESSION
+    (1) BOOLEAN_EXPRESSION -> . BOOLEAN_EXPRESSION BOOLEAN_OPERATOR BOOLEAN_EXPRESSION
+    (5) BOOLEAN_EXPRESSION -> . BOOLEAN
+    (21) BOOLEAN_EXPRESSION -> . MATH_EXPRESSION INTEGER_COMPARATOR MATH_EXPRESSION
+    (8) BOOLEAN -> . TRUE
+    (9) BOOLEAN -> . FALSE
+    (2) MATH_EXPRESSION -> . MATH_EXPRESSION ADD TERM
+    (3) MATH_EXPRESSION -> . MATH_EXPRESSION SUB TERM
+    (6) MATH_EXPRESSION -> . TERM
+    (10) TERM -> . TERM MUL FACTOR
+    (11) TERM -> . TERM DIV FACTOR
+    (14) TERM -> . FACTOR
+    (20) FACTOR -> . INTEGER
 
-    IN              shift and go to state 52
+    TRUE            shift and go to state 19
+    FALSE           shift and go to state 20
+    INTEGER         shift and go to state 21
 
+    BOOLEAN_EXPRESSION             shift and go to state 52
+    BOOLEAN                        shift and go to state 16
+    MATH_EXPRESSION                shift and go to state 42
+    TERM                           shift and go to state 15
+    FACTOR                         shift and go to state 18
 
 state 33
 
-    (31) EXPRESSION -> PRINT STRING_EXPRESSION .
-    (26) STRING_EXPRESSION -> STRING_EXPRESSION . DOT STRING_EXPRESSION
+    (13) BOOLEAN_OPERATOR -> AND .
 
-    SEMICOLON       reduce using rule 31 (EXPRESSION -> PRINT STRING_EXPRESSION .)
-    DOT             shift and go to state 53
+    TRUE            reduce using rule 13 (BOOLEAN_OPERATOR -> AND .)
+    FALSE           reduce using rule 13 (BOOLEAN_OPERATOR -> AND .)
+    INTEGER         reduce using rule 13 (BOOLEAN_OPERATOR -> AND .)
 
 
 state 34
 
-    (27) STRING_EXPRESSION -> STRING .
+    (19) BOOLEAN_OPERATOR -> OR .
 
-    DOT             reduce using rule 27 (STRING_EXPRESSION -> STRING .)
-    SEMICOLON       reduce using rule 27 (STRING_EXPRESSION -> STRING .)
+    TRUE            reduce using rule 19 (BOOLEAN_OPERATOR -> OR .)
+    FALSE           reduce using rule 19 (BOOLEAN_OPERATOR -> OR .)
+    INTEGER         reduce using rule 19 (BOOLEAN_OPERATOR -> OR .)
 
 
 state 35
+
+    (29) EXPRESSION -> FOR VARIABLE . IN STRING_LIST DO EXPRESSION_LIST ENDFOR
+    (30) EXPRESSION -> FOR VARIABLE . IN VARIABLE DO EXPRESSION_LIST ENDFOR
+
+    IN              shift and go to state 53
+
+
+state 36
+
+    (31) EXPRESSION -> PRINT STRING_EXPRESSION .
+    (22) STRING_EXPRESSION -> STRING_EXPRESSION . DOT STRING_EXPRESSION
+
+    SEMICOLON       reduce using rule 31 (EXPRESSION -> PRINT STRING_EXPRESSION .)
+    DOT             shift and go to state 54
+
+
+state 37
+
+    (23) STRING_EXPRESSION -> STRING .
+
+    DOT             reduce using rule 23 (STRING_EXPRESSION -> STRING .)
+    SEMICOLON       reduce using rule 23 (STRING_EXPRESSION -> STRING .)
+
+
+state 38
 
     (28) STRING_EXPRESSION -> VARIABLE .
 
@@ -607,67 +659,46 @@ state 35
     SEMICOLON       reduce using rule 28 (STRING_EXPRESSION -> VARIABLE .)
 
 
-state 36
+state 39
 
-    (9) TERM -> TERM MUL . FACTOR
-    (17) FACTOR -> . INTEGER
-
-    INTEGER         shift and go to state 21
-
-    FACTOR                         shift and go to state 54
-
-state 37
-
-    (12) TERM -> TERM DIV . FACTOR
-    (17) FACTOR -> . INTEGER
+    (10) TERM -> TERM MUL . FACTOR
+    (20) FACTOR -> . INTEGER
 
     INTEGER         shift and go to state 21
 
     FACTOR                         shift and go to state 55
 
-state 38
-
-    (1) BOOLEAN_EXPRESSION -> BOOLEAN BOOLEAN_OPERATOR . BOOLEAN
-    (7) BOOLEAN -> . TRUE
-    (8) BOOLEAN -> . FALSE
-
-    TRUE            shift and go to state 19
-    FALSE           shift and go to state 20
-
-    BOOLEAN                        shift and go to state 56
-
-state 39
-
-    (11) BOOLEAN_OPERATOR -> AND .
-
-    TRUE            reduce using rule 11 (BOOLEAN_OPERATOR -> AND .)
-    FALSE           reduce using rule 11 (BOOLEAN_OPERATOR -> AND .)
-
-
 state 40
 
-    (13) BOOLEAN_OPERATOR -> OR .
+    (11) TERM -> TERM DIV . FACTOR
+    (20) FACTOR -> . INTEGER
 
-    TRUE            reduce using rule 13 (BOOLEAN_OPERATOR -> OR .)
-    FALSE           reduce using rule 13 (BOOLEAN_OPERATOR -> OR .)
+    INTEGER         shift and go to state 21
 
+    FACTOR                         shift and go to state 56
 
 state 41
 
-    (42) IF_EXPRESSION -> IF BOOLEAN_EXPRESSION . DO EXPRESSION_LIST ENDIF
+    (35) IF_EXPRESSION -> IF BOOLEAN_EXPRESSION . DO EXPRESSION_LIST ENDIF
+    (1) BOOLEAN_EXPRESSION -> BOOLEAN_EXPRESSION . BOOLEAN_OPERATOR BOOLEAN_EXPRESSION
+    (13) BOOLEAN_OPERATOR -> . AND
+    (19) BOOLEAN_OPERATOR -> . OR
 
     DO              shift and go to state 57
+    AND             shift and go to state 33
+    OR              shift and go to state 34
 
+    BOOLEAN_OPERATOR               shift and go to state 32
 
 state 42
 
-    (16) BOOLEAN_EXPRESSION -> MATH_EXPRESSION . INTEGER_COMPARATOR MATH_EXPRESSION
+    (21) BOOLEAN_EXPRESSION -> MATH_EXPRESSION . INTEGER_COMPARATOR MATH_EXPRESSION
     (2) MATH_EXPRESSION -> MATH_EXPRESSION . ADD TERM
     (3) MATH_EXPRESSION -> MATH_EXPRESSION . SUB TERM
-    (22) INTEGER_COMPARATOR -> . LT
-    (23) INTEGER_COMPARATOR -> . GT
-    (24) INTEGER_COMPARATOR -> . EQ
-    (25) INTEGER_COMPARATOR -> . NE
+    (24) INTEGER_COMPARATOR -> . LT
+    (25) INTEGER_COMPARATOR -> . GT
+    (26) INTEGER_COMPARATOR -> . EQ
+    (27) INTEGER_COMPARATOR -> . NE
 
     ADD             shift and go to state 25
     SUB             shift and go to state 26
@@ -689,32 +720,32 @@ state 43
 
 state 44
 
-    (18) EXPRESSION -> VARIABLE ASSIGN STRING_EXPRESSION .
-    (26) STRING_EXPRESSION -> STRING_EXPRESSION . DOT STRING_EXPRESSION
+    (15) EXPRESSION -> VARIABLE ASSIGN STRING_EXPRESSION .
+    (22) STRING_EXPRESSION -> STRING_EXPRESSION . DOT STRING_EXPRESSION
 
-    SEMICOLON       reduce using rule 18 (EXPRESSION -> VARIABLE ASSIGN STRING_EXPRESSION .)
-    DOT             shift and go to state 53
+    SEMICOLON       reduce using rule 15 (EXPRESSION -> VARIABLE ASSIGN STRING_EXPRESSION .)
+    DOT             shift and go to state 54
 
 
 state 45
 
-    (19) EXPRESSION -> VARIABLE ASSIGN STRING_LIST .
+    (16) EXPRESSION -> VARIABLE ASSIGN STRING_LIST .
 
-    SEMICOLON       reduce using rule 19 (EXPRESSION -> VARIABLE ASSIGN STRING_LIST .)
+    SEMICOLON       reduce using rule 16 (EXPRESSION -> VARIABLE ASSIGN STRING_LIST .)
 
 
 state 46
 
-    (20) EXPRESSION -> VARIABLE ASSIGN MATH_EXPRESSION .
+    (17) EXPRESSION -> VARIABLE ASSIGN MATH_EXPRESSION .
     (2) MATH_EXPRESSION -> MATH_EXPRESSION . ADD TERM
     (3) MATH_EXPRESSION -> MATH_EXPRESSION . SUB TERM
-    (16) BOOLEAN_EXPRESSION -> MATH_EXPRESSION . INTEGER_COMPARATOR MATH_EXPRESSION
-    (22) INTEGER_COMPARATOR -> . LT
-    (23) INTEGER_COMPARATOR -> . GT
-    (24) INTEGER_COMPARATOR -> . EQ
-    (25) INTEGER_COMPARATOR -> . NE
+    (21) BOOLEAN_EXPRESSION -> MATH_EXPRESSION . INTEGER_COMPARATOR MATH_EXPRESSION
+    (24) INTEGER_COMPARATOR -> . LT
+    (25) INTEGER_COMPARATOR -> . GT
+    (26) INTEGER_COMPARATOR -> . EQ
+    (27) INTEGER_COMPARATOR -> . NE
 
-    SEMICOLON       reduce using rule 20 (EXPRESSION -> VARIABLE ASSIGN MATH_EXPRESSION .)
+    SEMICOLON       reduce using rule 17 (EXPRESSION -> VARIABLE ASSIGN MATH_EXPRESSION .)
     ADD             shift and go to state 25
     SUB             shift and go to state 26
     LT              shift and go to state 28
@@ -726,16 +757,22 @@ state 46
 
 state 47
 
-    (21) EXPRESSION -> VARIABLE ASSIGN BOOLEAN_EXPRESSION .
+    (18) EXPRESSION -> VARIABLE ASSIGN BOOLEAN_EXPRESSION .
+    (1) BOOLEAN_EXPRESSION -> BOOLEAN_EXPRESSION . BOOLEAN_OPERATOR BOOLEAN_EXPRESSION
+    (13) BOOLEAN_OPERATOR -> . AND
+    (19) BOOLEAN_OPERATOR -> . OR
 
-    SEMICOLON       reduce using rule 21 (EXPRESSION -> VARIABLE ASSIGN BOOLEAN_EXPRESSION .)
+    SEMICOLON       reduce using rule 18 (EXPRESSION -> VARIABLE ASSIGN BOOLEAN_EXPRESSION .)
+    AND             shift and go to state 33
+    OR              shift and go to state 34
 
+    BOOLEAN_OPERATOR               shift and go to state 32
 
 state 48
 
-    (15) STRING_LIST -> LPAREN . STRING_LIST_INTERIOR RPAREN
-    (6) STRING_LIST_INTERIOR -> . STRING COMMA STRING_LIST_INTERIOR
-    (10) STRING_LIST_INTERIOR -> . STRING
+    (12) STRING_LIST -> LPAREN . STRING_LIST_INTERIOR RPAREN
+    (4) STRING_LIST_INTERIOR -> . STRING COMMA STRING_LIST_INTERIOR
+    (7) STRING_LIST_INTERIOR -> . STRING
 
     STRING          shift and go to state 59
 
@@ -744,8 +781,8 @@ state 48
 state 49
 
     (2) MATH_EXPRESSION -> MATH_EXPRESSION ADD TERM .
-    (9) TERM -> TERM . MUL FACTOR
-    (12) TERM -> TERM . DIV FACTOR
+    (10) TERM -> TERM . MUL FACTOR
+    (11) TERM -> TERM . DIV FACTOR
 
     ADD             reduce using rule 2 (MATH_EXPRESSION -> MATH_EXPRESSION ADD TERM .)
     SUB             reduce using rule 2 (MATH_EXPRESSION -> MATH_EXPRESSION ADD TERM .)
@@ -754,16 +791,18 @@ state 49
     EQ              reduce using rule 2 (MATH_EXPRESSION -> MATH_EXPRESSION ADD TERM .)
     NE              reduce using rule 2 (MATH_EXPRESSION -> MATH_EXPRESSION ADD TERM .)
     SEMICOLON       reduce using rule 2 (MATH_EXPRESSION -> MATH_EXPRESSION ADD TERM .)
+    AND             reduce using rule 2 (MATH_EXPRESSION -> MATH_EXPRESSION ADD TERM .)
+    OR              reduce using rule 2 (MATH_EXPRESSION -> MATH_EXPRESSION ADD TERM .)
     DO              reduce using rule 2 (MATH_EXPRESSION -> MATH_EXPRESSION ADD TERM .)
-    MUL             shift and go to state 36
-    DIV             shift and go to state 37
+    MUL             shift and go to state 39
+    DIV             shift and go to state 40
 
 
 state 50
 
     (3) MATH_EXPRESSION -> MATH_EXPRESSION SUB TERM .
-    (9) TERM -> TERM . MUL FACTOR
-    (12) TERM -> TERM . DIV FACTOR
+    (10) TERM -> TERM . MUL FACTOR
+    (11) TERM -> TERM . DIV FACTOR
 
     ADD             reduce using rule 3 (MATH_EXPRESSION -> MATH_EXPRESSION SUB TERM .)
     SUB             reduce using rule 3 (MATH_EXPRESSION -> MATH_EXPRESSION SUB TERM .)
@@ -772,95 +811,114 @@ state 50
     EQ              reduce using rule 3 (MATH_EXPRESSION -> MATH_EXPRESSION SUB TERM .)
     NE              reduce using rule 3 (MATH_EXPRESSION -> MATH_EXPRESSION SUB TERM .)
     SEMICOLON       reduce using rule 3 (MATH_EXPRESSION -> MATH_EXPRESSION SUB TERM .)
+    AND             reduce using rule 3 (MATH_EXPRESSION -> MATH_EXPRESSION SUB TERM .)
+    OR              reduce using rule 3 (MATH_EXPRESSION -> MATH_EXPRESSION SUB TERM .)
     DO              reduce using rule 3 (MATH_EXPRESSION -> MATH_EXPRESSION SUB TERM .)
-    MUL             shift and go to state 36
-    DIV             shift and go to state 37
+    MUL             shift and go to state 39
+    DIV             shift and go to state 40
 
 
 state 51
 
-    (16) BOOLEAN_EXPRESSION -> MATH_EXPRESSION INTEGER_COMPARATOR MATH_EXPRESSION .
+    (21) BOOLEAN_EXPRESSION -> MATH_EXPRESSION INTEGER_COMPARATOR MATH_EXPRESSION .
     (2) MATH_EXPRESSION -> MATH_EXPRESSION . ADD TERM
     (3) MATH_EXPRESSION -> MATH_EXPRESSION . SUB TERM
 
-    SEMICOLON       reduce using rule 16 (BOOLEAN_EXPRESSION -> MATH_EXPRESSION INTEGER_COMPARATOR MATH_EXPRESSION .)
-    DO              reduce using rule 16 (BOOLEAN_EXPRESSION -> MATH_EXPRESSION INTEGER_COMPARATOR MATH_EXPRESSION .)
+    AND             reduce using rule 21 (BOOLEAN_EXPRESSION -> MATH_EXPRESSION INTEGER_COMPARATOR MATH_EXPRESSION .)
+    OR              reduce using rule 21 (BOOLEAN_EXPRESSION -> MATH_EXPRESSION INTEGER_COMPARATOR MATH_EXPRESSION .)
+    SEMICOLON       reduce using rule 21 (BOOLEAN_EXPRESSION -> MATH_EXPRESSION INTEGER_COMPARATOR MATH_EXPRESSION .)
+    DO              reduce using rule 21 (BOOLEAN_EXPRESSION -> MATH_EXPRESSION INTEGER_COMPARATOR MATH_EXPRESSION .)
     ADD             shift and go to state 25
     SUB             shift and go to state 26
 
 
 state 52
 
+    (1) BOOLEAN_EXPRESSION -> BOOLEAN_EXPRESSION BOOLEAN_OPERATOR BOOLEAN_EXPRESSION .
+    (1) BOOLEAN_EXPRESSION -> BOOLEAN_EXPRESSION . BOOLEAN_OPERATOR BOOLEAN_EXPRESSION
+    (13) BOOLEAN_OPERATOR -> . AND
+    (19) BOOLEAN_OPERATOR -> . OR
+
+  ! shift/reduce conflict for AND resolved as shift
+  ! shift/reduce conflict for OR resolved as shift
+    SEMICOLON       reduce using rule 1 (BOOLEAN_EXPRESSION -> BOOLEAN_EXPRESSION BOOLEAN_OPERATOR BOOLEAN_EXPRESSION .)
+    DO              reduce using rule 1 (BOOLEAN_EXPRESSION -> BOOLEAN_EXPRESSION BOOLEAN_OPERATOR BOOLEAN_EXPRESSION .)
+    AND             shift and go to state 33
+    OR              shift and go to state 34
+
+  ! AND             [ reduce using rule 1 (BOOLEAN_EXPRESSION -> BOOLEAN_EXPRESSION BOOLEAN_OPERATOR BOOLEAN_EXPRESSION .) ]
+  ! OR              [ reduce using rule 1 (BOOLEAN_EXPRESSION -> BOOLEAN_EXPRESSION BOOLEAN_OPERATOR BOOLEAN_EXPRESSION .) ]
+
+    BOOLEAN_OPERATOR               shift and go to state 32
+
+state 53
+
     (29) EXPRESSION -> FOR VARIABLE IN . STRING_LIST DO EXPRESSION_LIST ENDFOR
     (30) EXPRESSION -> FOR VARIABLE IN . VARIABLE DO EXPRESSION_LIST ENDFOR
-    (15) STRING_LIST -> . LPAREN STRING_LIST_INTERIOR RPAREN
+    (12) STRING_LIST -> . LPAREN STRING_LIST_INTERIOR RPAREN
 
     VARIABLE        shift and go to state 60
     LPAREN          shift and go to state 48
 
     STRING_LIST                    shift and go to state 61
 
-state 53
+state 54
 
-    (26) STRING_EXPRESSION -> STRING_EXPRESSION DOT . STRING_EXPRESSION
-    (26) STRING_EXPRESSION -> . STRING_EXPRESSION DOT STRING_EXPRESSION
-    (27) STRING_EXPRESSION -> . STRING
+    (22) STRING_EXPRESSION -> STRING_EXPRESSION DOT . STRING_EXPRESSION
+    (22) STRING_EXPRESSION -> . STRING_EXPRESSION DOT STRING_EXPRESSION
+    (23) STRING_EXPRESSION -> . STRING
     (28) STRING_EXPRESSION -> . VARIABLE
 
-    STRING          shift and go to state 34
-    VARIABLE        shift and go to state 35
+    STRING          shift and go to state 37
+    VARIABLE        shift and go to state 38
 
     STRING_EXPRESSION              shift and go to state 62
 
-state 54
-
-    (9) TERM -> TERM MUL FACTOR .
-
-    MUL             reduce using rule 9 (TERM -> TERM MUL FACTOR .)
-    DIV             reduce using rule 9 (TERM -> TERM MUL FACTOR .)
-    ADD             reduce using rule 9 (TERM -> TERM MUL FACTOR .)
-    SUB             reduce using rule 9 (TERM -> TERM MUL FACTOR .)
-    LT              reduce using rule 9 (TERM -> TERM MUL FACTOR .)
-    GT              reduce using rule 9 (TERM -> TERM MUL FACTOR .)
-    EQ              reduce using rule 9 (TERM -> TERM MUL FACTOR .)
-    NE              reduce using rule 9 (TERM -> TERM MUL FACTOR .)
-    SEMICOLON       reduce using rule 9 (TERM -> TERM MUL FACTOR .)
-    DO              reduce using rule 9 (TERM -> TERM MUL FACTOR .)
-
-
 state 55
 
-    (12) TERM -> TERM DIV FACTOR .
+    (10) TERM -> TERM MUL FACTOR .
 
-    MUL             reduce using rule 12 (TERM -> TERM DIV FACTOR .)
-    DIV             reduce using rule 12 (TERM -> TERM DIV FACTOR .)
-    ADD             reduce using rule 12 (TERM -> TERM DIV FACTOR .)
-    SUB             reduce using rule 12 (TERM -> TERM DIV FACTOR .)
-    LT              reduce using rule 12 (TERM -> TERM DIV FACTOR .)
-    GT              reduce using rule 12 (TERM -> TERM DIV FACTOR .)
-    EQ              reduce using rule 12 (TERM -> TERM DIV FACTOR .)
-    NE              reduce using rule 12 (TERM -> TERM DIV FACTOR .)
-    SEMICOLON       reduce using rule 12 (TERM -> TERM DIV FACTOR .)
-    DO              reduce using rule 12 (TERM -> TERM DIV FACTOR .)
+    MUL             reduce using rule 10 (TERM -> TERM MUL FACTOR .)
+    DIV             reduce using rule 10 (TERM -> TERM MUL FACTOR .)
+    ADD             reduce using rule 10 (TERM -> TERM MUL FACTOR .)
+    SUB             reduce using rule 10 (TERM -> TERM MUL FACTOR .)
+    LT              reduce using rule 10 (TERM -> TERM MUL FACTOR .)
+    GT              reduce using rule 10 (TERM -> TERM MUL FACTOR .)
+    EQ              reduce using rule 10 (TERM -> TERM MUL FACTOR .)
+    NE              reduce using rule 10 (TERM -> TERM MUL FACTOR .)
+    SEMICOLON       reduce using rule 10 (TERM -> TERM MUL FACTOR .)
+    AND             reduce using rule 10 (TERM -> TERM MUL FACTOR .)
+    OR              reduce using rule 10 (TERM -> TERM MUL FACTOR .)
+    DO              reduce using rule 10 (TERM -> TERM MUL FACTOR .)
 
 
 state 56
 
-    (1) BOOLEAN_EXPRESSION -> BOOLEAN BOOLEAN_OPERATOR BOOLEAN .
+    (11) TERM -> TERM DIV FACTOR .
 
-    SEMICOLON       reduce using rule 1 (BOOLEAN_EXPRESSION -> BOOLEAN BOOLEAN_OPERATOR BOOLEAN .)
-    DO              reduce using rule 1 (BOOLEAN_EXPRESSION -> BOOLEAN BOOLEAN_OPERATOR BOOLEAN .)
+    MUL             reduce using rule 11 (TERM -> TERM DIV FACTOR .)
+    DIV             reduce using rule 11 (TERM -> TERM DIV FACTOR .)
+    ADD             reduce using rule 11 (TERM -> TERM DIV FACTOR .)
+    SUB             reduce using rule 11 (TERM -> TERM DIV FACTOR .)
+    LT              reduce using rule 11 (TERM -> TERM DIV FACTOR .)
+    GT              reduce using rule 11 (TERM -> TERM DIV FACTOR .)
+    EQ              reduce using rule 11 (TERM -> TERM DIV FACTOR .)
+    NE              reduce using rule 11 (TERM -> TERM DIV FACTOR .)
+    SEMICOLON       reduce using rule 11 (TERM -> TERM DIV FACTOR .)
+    AND             reduce using rule 11 (TERM -> TERM DIV FACTOR .)
+    OR              reduce using rule 11 (TERM -> TERM DIV FACTOR .)
+    DO              reduce using rule 11 (TERM -> TERM DIV FACTOR .)
 
 
 state 57
 
-    (42) IF_EXPRESSION -> IF BOOLEAN_EXPRESSION DO . EXPRESSION_LIST ENDIF
+    (35) IF_EXPRESSION -> IF BOOLEAN_EXPRESSION DO . EXPRESSION_LIST ENDIF
     (36) EXPRESSION_LIST -> . EXPRESSION SEMICOLON
     (37) EXPRESSION_LIST -> . EXPRESSION SEMICOLON EXPRESSION_LIST
-    (18) EXPRESSION -> . VARIABLE ASSIGN STRING_EXPRESSION
-    (19) EXPRESSION -> . VARIABLE ASSIGN STRING_LIST
-    (20) EXPRESSION -> . VARIABLE ASSIGN MATH_EXPRESSION
-    (21) EXPRESSION -> . VARIABLE ASSIGN BOOLEAN_EXPRESSION
+    (15) EXPRESSION -> . VARIABLE ASSIGN STRING_EXPRESSION
+    (16) EXPRESSION -> . VARIABLE ASSIGN STRING_LIST
+    (17) EXPRESSION -> . VARIABLE ASSIGN MATH_EXPRESSION
+    (18) EXPRESSION -> . VARIABLE ASSIGN BOOLEAN_EXPRESSION
     (29) EXPRESSION -> . FOR VARIABLE IN STRING_LIST DO EXPRESSION_LIST ENDFOR
     (30) EXPRESSION -> . FOR VARIABLE IN VARIABLE DO EXPRESSION_LIST ENDFOR
     (31) EXPRESSION -> . PRINT STRING_EXPRESSION
@@ -869,17 +927,17 @@ state 57
     (34) EXPRESSION -> . IF_EXPRESSION
     (2) MATH_EXPRESSION -> . MATH_EXPRESSION ADD TERM
     (3) MATH_EXPRESSION -> . MATH_EXPRESSION SUB TERM
-    (5) MATH_EXPRESSION -> . TERM
-    (1) BOOLEAN_EXPRESSION -> . BOOLEAN BOOLEAN_OPERATOR BOOLEAN
-    (4) BOOLEAN_EXPRESSION -> . BOOLEAN
-    (16) BOOLEAN_EXPRESSION -> . MATH_EXPRESSION INTEGER_COMPARATOR MATH_EXPRESSION
-    (42) IF_EXPRESSION -> . IF BOOLEAN_EXPRESSION DO EXPRESSION_LIST ENDIF
-    (9) TERM -> . TERM MUL FACTOR
-    (12) TERM -> . TERM DIV FACTOR
+    (6) MATH_EXPRESSION -> . TERM
+    (1) BOOLEAN_EXPRESSION -> . BOOLEAN_EXPRESSION BOOLEAN_OPERATOR BOOLEAN_EXPRESSION
+    (5) BOOLEAN_EXPRESSION -> . BOOLEAN
+    (21) BOOLEAN_EXPRESSION -> . MATH_EXPRESSION INTEGER_COMPARATOR MATH_EXPRESSION
+    (35) IF_EXPRESSION -> . IF BOOLEAN_EXPRESSION DO EXPRESSION_LIST ENDIF
+    (10) TERM -> . TERM MUL FACTOR
+    (11) TERM -> . TERM DIV FACTOR
     (14) TERM -> . FACTOR
-    (7) BOOLEAN -> . TRUE
-    (8) BOOLEAN -> . FALSE
-    (17) FACTOR -> . INTEGER
+    (8) BOOLEAN -> . TRUE
+    (9) BOOLEAN -> . FALSE
+    (20) FACTOR -> . INTEGER
 
     VARIABLE        shift and go to state 9
     FOR             shift and go to state 12
@@ -900,18 +958,18 @@ state 57
 
 state 58
 
-    (15) STRING_LIST -> LPAREN STRING_LIST_INTERIOR . RPAREN
+    (12) STRING_LIST -> LPAREN STRING_LIST_INTERIOR . RPAREN
 
     RPAREN          shift and go to state 64
 
 
 state 59
 
-    (6) STRING_LIST_INTERIOR -> STRING . COMMA STRING_LIST_INTERIOR
-    (10) STRING_LIST_INTERIOR -> STRING .
+    (4) STRING_LIST_INTERIOR -> STRING . COMMA STRING_LIST_INTERIOR
+    (7) STRING_LIST_INTERIOR -> STRING .
 
     COMMA           shift and go to state 65
-    RPAREN          reduce using rule 10 (STRING_LIST_INTERIOR -> STRING .)
+    RPAREN          reduce using rule 7 (STRING_LIST_INTERIOR -> STRING .)
 
 
 state 60
@@ -930,36 +988,36 @@ state 61
 
 state 62
 
-    (26) STRING_EXPRESSION -> STRING_EXPRESSION DOT STRING_EXPRESSION .
-    (26) STRING_EXPRESSION -> STRING_EXPRESSION . DOT STRING_EXPRESSION
+    (22) STRING_EXPRESSION -> STRING_EXPRESSION DOT STRING_EXPRESSION .
+    (22) STRING_EXPRESSION -> STRING_EXPRESSION . DOT STRING_EXPRESSION
 
   ! shift/reduce conflict for DOT resolved as shift
-    SEMICOLON       reduce using rule 26 (STRING_EXPRESSION -> STRING_EXPRESSION DOT STRING_EXPRESSION .)
-    DOT             shift and go to state 53
+    SEMICOLON       reduce using rule 22 (STRING_EXPRESSION -> STRING_EXPRESSION DOT STRING_EXPRESSION .)
+    DOT             shift and go to state 54
 
-  ! DOT             [ reduce using rule 26 (STRING_EXPRESSION -> STRING_EXPRESSION DOT STRING_EXPRESSION .) ]
+  ! DOT             [ reduce using rule 22 (STRING_EXPRESSION -> STRING_EXPRESSION DOT STRING_EXPRESSION .) ]
 
 
 state 63
 
-    (42) IF_EXPRESSION -> IF BOOLEAN_EXPRESSION DO EXPRESSION_LIST . ENDIF
+    (35) IF_EXPRESSION -> IF BOOLEAN_EXPRESSION DO EXPRESSION_LIST . ENDIF
 
     ENDIF           shift and go to state 68
 
 
 state 64
 
-    (15) STRING_LIST -> LPAREN STRING_LIST_INTERIOR RPAREN .
+    (12) STRING_LIST -> LPAREN STRING_LIST_INTERIOR RPAREN .
 
-    SEMICOLON       reduce using rule 15 (STRING_LIST -> LPAREN STRING_LIST_INTERIOR RPAREN .)
-    DO              reduce using rule 15 (STRING_LIST -> LPAREN STRING_LIST_INTERIOR RPAREN .)
+    SEMICOLON       reduce using rule 12 (STRING_LIST -> LPAREN STRING_LIST_INTERIOR RPAREN .)
+    DO              reduce using rule 12 (STRING_LIST -> LPAREN STRING_LIST_INTERIOR RPAREN .)
 
 
 state 65
 
-    (6) STRING_LIST_INTERIOR -> STRING COMMA . STRING_LIST_INTERIOR
-    (6) STRING_LIST_INTERIOR -> . STRING COMMA STRING_LIST_INTERIOR
-    (10) STRING_LIST_INTERIOR -> . STRING
+    (4) STRING_LIST_INTERIOR -> STRING COMMA . STRING_LIST_INTERIOR
+    (4) STRING_LIST_INTERIOR -> . STRING COMMA STRING_LIST_INTERIOR
+    (7) STRING_LIST_INTERIOR -> . STRING
 
     STRING          shift and go to state 59
 
@@ -970,10 +1028,10 @@ state 66
     (30) EXPRESSION -> FOR VARIABLE IN VARIABLE DO . EXPRESSION_LIST ENDFOR
     (36) EXPRESSION_LIST -> . EXPRESSION SEMICOLON
     (37) EXPRESSION_LIST -> . EXPRESSION SEMICOLON EXPRESSION_LIST
-    (18) EXPRESSION -> . VARIABLE ASSIGN STRING_EXPRESSION
-    (19) EXPRESSION -> . VARIABLE ASSIGN STRING_LIST
-    (20) EXPRESSION -> . VARIABLE ASSIGN MATH_EXPRESSION
-    (21) EXPRESSION -> . VARIABLE ASSIGN BOOLEAN_EXPRESSION
+    (15) EXPRESSION -> . VARIABLE ASSIGN STRING_EXPRESSION
+    (16) EXPRESSION -> . VARIABLE ASSIGN STRING_LIST
+    (17) EXPRESSION -> . VARIABLE ASSIGN MATH_EXPRESSION
+    (18) EXPRESSION -> . VARIABLE ASSIGN BOOLEAN_EXPRESSION
     (29) EXPRESSION -> . FOR VARIABLE IN STRING_LIST DO EXPRESSION_LIST ENDFOR
     (30) EXPRESSION -> . FOR VARIABLE IN VARIABLE DO EXPRESSION_LIST ENDFOR
     (31) EXPRESSION -> . PRINT STRING_EXPRESSION
@@ -982,17 +1040,17 @@ state 66
     (34) EXPRESSION -> . IF_EXPRESSION
     (2) MATH_EXPRESSION -> . MATH_EXPRESSION ADD TERM
     (3) MATH_EXPRESSION -> . MATH_EXPRESSION SUB TERM
-    (5) MATH_EXPRESSION -> . TERM
-    (1) BOOLEAN_EXPRESSION -> . BOOLEAN BOOLEAN_OPERATOR BOOLEAN
-    (4) BOOLEAN_EXPRESSION -> . BOOLEAN
-    (16) BOOLEAN_EXPRESSION -> . MATH_EXPRESSION INTEGER_COMPARATOR MATH_EXPRESSION
-    (42) IF_EXPRESSION -> . IF BOOLEAN_EXPRESSION DO EXPRESSION_LIST ENDIF
-    (9) TERM -> . TERM MUL FACTOR
-    (12) TERM -> . TERM DIV FACTOR
+    (6) MATH_EXPRESSION -> . TERM
+    (1) BOOLEAN_EXPRESSION -> . BOOLEAN_EXPRESSION BOOLEAN_OPERATOR BOOLEAN_EXPRESSION
+    (5) BOOLEAN_EXPRESSION -> . BOOLEAN
+    (21) BOOLEAN_EXPRESSION -> . MATH_EXPRESSION INTEGER_COMPARATOR MATH_EXPRESSION
+    (35) IF_EXPRESSION -> . IF BOOLEAN_EXPRESSION DO EXPRESSION_LIST ENDIF
+    (10) TERM -> . TERM MUL FACTOR
+    (11) TERM -> . TERM DIV FACTOR
     (14) TERM -> . FACTOR
-    (7) BOOLEAN -> . TRUE
-    (8) BOOLEAN -> . FALSE
-    (17) FACTOR -> . INTEGER
+    (8) BOOLEAN -> . TRUE
+    (9) BOOLEAN -> . FALSE
+    (20) FACTOR -> . INTEGER
 
     VARIABLE        shift and go to state 9
     FOR             shift and go to state 12
@@ -1016,10 +1074,10 @@ state 67
     (29) EXPRESSION -> FOR VARIABLE IN STRING_LIST DO . EXPRESSION_LIST ENDFOR
     (36) EXPRESSION_LIST -> . EXPRESSION SEMICOLON
     (37) EXPRESSION_LIST -> . EXPRESSION SEMICOLON EXPRESSION_LIST
-    (18) EXPRESSION -> . VARIABLE ASSIGN STRING_EXPRESSION
-    (19) EXPRESSION -> . VARIABLE ASSIGN STRING_LIST
-    (20) EXPRESSION -> . VARIABLE ASSIGN MATH_EXPRESSION
-    (21) EXPRESSION -> . VARIABLE ASSIGN BOOLEAN_EXPRESSION
+    (15) EXPRESSION -> . VARIABLE ASSIGN STRING_EXPRESSION
+    (16) EXPRESSION -> . VARIABLE ASSIGN STRING_LIST
+    (17) EXPRESSION -> . VARIABLE ASSIGN MATH_EXPRESSION
+    (18) EXPRESSION -> . VARIABLE ASSIGN BOOLEAN_EXPRESSION
     (29) EXPRESSION -> . FOR VARIABLE IN STRING_LIST DO EXPRESSION_LIST ENDFOR
     (30) EXPRESSION -> . FOR VARIABLE IN VARIABLE DO EXPRESSION_LIST ENDFOR
     (31) EXPRESSION -> . PRINT STRING_EXPRESSION
@@ -1028,17 +1086,17 @@ state 67
     (34) EXPRESSION -> . IF_EXPRESSION
     (2) MATH_EXPRESSION -> . MATH_EXPRESSION ADD TERM
     (3) MATH_EXPRESSION -> . MATH_EXPRESSION SUB TERM
-    (5) MATH_EXPRESSION -> . TERM
-    (1) BOOLEAN_EXPRESSION -> . BOOLEAN BOOLEAN_OPERATOR BOOLEAN
-    (4) BOOLEAN_EXPRESSION -> . BOOLEAN
-    (16) BOOLEAN_EXPRESSION -> . MATH_EXPRESSION INTEGER_COMPARATOR MATH_EXPRESSION
-    (42) IF_EXPRESSION -> . IF BOOLEAN_EXPRESSION DO EXPRESSION_LIST ENDIF
-    (9) TERM -> . TERM MUL FACTOR
-    (12) TERM -> . TERM DIV FACTOR
+    (6) MATH_EXPRESSION -> . TERM
+    (1) BOOLEAN_EXPRESSION -> . BOOLEAN_EXPRESSION BOOLEAN_OPERATOR BOOLEAN_EXPRESSION
+    (5) BOOLEAN_EXPRESSION -> . BOOLEAN
+    (21) BOOLEAN_EXPRESSION -> . MATH_EXPRESSION INTEGER_COMPARATOR MATH_EXPRESSION
+    (35) IF_EXPRESSION -> . IF BOOLEAN_EXPRESSION DO EXPRESSION_LIST ENDIF
+    (10) TERM -> . TERM MUL FACTOR
+    (11) TERM -> . TERM DIV FACTOR
     (14) TERM -> . FACTOR
-    (7) BOOLEAN -> . TRUE
-    (8) BOOLEAN -> . FALSE
-    (17) FACTOR -> . INTEGER
+    (8) BOOLEAN -> . TRUE
+    (9) BOOLEAN -> . FALSE
+    (20) FACTOR -> . INTEGER
 
     VARIABLE        shift and go to state 9
     FOR             shift and go to state 12
@@ -1059,16 +1117,16 @@ state 67
 
 state 68
 
-    (42) IF_EXPRESSION -> IF BOOLEAN_EXPRESSION DO EXPRESSION_LIST ENDIF .
+    (35) IF_EXPRESSION -> IF BOOLEAN_EXPRESSION DO EXPRESSION_LIST ENDIF .
 
-    SEMICOLON       reduce using rule 42 (IF_EXPRESSION -> IF BOOLEAN_EXPRESSION DO EXPRESSION_LIST ENDIF .)
+    SEMICOLON       reduce using rule 35 (IF_EXPRESSION -> IF BOOLEAN_EXPRESSION DO EXPRESSION_LIST ENDIF .)
 
 
 state 69
 
-    (6) STRING_LIST_INTERIOR -> STRING COMMA STRING_LIST_INTERIOR .
+    (4) STRING_LIST_INTERIOR -> STRING COMMA STRING_LIST_INTERIOR .
 
-    RPAREN          reduce using rule 6 (STRING_LIST_INTERIOR -> STRING COMMA STRING_LIST_INTERIOR .)
+    RPAREN          reduce using rule 4 (STRING_LIST_INTERIOR -> STRING COMMA STRING_LIST_INTERIOR .)
 
 
 state 70
@@ -1101,4 +1159,6 @@ state 73
 WARNING: 
 WARNING: Conflicts:
 WARNING: 
+WARNING: shift/reduce conflict for AND in state 52 resolved as shift
+WARNING: shift/reduce conflict for OR in state 52 resolved as shift
 WARNING: shift/reduce conflict for DOT in state 62 resolved as shift

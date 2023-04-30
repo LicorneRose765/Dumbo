@@ -118,6 +118,15 @@ if __name__ == "__main__":
         """
         parser = yacc.yacc(start=start, debug=True)
         # expression = "{{ a := '2'; b := '4'; {{ c := '6'; print a; print b; print c; }} print c; }}"
-        # expression = "{{ if true do print 'true'; endif }}"
-        expression = "{{ list := ('1', '2', '3'); for var in list do print var; endfor; }}"
-        print(f"{expression} = {parser.parse(expression)}")
+        # expression = "{{ if 2 < 3 do print 'true'; print 'i am veri smart'; endif; }} {{ a := 17; b := '11'; }}"
+        # expression = "{{ list := ('1', '2', '3'); for var in list do print var; endfor; }}"
+        # expression = "{{ 2 + 2 * 2 - 2; }} abcd"
+        expression = "{{ for myvar in ('a', 'b', 'c') do print myvar; endfor; }}"
+        result = parser.parse(expression)
+        s = ""
+        for op in result:
+            s += str(op)
+            s += "\n"
+        print()
+        print(f"{expression} =")
+        print(s)

@@ -1,4 +1,5 @@
 from .symbols_table import symbols_table
+from .operation import *
 
 verbose = True
 
@@ -7,11 +8,6 @@ current_scope_depth = 0
 states = (
     ("IN", "exclusive"),  # state 'IN'  : when inside dumbo code
 )
-
-
-def assign(variable_name, value, scope_depth):
-    """Assigns the value 'value' to the variable named 'variable_name' at the scope depth 'scope_depth' via the symbols.py table."""
-    symbols_table.assign(variable_name, value, scope_depth)
 
 
 def get(variable_name, scope_depth):
@@ -58,8 +54,7 @@ def p_expression_assignments(p):
         print("Call to method p_expression_assignments : EXPRESSION : VARIABLE ASSIGN STRING_EXPRESSION\n           | VARIABLE ASSIGN STRING_LIST\n           | VARIABLE ASSIGN MATH_EXPRESSION")
     value = p[3]
     variable_name = p[1]
-    assign(variable_name, value, current_scope_depth)
-    p[0] = ''
+    p[0] = AssignOperation(variable_name, value, current_scope_depth)
 
 
 def p_stringexpression_double(p):
@@ -86,6 +81,8 @@ def p_string_expression_variable(p):
     """
     if verbose:
         print("Call to method p_stringexpression_variable : STRING_EXPRESSION : VARIABLE")
+    return get(p[1], current_scope_depth)
+    """
     value = get(p[1], current_scope_depth)
     if type(value) == str:
         p[0] = value
@@ -93,7 +90,7 @@ def p_string_expression_variable(p):
         p[0] = ", ".join(value)
     else:
         p[0] = str(value)
-
+    """
 
 def p_expression_strlistfor(p):
     """
@@ -101,7 +98,12 @@ def p_expression_strlistfor(p):
     """
     if verbose:
         print("Call to method p_expression_strlistfor : EXPRESSION : FOR VARIABLE IN STRING_LIST DO EXPRESSION_LIST ENDFOR")
-    p[0] = "should have been a for result :("
+    global current_scope_depth
+    current_scope_depth += 1
+    temporary_variable_name = p[2]
+    string_list = p[4]
+    body = p[6]
+    p[0] = ForOperation(temporary_variable_name, string_list, body, current_scope_depth)
 
 
 def p_expression_varfor(p):
@@ -127,7 +129,7 @@ def p_expression_print(p):
     """
     if verbose:
         print("Call to method p_expression_print : EXPRESSION : PRINT STRING_EXPRESSION")
-    p[0] = p[2]
+    p[0] = PrintOperation(p[2])
 
 
 def p_expression_mathexpression(p):
@@ -136,7 +138,7 @@ def p_expression_mathexpression(p):
     """
     if verbose:
         print("Call to method p_expression_mathexpression : EXPRESSION : MATH_EXPRESSION")
-    p[0] = p[1]  # TODO : str(p[1]) ?
+    p[0] = p[1]
 
 
 def p_expression_booleanexpression(p):
@@ -145,7 +147,7 @@ def p_expression_booleanexpression(p):
     """
     if verbose:
         print("Call to method p_expression_booleanexpression : EXPRESSION : BOOLEAN_EXPRESSION")
-    p[0] = p[1]  # TODO : str(p[1]) ?
+    p[0] = p[1]
 
 
 def p_expression_ifexpression(p):
@@ -157,13 +159,16 @@ def p_expression_ifexpression(p):
     p[0] = p[1]
 
 
-def p_dumboblock(p):
+def p_ifexpression(p):
     """
-    DUMBO_BLOCK : OPENING EXPRESSION_LIST CLOSING
+    IF_EXPRESSION : IF BOOLEAN_EXPRESSION DO EXPRESSION_LIST ENDIF
     """
-    if verbose:
-        print("Call to method p_dumboblock : DUMBO_BLOCK : OPENING EXPRESSION_LIST CLOSING")
-    p[0] = "".join(p[2])
+    print("Call to method p_ifexpression : IF_EXPRESSION : IF BOOLEAN_EXPRESSION DO EXPRESSION_LIST ENDIF")
+    global current_scope_depth
+    current_scope_depth += 1
+    condition = p[2]
+    body = p[4]
+    p[0] = IfOperation(condition, body, current_scope_depth)
 
 
 def p_expression_list_single(p):
@@ -184,6 +189,15 @@ def p_expression_list_multiple(p):
     p[0] = [p[1]] + p[3]
 
 
+def p_dumboblock(p):
+    """
+    DUMBO_BLOCK : OPENING EXPRESSION_LIST CLOSING
+    """
+    if verbose:
+        print("Call to method p_dumboblock : DUMBO_BLOCK : OPENING EXPRESSION_LIST CLOSING")
+    p[0] = p[2]
+
+
 def p_program_double(p):
     """
     PROGRAM : DUMBO_BLOCK PROGRAM
@@ -191,7 +205,7 @@ def p_program_double(p):
     """
     if verbose:
         print("Call to method p_program_double : PROGRAM : DUMBO_BLOCK PROGRAM\n        | TXT PROGRAM")
-    p[0] = p[1] + p[2]
+    p[0] = [p[1], p[2]]
 
 
 def p_program_single(p):
@@ -202,17 +216,3 @@ def p_program_single(p):
     if verbose:
         print("Call to method p_program_single : PROGRAM : DUMBO_BLOCK\n        | TXT")
     p[0] = p[1]
-
-
-def p_IN_ifexpression(p):
-    """
-    IF_EXPRESSION : IF BOOLEAN_EXPRESSION DO EXPRESSION_LIST ENDIF
-    """
-    print("Call to method p_IN_ifexpression : IF_EXPRESSION : IF BOOLEAN_EXPRESSION DO EXPRESSION_LIST ENDIF")
-    condition = p[2]
-    if condition:
-        global current_scope_depth
-        current_scope_depth += 1
-        # TODO what about expression list ?
-    else:
-        p[0] = ""
