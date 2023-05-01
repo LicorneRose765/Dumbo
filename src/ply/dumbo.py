@@ -134,7 +134,8 @@ if __name__ == "__main__":
         # expression = "{{ for myvar in ('a', 'b', 'c') do print myvar; endfor; }}"
         # expression = "{{ i := 2; if i < 1 do print 'yes'; endif; }}"
         # expression = "{{ nom := 'oui'; print '<a_href=\"'.nom.'\">'.nom.'</a>'; }}"
-        expression = "{{ i := 0; print i.'\n'; i := i + 1; print i.'\n'; i := i + 1; print i.'\n'; }}"
+        # expression = "{{ i := 0; print i.'\n'; i := i + 1; print i.'\n'; i := i + 1; print i.'\n'; }}"
+        expression = "{{ liste_photo := ('a', 'b', 'c'); print liste_photo; }}"
         baby_chad_expression = "{{ i := 0;" \
                      "   for nom in ('a', 'b', 'c') do" \
                      "       print nom.', i = '.i;" \
@@ -156,7 +157,7 @@ if __name__ == "__main__":
                           "    i := i + 1;" \
                           "endfor;" \
                           "}}"
-        giga_chad_expression = "{{ liste_photo := ('holiday.png', 'flower.jpg', 'dog.png', 'house.png'); }}" \
+        giga_chad_expression = "{{ liste_photo := ('holiday.png', 'flower.jpg', 'dog.png', 'house.png'); nom := 'my name'; }}" \
                                "<html>\n" \
                                "<head><title>{{ print nom; }}</title></head>\n" \
                                "<body>\n" \
@@ -170,10 +171,10 @@ if __name__ == "__main__":
                                "endfor;" \
                                "}}\n" \
                                "<br/>\n" \
-                               "Il y a {{ print i; }} dans l album {{ print nom; }}.\n" \
+                               "Il y a {{ print i.' '; }} dans l album {{ print nom; }}.\n" \
                                "</body>\n" \
                                "</html>"
-        expression = chad_expression
+        expression = giga_chad_expression
         result = parser.parse(expression)
         s = ""
         for op in result:

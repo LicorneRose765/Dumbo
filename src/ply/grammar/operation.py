@@ -241,7 +241,15 @@ class ForOperation(Operation):
             print(f"Executing {self.__class__.__name__}")
         res = ""
         assign(self.temporary_variable_name, "", self.body_scope_depth)
-        for var in self.string_list:
+        if isinstance(self.string_list, GetOperation):
+            string_list = self.string_list.execute(self.body_scope_depth)
+        else:
+            string_list = self.string_list
+        # TODO : if we do assign operations in a for loop and the variable already exists, it musts temporarily
+        #  overwrite it
+        #  -> 1. look for it
+        #     2. if it exists, set the value at the scope of the already existing variable
+        for var in string_list:
             assign(self.temporary_variable_name, var, self.body_scope_depth)
             for op in self.body:
                 res += op.execute(self.body_scope_depth)

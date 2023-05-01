@@ -107,7 +107,7 @@ def p_expression_varfor(p):
     if params.verbose:
         print("Call to method p_expression_varfor : EXPRESSION : FOR VARIABLE IN VARIABLE DO EXPRESSION_LIST ENDFOR")
     temporary_variable_name = p[2]
-    string_list = get(p[4], params.current_scope_depth - 1)
+    string_list = GetOperation(p[4], params.current_scope_depth - 1)
     body = p[6]
     p[0] = ForOperation(temporary_variable_name, string_list, body, params.current_scope_depth)
 
