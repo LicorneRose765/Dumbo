@@ -1,22 +1,24 @@
-from .operation import MathOperation
+from .operation import MathOperation, GetOperation
+from .symbols_table import symbols_table
+from . import params
 
-global current_scope_depth
 
-verbose = True
+def get(variable_name, scope_depth):
+    return symbols_table.get(variable_name, scope_depth)
 
 
 def p_mathexpression_plus(p):
     """
     MATH_EXPRESSION : MATH_EXPRESSION ADD TERM
     """
-    p[0] = MathOperation(p[1], p[2], p[3], current_scope_depth)
+    p[0] = MathOperation(p[1], p[2], p[3], params.current_scope_depth)
 
 
 def p_mathexpression_minus(p):
     """
     MATH_EXPRESSION : MATH_EXPRESSION SUB TERM
     """
-    p[0] = MathOperation(p[1], p[2], p[3], current_scope_depth)
+    p[0] = MathOperation(p[1], p[2], p[3], params.current_scope_depth)
 
 
 def p_mathexpression_TERM(p):
@@ -52,3 +54,10 @@ def p_factor_num(p):
     FACTOR : INTEGER
     """
     p[0] = int(p[1])
+
+
+def p_factor_var(p):
+    """
+    FACTOR : VARIABLE
+    """
+    p[0] = GetOperation(p[1], params.current_scope_depth)

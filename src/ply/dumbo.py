@@ -4,11 +4,11 @@ import os
 import sys
 from pathlib import Path
 
+import grammar.params
+
 # *-------------------------------------------------------------------------------------------------------------------*
 #     VARS
 # *-------------------------------------------------------------------------------------------------------------------*
-
-verbose = True
 
 start = "PROGRAM"
 
@@ -29,10 +29,20 @@ def infinite_yacc():
             continue
         result = parser.parse(s)
         print(result)
-        if verbose:
+        if params.verbose:
             print("===== SYMBOLS TABLE =====")
             print(symbols_table)
             print("===== ======= ===== =====")
+
+
+def dfs_result(lst):
+    _res = ''
+    for element in lst:
+        if isinstance(element, list):
+            _res += dfs_result(element)
+        elif isinstance(element, Operation):
+            _res += element.execute(1)
+    return _res
 
 
 # *-------------------------------------------------------------------------------------------------------------------*
@@ -121,12 +131,57 @@ if __name__ == "__main__":
         # expression = "{{ if 2 < 3 do print 'true'; print 'i am veri smart'; endif; }} {{ a := 17; b := '11'; }}"
         # expression = "{{ list := ('1', '2', '3'); for var in list do print var; endfor; }}"
         # expression = "{{ 2 + 2 * 2 - 2; }} abcd"
-        expression = "{{ for myvar in ('a', 'b', 'c') do print myvar; endfor; }}"
+        # expression = "{{ for myvar in ('a', 'b', 'c') do print myvar; endfor; }}"
+        # expression = "{{ i := 2; if i < 1 do print 'yes'; endif; }}"
+        # expression = "{{ nom := 'oui'; print '<a_href=\"'.nom.'\">'.nom.'</a>'; }}"
+        expression = "{{ i := 0; print i.'\n'; i := i + 1; print i.'\n'; i := i + 1; print i.'\n'; }}"
+        baby_chad_expression = "{{ i := 0;" \
+                     "   for nom in ('a', 'b', 'c') do" \
+                     "       print nom.', i = '.i;" \
+                     "       if i > 0 do print 'i > 0'; endif;" \
+                     "       print '\n';" \
+                     "       i := i + 1;" \
+                     "   endfor; }}"
+        chad_expression = "{{" \
+                          "nom := 'Brouette';" \
+                          "prenom := 'Quentin';" \
+                          "cours := ('Logique 1', 'Logique 2', 'Algebre 1', 'Math elem');" \
+                          "}}" \
+                          "{{ print nom; }}<--- ce nom est ridicule\n" \
+                          "{{" \
+                          "i := 0;" \
+                          "for nom in ('name', 'NAME', 'NAAAAME') do" \
+                          "    if i > 0 do print ', '; endif;" \
+                          "    print '<a_href=\"'.nom.'\">'.nom.'</a>';" \
+                          "    i := i + 1;" \
+                          "endfor;" \
+                          "}}"
+        giga_chad_expression = "{{ liste_photo := ('holiday.png', 'flower.jpg', 'dog.png', 'house.png'); }}" \
+                               "<html>\n" \
+                               "<head><title>{{ print nom; }}</title></head>\n" \
+                               "<body>\n" \
+                               "<h1>{{ print nom; }}</h1>\n" \
+                               "{{" \
+                               "i := 0;" \
+                               "for nom in liste_photo do" \
+                               "if i > 0 do print ', '; endif ;" \
+                               "print '<ahref=\"'.nom.'\">'.nom.'</a>';" \
+                               "i := i + 1;" \
+                               "endfor;" \
+                               "}}\n" \
+                               "<br/>\n" \
+                               "Il y a {{ print i; }} dans l album {{ print nom; }}.\n" \
+                               "</body>\n" \
+                               "</html>"
+        expression = chad_expression
         result = parser.parse(expression)
         s = ""
         for op in result:
             s += str(op)
             s += "\n"
         print()
-        print(f"{expression} =")
+        print(f"{expression} =\n")
         print(s)
+        print("RESULT\n"
+              "======")
+        print(dfs_result(result))

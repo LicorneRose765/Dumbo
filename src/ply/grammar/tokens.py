@@ -1,6 +1,5 @@
 from .symbols_table import symbols_table
-
-verbose = True
+from . import params
 
 reserved = {
     "PRINT": "print",
@@ -62,35 +61,32 @@ t_ANY_ignore = ' \t'
 # I have to define these two as methods so I can give string the priority
 def t_OPENING(t):
     """{{"""
-    global current_scope_depth
     # INITIAL -> IN
     t.lexer.level = 1
-    current_scope_depth = 1
-    if verbose:
-        print(f"Current scope depth changed to {current_scope_depth=:} because of first opening {'{{'}")
-    symbols_table.init_depth_entry(current_scope_depth)
+    params.current_scope_depth = 1
+    if params.verbose:
+        print(f"Current scope depth changed to {params.current_scope_depth=:} because of first opening {'{{'}")
+    symbols_table.init_depth_entry(params.current_scope_depth)
     t.lexer.begin('IN')
     return t
 
 
 def t_IN_OPENING(t):
     """{{"""
-    global current_scope_depth
     t.lexer.level += 1
-    current_scope_depth += 1
-    if verbose:
-        print(f"Current scope depth changed to {current_scope_depth=:} because of new opening {'{{'}")
-    symbols_table.init_depth_entry(current_scope_depth)
+    params.current_scope_depth += 1
+    if params.verbose:
+        print(f"Current scope depth changed to {params.current_scope_depth=:} because of new opening {'{{'}")
+    symbols_table.init_depth_entry(params.current_scope_depth)
     return t
 
 
 def t_IN_CLOSING(t):
     """}}"""
-    global current_scope_depth
     t.lexer.level -= 1
-    current_scope_depth -= 1
-    if verbose:
-        print(f"Current scope depth changed to {current_scope_depth=:} because of closing {'}}'}")
+    params.current_scope_depth -= 1
+    if params.verbose:
+        print(f"Current scope depth changed to {params.current_scope_depth=:} because of closing {'}}'}")
     if t.lexer.level == 0:
         t.lexer.begin('INITIAL')
     return t
@@ -98,8 +94,8 @@ def t_IN_CLOSING(t):
 
 def t_CLOSING(t):
     """}}"""
-    if verbose:
-        print(f"Unexpected '{t.value[0]*2}' at line {lexer.lineno}")
+    if params.verbose:
+        print(f"Unexpected '{t.value[0]*2}'")
 
 
 def t_IN_SEMICOLON(t):
@@ -139,12 +135,11 @@ def t_IN_PRINT(t):
 
 def t_IN_FOR(t):
     """for"""
-    global current_scope_depth
     t.lexer.level += 1
-    current_scope_depth += 1
-    if verbose:
-        print(f"Current scope depth changed to {current_scope_depth=:} because of for")
-    symbols_table.init_depth_entry(current_scope_depth)
+    params.current_scope_depth += 1
+    if params.verbose:
+        print(f"Current scope depth changed to {params.current_scope_depth=:} because of for")
+    symbols_table.init_depth_entry(params.current_scope_depth)
     return t
 
 
@@ -160,12 +155,11 @@ def t_IN_DO(t):
 
 def t_IN_ENDFOR(t):
     """endfor"""
-    global current_scope_depth
     t.lexer.level -= 1
-    symbols_table.delete(current_scope_depth)
-    current_scope_depth -= 1
-    if verbose:
-        print(f"Current scope depth changed to {current_scope_depth=:} because of endfor")
+    symbols_table.delete(params.current_scope_depth)
+    params.current_scope_depth -= 1
+    if params.verbose:
+        print(f"Current scope depth changed to {params.current_scope_depth=:} because of endfor")
     if t.lexer.level == 0:
         t.lexer.begin('INITIAL')
     return t

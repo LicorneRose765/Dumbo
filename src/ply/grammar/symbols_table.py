@@ -1,4 +1,4 @@
-verbose = True
+from . import params
 
 
 class SymbolsTable:
@@ -26,12 +26,16 @@ class SymbolsTable:
             self.table[scope_depth]
         except KeyError:
             self.table[scope_depth] = {}
-        self.table[scope_depth][name] = value
-        if verbose:
+        # I just wanted to do if isinstance(value, Operation) but I got circular imported so I had to work around it
+        try:
+            self.table[scope_depth][name] = value.execute(scope_depth)
+        except AttributeError:
+            self.table[scope_depth][name] = value
+        if params.verbose:
             print(f"Assigned {value=:} to {name=:} in scope {scope_depth=:}")
 
     def get(self, name, scope_depth):
-        if verbose:
+        if params.verbose:
             print(f"Trying to get the variable {name=:} at {scope_depth=:}")
         try:
             value = self.table[scope_depth][name]
@@ -40,7 +44,7 @@ class SymbolsTable:
                 value = self.get(name, scope_depth - 1)
             else:
                 print(f"SyntaxError : Cannot find variable {name}. ")
-                if verbose:
+                if params.verbose:
                     print(f"    Searched at {scope_depth=:} for in the following table :")
                     print(f"    {self.table}")
                 # raise SyntaxError(f"Cannot find variable {name}.")
@@ -48,21 +52,21 @@ class SymbolsTable:
         return value
 
     def delete(self, scope_depth):
-        if verbose:
+        if params.verbose:
             print(f"Call to delete variables entry in {scope_depth=:}")
-        if verbose:
+        if params.verbose:
             print(f"Table before deletion of {scope_depth=:} :")
             print(f"    {self.table}")
         try:
             del self.table[scope_depth]
         except KeyError as ignored:
             pass
-        if verbose:
+        if params.verbose:
             print(f"Table after deletion of {scope_depth=:} :")
             print(f"    {self.table}")
 
     def init_depth_entry(self, scope_depth):
-        if verbose:
+        if params.verbose:
             print(f"Created a new entry for variables in {scope_depth=:}")
         self.table[scope_depth] = {}
 

@@ -1,24 +1,17 @@
 from .symbols_table import symbols_table
 from .operation import *
-
-verbose = True
-
-current_scope_depth = 0
+from . import params
 
 states = (
     ("IN", "exclusive"),  # state 'IN'  : when inside dumbo code
 )
 
 
-def get(variable_name, scope_depth):
-    return symbols_table.get(variable_name, scope_depth)
-
-
 def p_stringlistinterior_double(p):
     """
     STRING_LIST_INTERIOR : STRING COMMA STRING_LIST_INTERIOR
     """
-    if verbose:
+    if params.verbose:
         print("Call to method p_stringlistinterior_double : STRING_LIST_INTERIOR : STRING COMMA STRING_LIST_INTERIOR")
         print(f"{p[1]:}")
         print(f"{p[3]:}")
@@ -29,7 +22,7 @@ def p_stringlistinterior_single(p):
     """
     STRING_LIST_INTERIOR : STRING
     """
-    if verbose:
+    if params.verbose:
         print("Call to method p_stringlistinterior_single : STRING_LIST_INTERIOR : STRING")
     p[0] = [p[1][1:-1]]
 
@@ -38,7 +31,7 @@ def p_stringlist(p):
     """
     STRING_LIST : LPAREN STRING_LIST_INTERIOR RPAREN
     """
-    if verbose:
+    if params.verbose:
         print("Call to method p_stringlist : STRING_LIST : LPAREN STRING_LIST_INTERIOR RPAREN")
     p[0] = p[2]
 
@@ -50,40 +43,43 @@ def p_expression_assignments(p):
                | VARIABLE ASSIGN MATH_EXPRESSION
                | VARIABLE ASSIGN BOOLEAN_EXPRESSION
     """
-    if verbose:
+    if params.verbose:
         print("Call to method p_expression_assignments : EXPRESSION : VARIABLE ASSIGN STRING_EXPRESSION\n           | VARIABLE ASSIGN STRING_LIST\n           | VARIABLE ASSIGN MATH_EXPRESSION")
     value = p[3]
     variable_name = p[1]
-    p[0] = AssignOperation(variable_name, value, current_scope_depth)
+    if isinstance(value, StringExpressionNode):
+        value = value.execute()
+    p[0] = AssignOperation(variable_name, value, params.current_scope_depth)
 
 
 def p_stringexpression_double(p):
     """
     STRING_EXPRESSION : STRING_EXPRESSION DOT STRING_EXPRESSION
     """
-    if verbose:
+    if params.verbose:
         print("Call to method p_stringexpression_double : STRING_EXPRESSION : STRING_EXPRESSION DOT STRING_EXPRESSION")
-    p[0] = p[1] + p[3]
+    p[0] = StringExpressionNode(None, False, params.current_scope_depth, p[1], p[3])
 
 
 def p_string_expression_string(p):
     """
     STRING_EXPRESSION : STRING
     """
-    if verbose:
+    if params.verbose:
         print("Call to method p_stringexpression_string : STRING_EXPRESSION : STRING")
-    p[0] = p[1][1:-1]
+    p[0] = StringExpressionNode(p[1][1:-1], False, params.current_scope_depth, None, None)
+    # p[0] = p[1][1:-1]
 
 
 def p_string_expression_variable(p):
     """
     STRING_EXPRESSION : VARIABLE
     """
-    if verbose:
+    if params.verbose:
         print("Call to method p_stringexpression_variable : STRING_EXPRESSION : VARIABLE")
-    return get(p[1], current_scope_depth)
+    p[0] = StringExpressionNode(p[1], True, params.current_scope_depth, None, None)
     """
-    value = get(p[1], current_scope_depth)
+    value = get(p[1], params.current_scope_depth)
     if type(value) == str:
         p[0] = value
     elif type(value) == list or type(value) == tuple:
@@ -96,38 +92,31 @@ def p_expression_strlistfor(p):
     """
     EXPRESSION : FOR VARIABLE IN STRING_LIST DO EXPRESSION_LIST ENDFOR
     """
-    if verbose:
+    if params.verbose:
         print("Call to method p_expression_strlistfor : EXPRESSION : FOR VARIABLE IN STRING_LIST DO EXPRESSION_LIST ENDFOR")
-    global current_scope_depth
-    current_scope_depth += 1
     temporary_variable_name = p[2]
     string_list = p[4]
     body = p[6]
-    p[0] = ForOperation(temporary_variable_name, string_list, body, current_scope_depth)
+    p[0] = ForOperation(temporary_variable_name, string_list, body, params.current_scope_depth)
 
 
 def p_expression_varfor(p):
     """
     EXPRESSION : FOR VARIABLE IN VARIABLE DO EXPRESSION_LIST ENDFOR
     """
-    if verbose:
+    if params.verbose:
         print("Call to method p_expression_varfor : EXPRESSION : FOR VARIABLE IN VARIABLE DO EXPRESSION_LIST ENDFOR")
-    global current_scope_depth
-    iterate_over = p[4]
-    iterate_over_value = get(p[4], current_scope_depth)
-    if iterate_over_value is None:
-        p[0] = ""
-    else:
-        iterator_name = p[2]
-        assign(iterator_name, iterate_over_value[0], current_scope_depth)
-        p[0] = "should have been a for result :("
+    temporary_variable_name = p[2]
+    string_list = get(p[4], params.current_scope_depth - 1)
+    body = p[6]
+    p[0] = ForOperation(temporary_variable_name, string_list, body, params.current_scope_depth)
 
 
 def p_expression_print(p):
     """
     EXPRESSION : PRINT STRING_EXPRESSION
     """
-    if verbose:
+    if params.verbose:
         print("Call to method p_expression_print : EXPRESSION : PRINT STRING_EXPRESSION")
     p[0] = PrintOperation(p[2])
 
@@ -136,7 +125,7 @@ def p_expression_mathexpression(p):
     """
     EXPRESSION : MATH_EXPRESSION
     """
-    if verbose:
+    if params.verbose:
         print("Call to method p_expression_mathexpression : EXPRESSION : MATH_EXPRESSION")
     p[0] = p[1]
 
@@ -145,7 +134,7 @@ def p_expression_booleanexpression(p):
     """
     EXPRESSION : BOOLEAN_EXPRESSION
     """
-    if verbose:
+    if params.verbose:
         print("Call to method p_expression_booleanexpression : EXPRESSION : BOOLEAN_EXPRESSION")
     p[0] = p[1]
 
@@ -154,7 +143,7 @@ def p_expression_ifexpression(p):
     """
     EXPRESSION : IF_EXPRESSION
     """
-    if verbose:
+    if params.verbose:
         print("Call to method p_expression_ifexpression : EXPRESSION : IF_EXPRESSION")
     p[0] = p[1]
 
@@ -163,19 +152,19 @@ def p_ifexpression(p):
     """
     IF_EXPRESSION : IF BOOLEAN_EXPRESSION DO EXPRESSION_LIST ENDIF
     """
-    print("Call to method p_ifexpression : IF_EXPRESSION : IF BOOLEAN_EXPRESSION DO EXPRESSION_LIST ENDIF")
-    global current_scope_depth
-    current_scope_depth += 1
+    if params.verbose:
+        print("Call to method p_ifexpression : IF_EXPRESSION : IF BOOLEAN_EXPRESSION DO EXPRESSION_LIST ENDIF")
+    params.current_scope_depth += 1
     condition = p[2]
     body = p[4]
-    p[0] = IfOperation(condition, body, current_scope_depth)
+    p[0] = IfOperation(condition, body, params.current_scope_depth)
 
 
 def p_expression_list_single(p):
     """
     EXPRESSION_LIST : EXPRESSION SEMICOLON
     """
-    if verbose:
+    if params.verbose:
         print("Call to method p_expression_list_single : EXPRESSION_LIST : EXPRESSION SEMICOLON")
     p[0] = [p[1]]
 
@@ -184,7 +173,7 @@ def p_expression_list_multiple(p):
     """
     EXPRESSION_LIST : EXPRESSION SEMICOLON EXPRESSION_LIST
     """
-    if verbose:
+    if params.verbose:
         print("Call to method p_expression_list_multiple : EXPRESSION_LIST : EXPRESSION SEMICOLON EXPRESSION_LIST")
     p[0] = [p[1]] + p[3]
 
@@ -193,26 +182,42 @@ def p_dumboblock(p):
     """
     DUMBO_BLOCK : OPENING EXPRESSION_LIST CLOSING
     """
-    if verbose:
+    if params.verbose:
         print("Call to method p_dumboblock : DUMBO_BLOCK : OPENING EXPRESSION_LIST CLOSING")
     p[0] = p[2]
 
 
-def p_program_double(p):
+def p_program_double_dbp(p):
     """
     PROGRAM : DUMBO_BLOCK PROGRAM
-            | TXT PROGRAM
     """
-    if verbose:
-        print("Call to method p_program_double : PROGRAM : DUMBO_BLOCK PROGRAM\n        | TXT PROGRAM")
+    if params.verbose:
+        print("Call to method p_program_double : PROGRAM : DUMBO_BLOCK PROGRAM")
     p[0] = [p[1], p[2]]
 
 
-def p_program_single(p):
+def p_program_double_tp(p):
+    """
+    PROGRAM : TXT PROGRAM
+    """
+    if params.verbose:
+        print("Call to method p_program_double : PROGRAM : TXT PROGRAM")
+    p[0] = [TextBlock(p[1]), p[2]]
+
+
+def p_program_single_db(p):
     """
     PROGRAM : DUMBO_BLOCK
-            | TXT
     """
-    if verbose:
-        print("Call to method p_program_single : PROGRAM : DUMBO_BLOCK\n        | TXT")
+    if params.verbose:
+        print("Call to method p_program_single_db : PROGRAM : DUMBO_BLOCK")
     p[0] = p[1]
+
+
+def p_program_single_txt(p):
+    """
+    PROGRAM : TXT
+    """
+    if params.verbose:
+        print("Call to method p_program_single : PROGRAM : TXT")
+    p[0] = TextBlock(p[1])
