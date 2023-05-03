@@ -3,10 +3,6 @@ from .symbols_table import symbols_table
 from . import params
 
 
-def get(variable_name, scope_depth):
-    return symbols_table.get(variable_name, scope_depth)
-
-
 def p_mathexpression_plus(p):
     """
     MATH_EXPRESSION : MATH_EXPRESSION ADD TERM
@@ -32,14 +28,14 @@ def p_term_times(p):
     """
     TERM : TERM MUL FACTOR
     """
-    p[0] = MathOperation(p[1], p[2], p[3])
+    p[0] = MathOperation(p[1], p[2], p[3], params.current_scope_depth)
 
 
 def p_term_div(p):
     """
     TERM : TERM DIV FACTOR
     """
-    p[0] = MathOperation(p[1], p[2], p[3])
+    p[0] = MathOperation(p[1], p[2], p[3], params.current_scope_depth)
 
 
 def p_term_factor(p):

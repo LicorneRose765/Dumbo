@@ -157,22 +157,23 @@ if __name__ == "__main__":
                           "    i := i + 1;" \
                           "endfor;" \
                           "}}"
-        giga_chad_expression = "{{ liste_photo := ('holiday.png', 'flower.jpg', 'dog.png', 'house.png'); nom := 'my name'; }}" \
+        giga_chad_expression = "{{ liste_photo := ('holiday.png', 'flower.jpg', 'dog.png', 'house.png'); nom := 'my album'; }}" \
                                "<html>\n" \
-                               "<head><title>{{ print nom; }}</title></head>\n" \
-                               "<body>\n" \
-                               "<h1>{{ print nom; }}</h1>\n" \
+                               "  <head>" \
+                               "    <title>{{ print nom; }}</title>" \
+                               "  </head>\n" \
+                               "  <body>\n" \
+                               "  <h1>{{ print nom; }}</h1>\n" \
                                "{{" \
                                "i := 0;" \
                                "for nom in liste_photo do" \
-                               "if i > 0 do print ', '; endif ;" \
-                               "print '<ahref=\"'.nom.'\">'.nom.'</a>';" \
-                               "i := i + 1;" \
+                               "    if i > 0 do print ', '; endif ;" \
+                               "    print '<a href=\"'.nom.'\">'.nom.'</a>';" \
+                               "    i := i + 1;" \
                                "endfor;" \
                                "}}\n" \
-                               "<br/>\n" \
-                               "Il y a {{ print i.' '; }} dans l album {{ print nom; }}.\n" \
-                               "</body>\n" \
+                               "Il y a {{ print i.' images '; }} dans l album {{ print nom; }}.\n" \
+                               "  </body>\n" \
                                "</html>"
         expression = giga_chad_expression
         result = parser.parse(expression)
