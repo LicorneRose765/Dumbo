@@ -89,37 +89,15 @@ if __name__ == "__main__":
         data_content_as_str = "".join(data_content)
         template_content = open(Path(os.getcwd()) / sys.argv[2], "r").readlines()
         template_content_as_str = "".join(template_content)
+        content = data_content_as_str + "\n" + template_content_as_str
 
-        print("=========")
-        print("   LEX   ")
-        print("=========")
-        print()
-        print("Content that will be lexed :")
-        print()
-        print(data_content_as_str)
-        print()
-
+        print(content)
         lexer = lex.lex()
-        lexer.input(data_content_as_str)
-        for token in lexer:
-            print(f"line {token.lineno} : token '{token.value}' (type '{token.type}')")
-
-        print()
-        print()
-        print("=========")
-        print("  YACC   ")
-        print("=========")
-        print()
-        print("Content that will be yacced :")
-        print()
-        print(data_content_as_str)
-        print()
-
-        parser = yacc.yacc(start=start, debug=True)
-        result = parser.parse(data_content_as_str)
-        print(result)
-
-        infinite_yacc()
+        parser = yacc.yacc(start=start)
+        result = parser.parse(content)
+        interpreted = dfs_result(result)
+        # TODO : error : look for liste_label at depth 0
+        print(interpreted)
     else:
         lexer = lex.lex()
         """lexer.input(input())
@@ -135,7 +113,7 @@ if __name__ == "__main__":
         # expression = "{{ i := 2; if i < 1 do print 'yes'; endif; }}"
         # expression = "{{ nom := 'oui'; print '<a_href=\"'.nom.'\">'.nom.'</a>'; }}"
         # expression = "{{ i := 0; print i.'\n'; i := i + 1; print i.'\n'; i := i + 1; print i.'\n'; }}"
-        expression = "{{ liste_photo := ('a', 'b', 'c'); print liste_photo; }}"
+        # expression = "{{ liste_photo := ('a', 'b', 'c'); print liste_photo; }}"
         baby_chad_expression = "{{ i := 0;" \
                      "   for nom in ('a', 'b', 'c') do" \
                      "       print nom.', i = '.i;" \

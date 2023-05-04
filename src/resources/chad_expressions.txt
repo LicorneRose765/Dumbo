@@ -1,0 +1,39 @@
+        baby_chad_expression = "{{ i := 0;" \
+                     "   for nom in ('a', 'b', 'c') do" \
+                     "       print nom.', i = '.i;" \
+                     "       if i > 0 do print 'i > 0'; endif;" \
+                     "       print '\n';" \
+                     "       i := i + 1;" \
+                     "   endfor; }}"
+        chad_expression = "{{" \
+                          "nom := 'Brouette';" \
+                          "prenom := 'Quentin';" \
+                          "cours := ('Logique 1', 'Logique 2', 'Algebre 1', 'Math elem');" \
+                          "}}" \
+                          "{{ print nom; }}<--- ce nom est ridicule\n" \
+                          "{{" \
+                          "i := 0;" \
+                          "for nom in ('name', 'NAME', 'NAAAAME') do" \
+                          "    if i > 0 do print ', '; endif;" \
+                          "    print '<a_href=\"'.nom.'\">'.nom.'</a>';" \
+                          "    i := i + 1;" \
+                          "endfor;" \
+                          "}}"
+        giga_chad_expression = "{{ liste_photo := ('holiday.png', 'flower.jpg', 'dog.png', 'house.png'); nom := 'my album'; }}" \
+                               "<html>\n" \
+                               "  <head>" \
+                               "    <title>{{ print nom; }}</title>" \
+                               "  </head>\n" \
+                               "  <body>\n" \
+                               "  <h1>{{ print nom; }}</h1>\n" \
+                               "{{" \
+                               "i := 0;" \
+                               "for nom in liste_photo do" \
+                               "    if i > 0 do print ', '; endif ;" \
+                               "    print '<a href=\"'.nom.'\">'.nom.'</a>';" \
+                               "    i := i + 1;" \
+                               "endfor;" \
+                               "}}\n" \
+                               "Il y a {{ print i.' images '; }} dans l album {{ print nom; }}.\n" \
+                               "  </body>\n" \
+                               "</html>"

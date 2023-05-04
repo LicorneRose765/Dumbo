@@ -255,6 +255,8 @@ class ForOperation(Operation):
 
 class StringExpressionNode:
     def __init__(self, value, isVar, scope_depth, lhs, rhs):
+        if params.verbose:
+            print(f"Creating a {self.__class__.__name__}")
         self.value = value
         self.isVar = isVar
         self.lhs = lhs
