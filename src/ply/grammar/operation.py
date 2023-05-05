@@ -201,22 +201,22 @@ class MathOperation(Operation):
         if self.operator == "+":
             if not self.__sanity_check__(valid_types):
                 return 0
-            left, right = self.__get_left_right__([BoolOperation, GetOperation])
+            left, right = self.__get_left_right__([MathOperation, GetOperation])
             return left + right
         elif self.operator == "-":
             if not self.__sanity_check__(valid_types):
                 return 0
-            left, right = self.__get_left_right__([BoolOperation, GetOperation])
+            left, right = self.__get_left_right__([MathOperation, GetOperation])
             return left - right
         elif self.operator == "*":
             if not self.__sanity_check__(valid_types):
                 return 0
-            left, right = self.__get_left_right__([BoolOperation, GetOperation])
+            left, right = self.__get_left_right__([MathOperation, GetOperation])
             return left * right
         elif self.operator == "/":
             if not self.__sanity_check__(valid_types):
                 return 0
-            left, right = self.__get_left_right__([BoolOperation, GetOperation])
+            left, right = self.__get_left_right__([MathOperation, GetOperation])
             return int(left / right)
 
 

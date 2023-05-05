@@ -41,8 +41,26 @@ def dfs_result(lst):
         if isinstance(element, list):
             _res += dfs_result(element)
         elif isinstance(element, Operation):
-            _res += element.execute(1)
+            if isinstance(element, MathOperation):
+                _res += str(element.execute(1))
+            else:
+                _res += element.execute(1)
     return _res
+
+
+def parse_data_template(data_path, template_path):
+    data_content = open(Path(os.getcwd()) / data_path, "r").readlines()
+    data_content_as_str = "".join(data_content)
+    template_content = open(Path(os.getcwd()) / template_path, "r").readlines()
+    template_content_as_str = "".join(template_content)
+    content = data_content_as_str + "\n" + template_content_as_str
+
+    print(content)
+    lexer = lex.lex()
+    parser = yacc.yacc(start=start)
+    result = parser.parse(content)
+    interpreted = dfs_result(result)
+    print(interpreted)
 
 
 # *-------------------------------------------------------------------------------------------------------------------*
@@ -85,19 +103,9 @@ if __name__ == "__main__":
         if len(sys.argv) != 3:
             print('Usage: python3 dumbo.py <data> <template>')
             exit(1)
-        data_content = open(Path(os.getcwd()) / sys.argv[1], "r").readlines()
-        data_content_as_str = "".join(data_content)
-        template_content = open(Path(os.getcwd()) / sys.argv[2], "r").readlines()
-        template_content_as_str = "".join(template_content)
-        content = data_content_as_str + "\n" + template_content_as_str
-
-        print(content)
-        lexer = lex.lex()
-        parser = yacc.yacc(start=start)
-        result = parser.parse(content)
-        interpreted = dfs_result(result)
-        # TODO : error : look for liste_label at depth 0
-        print(interpreted)
+        data_path = sys.argv[1]
+        template_path = sys.argv[2]
+        parse_data_template(data_path, template_path)
     else:
         lexer = lex.lex()
         """lexer.input(input())
@@ -105,23 +113,25 @@ if __name__ == "__main__":
             print(f"line {token.lineno} : token '{token.value}' (type '{token.type}')")
         """
         parser = yacc.yacc(start=start, debug=True)
-        # expression = "{{ a := '2'; b := '4'; {{ c := '6'; print a; print b; print c; }} print c; }}"
-        # expression = "{{ if 2 < 3 do print 'true'; print 'i am veri smart'; endif; }} {{ a := 17; b := '11'; }}"
-        # expression = "{{ list := ('1', '2', '3'); for var in list do print var; endfor; }}"
-        # expression = "{{ 2 + 2 * 2 - 2; }} abcd"
-        # expression = "{{ for myvar in ('a', 'b', 'c') do print myvar; endfor; }}"
-        # expression = "{{ i := 2; if i < 1 do print 'yes'; endif; }}"
-        # expression = "{{ nom := 'oui'; print '<a_href=\"'.nom.'\">'.nom.'</a>'; }}"
-        # expression = "{{ i := 0; print i.'\n'; i := i + 1; print i.'\n'; i := i + 1; print i.'\n'; }}"
-        # expression = "{{ liste_photo := ('a', 'b', 'c'); print liste_photo; }}"
-        baby_chad_expression = "{{ i := 0;" \
+        expressions = ["{{ a := '2'; b := '4'; }} {{ c := '6'; print a; print b; print c; }} {{ print c; }}",
+         "{{ if 2 < 3 do print 'true'; print 'i am veri smart'; endif; }} {{ a := 17; b := '11'; }}",
+         "{{ list := ('1', '2', '3'); for var in list do print var; endfor; }}",
+         "{{ 2 + 2 * 2 - 2; }} abcd",
+         "{{ for myvar in ('a', 'b', 'c') do print myvar; endfor; }}",
+         "{{ i := 2; if i < 1 do print 'yes'; endif; }}",
+         "{{ nom := 'oui'; print '<a_href=\"'.nom.'\">'.nom.'</a>'; }}",
+         "{{ i := 0; print i.'\n'; i := i + 1; print i.'\n'; i := i + 1; print i.'\n'; }}",
+         "{{ liste_photo := ('a', 'b', 'c'); print liste_photo; }}",
+        # baby_chad_expression =
+                     "{{ i := 0;" \
                      "   for nom in ('a', 'b', 'c') do" \
                      "       print nom.', i = '.i;" \
                      "       if i > 0 do print 'i > 0'; endif;" \
                      "       print '\n';" \
                      "       i := i + 1;" \
-                     "   endfor; }}"
-        chad_expression = "{{" \
+                     "   endfor; }}",
+        #chad_expression =
+                          "{{" \
                           "nom := 'Brouette';" \
                           "prenom := 'Quentin';" \
                           "cours := ('Logique 1', 'Logique 2', 'Algebre 1', 'Math elem');" \
@@ -134,8 +144,9 @@ if __name__ == "__main__":
                           "    print '<a_href=\"'.nom.'\">'.nom.'</a>';" \
                           "    i := i + 1;" \
                           "endfor;" \
-                          "}}"
-        giga_chad_expression = "{{ liste_photo := ('holiday.png', 'flower.jpg', 'dog.png', 'house.png'); nom := 'my album'; }}" \
+                          "}}",
+        # giga_chad_expression =
+                               "{{ liste_photo := ('holiday.png', 'flower.jpg', 'dog.png', 'house.png'); nom := 'my album'; }}" \
                                "<html>\n" \
                                "  <head>" \
                                "    <title>{{ print nom; }}</title>" \
@@ -152,16 +163,17 @@ if __name__ == "__main__":
                                "}}\n" \
                                "Il y a {{ print i.' images '; }} dans l album {{ print nom; }}.\n" \
                                "  </body>\n" \
-                               "</html>"
-        expression = giga_chad_expression
-        result = parser.parse(expression)
-        s = ""
-        for op in result:
-            s += str(op)
-            s += "\n"
-        print()
-        print(f"{expression} =\n")
-        print(s)
-        print("RESULT\n"
-              "======")
-        print(dfs_result(result))
+                               "</html>"]
+        # expression = giga_chad_expression
+        for expression in expressions:
+            result = parser.parse(expression)
+            s = ""
+            for op in result:
+                s += str(op)
+                s += "\n"
+            print()
+            print(f"{expression} =\n")
+            print(s)
+            print("RESULT\n"
+                  "======")
+            print(dfs_result(result))
