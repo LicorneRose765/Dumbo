@@ -122,49 +122,62 @@ if __name__ == "__main__":
          "{{ nom := 'oui'; print '<a_href=\"'.nom.'\">'.nom.'</a>'; }}",
          "{{ i := 0; print i.'\n'; i := i + 1; print i.'\n'; i := i + 1; print i.'\n'; }}",
          "{{ liste_photo := ('a', 'b', 'c'); print liste_photo; }}",
-        # baby_chad_expression =
-                     "{{ i := 0;" \
-                     "   for nom in ('a', 'b', 'c') do" \
-                     "       print nom.', i = '.i;" \
-                     "       if i > 0 do print 'i > 0'; endif;" \
-                     "       print '\n';" \
-                     "       i := i + 1;" \
-                     "   endfor; }}",
-        #chad_expression =
-                          "{{" \
-                          "nom := 'Brouette';" \
-                          "prenom := 'Quentin';" \
-                          "cours := ('Logique 1', 'Logique 2', 'Algebre 1', 'Math elem');" \
-                          "}}" \
-                          "{{ print nom; }}<--- ce nom est ridicule\n" \
-                          "{{" \
-                          "i := 0;" \
-                          "for nom in ('name', 'NAME', 'NAAAAME') do" \
-                          "    if i > 0 do print ', '; endif;" \
-                          "    print '<a_href=\"'.nom.'\">'.nom.'</a>';" \
-                          "    i := i + 1;" \
-                          "endfor;" \
-                          "}}",
-        # giga_chad_expression =
-                               "{{ liste_photo := ('holiday.png', 'flower.jpg', 'dog.png', 'house.png'); nom := 'my album'; }}" \
-                               "<html>\n" \
-                               "  <head>" \
-                               "    <title>{{ print nom; }}</title>" \
-                               "  </head>\n" \
-                               "  <body>\n" \
-                               "  <h1>{{ print nom; }}</h1>\n" \
-                               "{{" \
-                               "i := 0;" \
-                               "for nom in liste_photo do" \
-                               "    if i > 0 do print ', '; endif ;" \
-                               "    print '<a href=\"'.nom.'\">'.nom.'</a>';" \
-                               "    i := i + 1;" \
-                               "endfor;" \
-                               "}}\n" \
-                               "Il y a {{ print i.' images '; }} dans l album {{ print nom; }}.\n" \
-                               "  </body>\n" \
-                               "</html>"]
+         "{{ i := 0;"
+         "   for nom in ('a', 'b', 'c') do"
+         "       print nom.', i = '.i;"
+         "       if i > 0 do print 'i > 0'; endif;"
+         "       print '\n';"
+         "       i := i + 1;"
+         "   endfor; }}",
+         "{{"
+         "nom := 'Brouette';"
+         "prenom := 'Quentin';"
+         "cours := ('Logique 1', 'Logique 2', 'Algebre 1', 'Math elem');"
+         "}}"
+         "{{ print nom; }}<--- ce nom est ridicule\n"
+         "{{"
+         "i := 0;"
+         "for nom in ('name', 'NAME', 'NAAAAME') do"
+         "    if i > 0 do print ', '; endif;"
+         "    print '<a_href=\"'.nom.'\">'.nom.'</a>';"
+         "    i := i + 1;"
+         "endfor;"
+         "}}",
+        "{{ liste_photo := ('holiday.png', 'flower.jpg', 'dog.png', 'house.png'); nom := 'my album'; }}"
+        "<html>\n"
+        "  <head>"
+        "    <title>{{ print nom; }}</title>"
+        "  </head>\n"
+        "  <body>\n"
+        "  <h1>{{ print nom; }}</h1>\n"
+        "{{"
+        "i := 0;"
+        "for nom in liste_photo do"
+        "    if i > 0 do print ', '; endif ;"
+        "    print '<a href=\"'.nom.'\">'.nom.'</a>';"
+        "    i := i + 1;"
+        "endfor;"
+        "}}\n"
+        "Il y a {{ print i.' images '; }} dans l album {{ print nom; }}.\n"
+        "  </body>\n"
+        "</html>",
+        "{{ a := true != false; print b; }}"]
         # expression = giga_chad_expression
+        # expression = "{{ a := True != False = False; print a; }}"
+        expression = "{{ if True do x := 2; endif; print x; }}"
+        result = parser.parse(expression)
+        s = ""
+        for op in result:
+            s += str(op)
+            s += "\n"
+        print()
+        print(f"{expression} =\n")
+        print(s)
+        print("RESULT\n"
+              "======")
+        print(dfs_result(result))
+        exit(0)
+
         for expression in expressions:
             result = parser.parse(expression)
             s = ""

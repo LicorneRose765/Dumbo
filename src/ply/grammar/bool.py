@@ -30,7 +30,20 @@ def p_boolean(p):
     """
     if params.verbose:
         print("Call to method p_boolean : BOOLEAN : TRUE    \n| FALSE")
-    p[0] = bool(p[1])
+    p[0] = p[1] == "True"
+
+'''
+def p_boolean_var(p):
+    """
+    BOOLEAN : VARIABLE
+    """
+    if params.verbose:
+        print("Call to p_boolean_var : BOOLEAN : VARIABLE")
+    p[0] = GetOperation(p[1], params.current_scope_depth)'''
+
+
+# TODO : add var for bool
+# TODO : not equal for bool
 
 
 def p_booleanoperator_and(p):
@@ -38,7 +51,7 @@ def p_booleanoperator_and(p):
     BOOLEAN_OPERATOR : AND
     """
     if params.verbose:
-        print("Call to method p_booBOOLEAN_OPERATOR : ANDleanoperator_and : ")
+        print("Call to method p_booleanoperator_and : BOOLEAN_OPERATOR : AND")
     p[0] = p[1]
 
 
@@ -47,7 +60,25 @@ def p_booleanoperator_or(p):
     BOOLEAN_OPERATOR : OR
     """
     if params.verbose:
-        print("Call to method p_boBOOLEAN_OPERATOR : ORoleanoperator_or : ")
+        print("Call to method p_booleanoperator_or : BOOLEAN_OPERATOR : OR")
+    p[0] = p[1]
+
+
+def p_booleanoperator_ne(p):
+    """
+    BOOLEAN_OPERATOR : NE
+    """
+    if params.verbose:
+        print("Call to method p_booleanoperator_or : BOOLEAN_OPERATOR : NE")
+    p[0] = p[1]
+
+
+def p_booleanoperator_eq(p):
+    """
+    BOOLEAN_OPERATOR : EQ
+    """
+    if params.verbose:
+        print("Call to method p_booleanoperator_or : BOOLEAN_OPERATOR : EQ")
     p[0] = p[1]
 
 

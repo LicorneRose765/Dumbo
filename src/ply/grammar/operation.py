@@ -34,6 +34,8 @@ class AssignOperation(Operation):
         self.variable_name = variable_name
         self.variable_value = variable_value
         self.scope_depth = scope_depth
+        if params.verbose:
+            print(f"Created a {self.__class__.__name__} object ({self.__str__()})")
 
     def __str__(self):
         return f"<{self.__class__.__name__}   ASSIGN {self.variable_value} TO {self.variable_name} AT DEPTH {self.scope_depth}>"
@@ -55,6 +57,8 @@ class IfOperation(Operation):
         self.condition = condition
         self.then_body = then_body
         self.body_scope_depth = body_scope_depth
+        if params.verbose:
+            print(f"Created a {self.__class__.__name__} object ({self.__str__()})")
 
     def __str__(self):
         return f"<{self.__class__.__name__}   IF {self.condition} DO\n    " + "\n    ".join(str(op) for op in self.then_body) + ">"
@@ -68,6 +72,8 @@ class IfOperation(Operation):
             condition_is_met = self.condition.execute(self.body_scope_depth)
         elif isinstance(self.condition, str):
             condition_is_met = bool(self.condition)
+        elif isinstance(self.condition, bool):
+            condition_is_met = self.condition
         if condition_is_met:
             for op in self.then_body:
                 res += op.execute(self.body_scope_depth)
@@ -81,6 +87,8 @@ class PrintOperation(Operation):
         :param isVar: whether we are printing a var or not
         """
         self.string_expression = string_expression
+        if params.verbose:
+            print(f"Created a {self.__class__.__name__} object ({self.__str__()})")
 
     def __str__(self):
         return f"<{self.__class__.__name__}   PRINT {self.string_expression}>"
@@ -103,6 +111,8 @@ class BoolOperation(Operation):
         self.operator = operator
         self.rhs = rhs
         self.scope_depth = scope_depth
+        if params.verbose:
+            print(f"Created a {self.__class__.__name__} object ({self.__str__()})")
 
     def __str__(self):
         return f"<{self.__class__.__name__}   [{self.lhs} {self.operator} {self.rhs}]>"
@@ -151,12 +161,18 @@ class BoolOperation(Operation):
             return left > right
         elif self.operator == "=":
             if not self.__sanity_check__(valid_types_2):
-                return False
+                if not self.__sanity_check__(valid_types_1):
+                    return False
+                left, right = self.__get_left_right__([BoolOperation, GetOperation])
+                return left != right
             left, right = self.__get_left_right__([MathOperation, GetOperation])
             return left == right
         elif self.operator == "!=":
             if not self.__sanity_check__(valid_types_2):
-                return False
+                if not self.__sanity_check__(valid_types_1):
+                    return False
+                left, right = self.__get_left_right__([BoolOperation, GetOperation])
+                return left != right
             left, right = self.__get_left_right__([MathOperation, GetOperation])
             return left != right
 
@@ -173,6 +189,8 @@ class MathOperation(Operation):
         self.operator = operator
         self.rhs = rhs
         self.scope_depth = scope_depth
+        if params.verbose:
+            print(f"Created a {self.__class__.__name__} object ({self.__str__()})")
 
     def __str__(self):
         return f"<{self.__class__.__name__}   [{self.lhs} {self.operator} {self.rhs}]>"
@@ -232,6 +250,8 @@ class ForOperation(Operation):
         self.string_list = string_list
         self.body = body
         self.body_scope_depth = body_scope_depth
+        if params.verbose:
+            print(f"Created a {self.__class__.__name__} object ({self.__str__()})")
 
     def __str__(self):
         return f"<{self.__class__.__name__}   FOR {self.temporary_variable_name} in {self.string_list} DO\n    " + "\n    ".join(str(op) for op in self.body) + ">"
@@ -255,13 +275,13 @@ class ForOperation(Operation):
 
 class StringExpressionNode:
     def __init__(self, value, isVar, scope_depth, lhs, rhs):
-        if params.verbose:
-            print(f"Creating a {self.__class__.__name__}")
         self.value = value
         self.isVar = isVar
         self.lhs = lhs
         self.rhs = rhs
         self.scope_depth = scope_depth
+        if params.verbose:
+            print(f"Created a {self.__class__.__name__} object ({self.__str__()})")
 
     def __str__(self):
         return f"{self.value}" if self.isVar else f"'{self.value}'"
@@ -295,6 +315,8 @@ class GetOperation(Operation):
     def __init__(self, var_name, scope_depth):
         self.var_name = var_name
         self.scope_depth = scope_depth
+        if params.verbose:
+            print(f"Created a {self.__class__.__name__} object ({self.__str__()})")
 
     def __str__(self):
         return f"<{self.__class__.__name__}   {self.var_name}>"
@@ -308,6 +330,8 @@ class GetOperation(Operation):
 class TextBlock(Operation):
     def __init__(self, text):
         self.text = text
+        if params.verbose:
+            print(f"Created a {self.__class__.__name__} object ({self.__str__()})")
 
     def __str__(self):
         return self.text

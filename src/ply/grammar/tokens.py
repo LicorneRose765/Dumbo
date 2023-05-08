@@ -7,8 +7,8 @@ reserved = {
     "IN": "in",
     "DO": "do",
     "ENDFOR": "endfor",
-    "TRUE": "true",
-    "FALSE": "false",
+    "TRUE": "True",
+    "FALSE": "False",
     "IF": "if",
     "ENDIF": "endif"
 }
@@ -166,12 +166,12 @@ def t_IN_ENDFOR(t):
 
 
 def t_IN_TRUE(t):
-    """true"""
+    """True"""
     return t
 
 
 def t_IN_FALSE(t):
-    """false"""
+    """False"""
     return t
 
 

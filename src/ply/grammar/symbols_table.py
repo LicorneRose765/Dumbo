@@ -58,26 +58,6 @@ class SymbolsTable:
                         return value, scope_depth
                     return value
             scope_depth -= 1
-        return None
-
-        try:
-            value = self.table[scope_depth][name]
-        except KeyError:
-            if scope_depth > 0:
-                value_scope = self.get(name, scope_depth - 1, get_scope=True)
-                if value_scope is not None:
-                    value, scope = value_scope
-            else:
-                print(f"SyntaxError : Cannot find variable {name}. ")
-                if params.verbose:
-                    print(f"    Searched at {scope_depth=:} for in the following table :")
-                    print(f"    {self.table}")
-                # raise SyntaxError(f"Cannot find variable {name}.")
-                return None
-        if get_scope:
-            return value, scope
-        else:
-            return value
 
     def delete(self, scope_depth):
         if params.verbose:
