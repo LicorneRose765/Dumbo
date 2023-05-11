@@ -164,7 +164,21 @@ if __name__ == "__main__":
         "{{ a := true != false; print b; }}"]
         # expression = giga_chad_expression
         # expression = "{{ a := True != False = False; print a; }}"
-        expression = "{{ if True do x := 2; endif; print x; }}"
+        # expression = "{{ if True do x := 2; endif; print x; }}"
+        expression = "{{&" \
+                    "i := 0;" \
+                    "for nom in ('nom1', 'nom2') do" \
+                    "    if i > 0 do print ', '; endif;" \
+                    "    print nom;" \
+                    "    i := i + 1;" \
+                    "endfor;" \
+                    "print '\ni = '.i;" \
+                    "}}"
+        expression = "{{" \
+                    "print 'string';" \
+                    "for var in ('a', 'b', 'c') do print var; endfor;" \
+                    "if True do print 'true'; endif;" \
+                    "}}"
         result = parser.parse(expression)
         s = ""
         for op in result:

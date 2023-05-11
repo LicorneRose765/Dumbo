@@ -6,6 +6,16 @@ states = (
     ("IN", "exclusive"),  # state 'IN'  : when inside dumbo code
 )
 
+precedence = (
+    ("left", "ADD"),
+    ("left", "SUB"),
+    ("left", "MUL"),
+    ("left", "DIV"),
+    ("left", "AND"),
+    ("left", "OR"),
+    ("right", "DOT")
+)
+
 
 def p_stringlistinterior_double(p):
     """

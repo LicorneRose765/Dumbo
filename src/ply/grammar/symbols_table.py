@@ -24,10 +24,6 @@ class SymbolsTable:
         """Assigns the value 'value' to the variable named 'name' at the scope depth 'scope_depth'. If lookup is True,
         we check if the value is already defined at a higher scope, and if so, we overwrite it. This is the default
         behavior but the argument can be set to False so we simply define a new variable at the given scope."""
-        # TODO : if we do assign operations in a for loop and the variable already exists, it musts temporarily
-        #  overwrite it
-        #  -> 1. look for it
-        #     2. if it exists, set the value at the scope of the already existing variable
         try:
             self.table[scope_depth]
         except KeyError:

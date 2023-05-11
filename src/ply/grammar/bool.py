@@ -42,10 +42,6 @@ def p_boolean_var(p):
     p[0] = GetOperation(p[1], params.current_scope_depth)'''
 
 
-# TODO : add var for bool
-# TODO : not equal for bool
-
-
 def p_booleanoperator_and(p):
     """
     BOOLEAN_OPERATOR : AND
