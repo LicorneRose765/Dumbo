@@ -179,6 +179,7 @@ if __name__ == "__main__":
                     "for var in ('a', 'b', 'c') do print var; endfor;" \
                     "if True do print 'true'; endif;" \
                     "}}"
+        expression = "{{ if True and False or False or 2 > 1 do print 'True'; endif; }}"
         result = parser.parse(expression)
         s = ""
         for op in result:

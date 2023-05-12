@@ -2,12 +2,12 @@ from .operation import BoolOperation, GetOperation
 from . import params
 
 
-def p_booleanexpression(p):
+def p_booleanexpression_or(p):
     """
-    BOOLEAN_EXPRESSION : BOOLEAN_EXPRESSION_AND OR BOOLEAN_EXPRESSION_AND
+    BOOLEAN_EXPRESSION : BOOLEAN_EXPRESSION OR BOOLEAN_EXPRESSION
     """
     if params.verbose:
-        print("Call to method p_booleanexpression : BOOLEAN_EXPRESSION : BOOLEAN_EXPRESSION BOOLEAN_OPERATOR BOOLEAN_EXPRESSION")
+        print("Call to method p_booleanexpression_or : BOOLEAN_EXPRESSION : BOOLEAN_EXPRESSION OR BOOLEAN_EXPRESSION")
     operator = p[2]
     left = p[1]
     right = p[3]
@@ -19,7 +19,7 @@ def p_booleanexpression(p):
     BOOLEAN_EXPRESSION : BOOLEAN_EXPRESSION_AND
     """
     if params.verbose:
-        print("Call to method p_booleanexpression : BOOLEAN_EXPRESSION : BOOLEAN_EXPRESSION BOOLEAN_OPERATOR BOOLEAN_EXPRESSION")
+        print("Call to method p_booleanexpression : BOOLEAN_EXPRESSION : BOOLEAN_EXPRESSION_AND")
     p[0] = p[1]
 
 
@@ -38,7 +38,7 @@ def p_booleanexpression_double(p):
     BOOLEAN_EXPRESSION_AND : BOOLEAN_EXPRESSION_AND AND BOOLEAN_EXPRESSION_AND
     """
     if params.verbose:
-        print("Call to method p_booleanexpression_simple : BOOLEAN_EXPRESSION : BOOLEANpression_simple : ")
+        print("Call to method p_booleanexpression_simple : BOOLEAN_EXPRESSION_AND : BOOLEAN_EXPRESSION_AND AND BOOLEAN_EXPRESSION_AND")
     operator = p[2]
     left = p[1]
     right = p[3]
@@ -53,27 +53,6 @@ def p_boolean(p):
     if params.verbose:
         print("Call to method p_boolean : BOOLEAN : TRUE    \n| FALSE")
     p[0] = p[1] == "True"
-
-'''
-def p_boolean_var(p):
-    """
-    BOOLEAN : VARIABLE
-    """
-    if params.verbose:
-        print("Call to p_boolean_var : BOOLEAN : VARIABLE")
-    p[0] = GetOperation(p[1], params.current_scope_depth)'''
-
-
-def p_booleanoperator(p):
-    """
-    BOOLEAN_OPERATOR : AND
-                     | OR
-                     | NE
-                     | EQ
-    """
-    if params.verbose:
-        print("Call to method p_booleanoperator : BOOLEAN_OPERATOR : AND | OR | NE | EQ")
-    p[0] = p[1]
 
 
 def p_integercomparison(p):
