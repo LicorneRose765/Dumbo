@@ -55,8 +55,6 @@ def parse_data_template(data_path, template_path):
     template_content_as_str = "".join(template_content)
     content = data_content_as_str + "\n" + template_content_as_str
 
-    lexer = lex.lex()
-    parser = yacc.yacc(start=start)
     result = parser.parse(content)
     interpreted = dfs_result(result)
     print(interpreted)
@@ -104,4 +102,6 @@ if __name__ == "__main__":
             exit(1)
         data_path = sys.argv[1]
         template_path = sys.argv[2]
+        lexer = lex.lex()
+        parser = yacc.yacc(start=start, debug=True)
         parse_data_template(data_path, template_path)
