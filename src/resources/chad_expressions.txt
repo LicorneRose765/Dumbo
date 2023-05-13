@@ -37,3 +37,72 @@
                                "Il y a {{ print i.' images '; }} dans l album {{ print nom; }}.\n" \
                                "  </body>\n" \
                                "</html>"
+
+
+        expressions = ["{{ a := '2'; b := '4'; }} {{ c := '6'; print a; print b; print c; }} {{ print c; }}",
+         "{{ if 2 < 3 do print 'true'; print 'i am veri smart'; endif; }} {{ a := 17; b := '11'; }}",
+         "{{ list := ('1', '2', '3'); for var in list do print var; endfor; }}",
+         "{{ 2 + 2 * 2 - 2; }} abcd",
+         "{{ for myvar in ('a', 'b', 'c') do print myvar; endfor; }}",
+         "{{ i := 2; if i < 1 do print 'yes'; endif; }}",
+         "{{ nom := 'oui'; print '<a_href=\"'.nom.'\">'.nom.'</a>'; }}",
+         "{{ i := 0; print i.'\n'; i := i + 1; print i.'\n'; i := i + 1; print i.'\n'; }}",
+         "{{ liste_photo := ('a', 'b', 'c'); print liste_photo; }}",
+         "{{ i := 0;"
+         "   for nom in ('a', 'b', 'c') do"
+         "       print nom.', i = '.i;"
+         "       if i > 0 do print 'i > 0'; endif;"
+         "       print '\n';"
+         "       i := i + 1;"
+         "   endfor; }}",
+         "{{"
+         "nom := 'Brouette';"
+         "prenom := 'Quentin';"
+         "cours := ('Logique 1', 'Logique 2', 'Algebre 1', 'Math elem');"
+         "}}"
+         "{{ print nom; }}<--- ce nom est ridicule\n"
+         "{{"
+         "i := 0;"
+         "for nom in ('name', 'NAME', 'NAAAAME') do"
+         "    if i > 0 do print ', '; endif;"
+         "    print '<a_href=\"'.nom.'\">'.nom.'</a>';"
+         "    i := i + 1;"
+         "endfor;"
+         "}}",
+        "{{ liste_photo := ('holiday.png', 'flower.jpg', 'dog.png', 'house.png'); nom := 'my album'; }}"
+        "<html>\n"
+        "  <head>"
+        "    <title>{{ print nom; }}</title>"
+        "  </head>\n"
+        "  <body>\n"
+        "  <h1>{{ print nom; }}</h1>\n"
+        "{{"
+        "i := 0;"
+        "for nom in liste_photo do"
+        "    if i > 0 do print ', '; endif ;"
+        "    print '<a href=\"'.nom.'\">'.nom.'</a>';"
+        "    i := i + 1;"
+        "endfor;"
+        "}}\n"
+        "Il y a {{ print i.' images '; }} dans l album {{ print nom; }}.\n"
+        "  </body>\n"
+        "</html>",
+        "{{ a := true != false; print b; }}"]
+        # expression = giga_chad_expression
+        # expression = "{{ a := True != False = False; print a; }}"
+        # expression = "{{ if True do x := 2; endif; print x; }}"
+        expression = "{{&" \
+                    "i := 0;" \
+                    "for nom in ('nom1', 'nom2') do" \
+                    "    if i > 0 do print ', '; endif;" \
+                    "    print nom;" \
+                    "    i := i + 1;" \
+                    "endfor;" \
+                    "print '\ni = '.i;" \
+                    "}}"
+        expression = "{{" \
+                    "print 'string';" \
+                    "for var in ('a', 'b', 'c') do print var; endfor;" \
+                    "if True do print 'true'; endif;" \
+                    "}}"
+        expression = "{{ if True and False or False or 2 > 1 do print 'True'; endif; }}"

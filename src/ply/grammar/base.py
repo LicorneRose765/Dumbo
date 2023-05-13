@@ -107,7 +107,7 @@ def p_expression_strlistfor(p):
     temporary_variable_name = p[2]
     string_list = p[4]
     body = p[6]
-    p[0] = ForOperation(temporary_variable_name, string_list, body, params.current_scope_depth)
+    p[0] = ForOperation(temporary_variable_name, string_list, body, params.current_scope_depth + 1)
 
 
 def p_expression_varfor(p):
@@ -119,7 +119,7 @@ def p_expression_varfor(p):
     temporary_variable_name = p[2]
     string_list = GetOperation(p[4], params.current_scope_depth)
     body = p[6]
-    p[0] = ForOperation(temporary_variable_name, string_list, body, params.current_scope_depth)
+    p[0] = ForOperation(temporary_variable_name, string_list, body, params.current_scope_depth + 1)
 
 
 def p_expression_print(p):
